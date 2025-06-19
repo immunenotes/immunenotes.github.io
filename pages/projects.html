@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Immunenotes</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+    <script src="/js/nav.js"></script>
+    <script src="/js/html_loader.js"></script>
+</head>
+
+<body>
+<div id="nav-placeholder"></div>
+
+<main>
+    <div class="banner banner-white">
+        <div class="banner-inner">
+            <h1>Projects</h1>
+        </div>
+    </div>
+
+    <div class="page-wrapper mobile-screen">
+        <div class="page-block" id="biosigpem-box-mobile">
+            <script>loadHTML("/pages/comp/box_biosigpem.html", "biosigpem-box-mobile");</script>
+        </div>
+        <div class="page-gap"></div>
+        <div class="page-block" id="synosys-box-mobile">
+            <script>loadHTML("/pages/comp/box_synosys.html", "synosys-box-mobile");</script>
+        </div>
+        <div class="page-gap"></div>
+        <div class="page-block" id="support-box-mobile">
+            <script>loadHTML("/pages/comp/box_support.html", "support-box-mobile");</script>
+        </div>
+    </div>
+
+    <div class="page-wrapper wide-screen">
+        <div class="box-wrapper">
+            <div class="box-column">
+                <div id="box-element-11"></div>
+                <script>loadHTML("/pages/comp/box_biosigpem.html", "box-element-11");</script>
+                <div class="page-gap"></div>
+                <div id="box-element-12"></div>
+                <script>loadHTML("/pages/comp/box_support.html", "box-element-12");</script>
+            </div>
+            <div class="box-column">
+                <div id="box-element-21"></div>
+                <script>loadHTML("/pages/comp/box_synosys.html", "box-element-21");</script>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner subbanner banner-white">
+        <div class="banner-inner subbanner">
+            <h2>Contact</h2>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="page-block" id="contact">
+            <script>loadHTML("/pages/comp/contact.html", "contact");</script>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

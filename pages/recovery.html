@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recovery | Immunenotes</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik">
+    <script src="/js/nav.js"></script>
+    <script src="/js/html_loader.js"></script>
+    <script src="/js/exp-box.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/slideshow.js"></script>
+</head>
+
+<body>
+<div id="nav-placeholder"></div>
+
+<main>
+    <div class="banner banner-white">
+        <div class="banner-inner">
+            <h1>Recovery</h1>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="page-block">
+            <div class="auth-container">
+                <input type="password" class="password-input" placeholder="Enter password" />
+                <button class="login-btn">Login</button>
+            </div>
+            <div class="locked-content">
+                <h2>Return after Injury</h2>
+                <br>
+                <!-- <div class="slideshow-container">
+                    <div class="slide-left">&#x25C0;</div>
+                    <img class="slideshow-img" src="/content/recovery/PerformanceHealth_Frauen1Fbb_1.png" alt="Return after Injury and Infection Slideshow">
+                    <div class="slide-right">&#x25B6;</div>
+                </div> -->
+                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_1.png" alt="Return after Injury">
+                <br>
+                <br>
+                <h2>Return after Mild Infection</h2>
+                <br>
+                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_2.png" alt="Return after Mild Infection">
+                <br>
+                <br>
+                <h2>Activation-Hydration-Energy</h2>
+                <br>
+                <!-- <div class="slideshow-like-container">
+                    <img class="slideshow-like-img" src="/content/recovery/PerformanceHealth_Frauen1Fbb_3.png" alt="Activation-Hydration-Energy">
+                </div> -->
+                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_3.png" alt="Activation-Hydration-Energy">
+                <br>
+                <br>
+                <h2>Breathwork by Daniel Palsson | <a href="https://www.flowswitch.se" target="_blank" rel="noopener">Flowswitch</a></h2>
+                <br>
+                <p class="normal-text">Heart-Brain Coherence Gratitude</p>
+                <audio id="player1" controls>
+                    <source src="/content/recovery/audio/Heart-Brain-Coherence-Gratitude.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Humming with sound</p>
+                <audio id="player2" controls>
+                    <source src="/content/recovery/audio/Humming-with-sound-v.1.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Micro-Breathholds</p>
+                <audio id="player3" controls>
+                    <source src="/content/recovery/audio/Micro-Breathholds.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Post-Game Acute Recovery</p>
+                <audio id="player4" controls>
+                    <source src="/content/recovery/audio/Post-Game-Acute-Recovery-2.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Slow-Paced Nose Breathing 4-In-6-Out</p>
+                <audio id="player5" controls>
+                    <source src="/content/recovery/audio/Slow-paced-nose-breathing-4-in-6-out.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Slow-Paced Nose Breathing 5-In-5-Out</p>
+                <audio id="player6" controls>
+                    <source src="/content/recovery/audio/Slow-paced-nose-breathing-5-in-5-out.m4a" type="audio/mp4" />
+                </audio>
+                <br>
+                <p class="normal-text">Yoga Nidra</p>
+                <audio id="player7" controls>
+                    <source src="/content/recovery/audio/Yoga-Nidra.m4a" type="audio/mp4" />
+                </audio>
+                <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+                <script>
+                    for (let i = 1; i <= 7; i++) {
+                        new Plyr(`#player${i}`, {
+                            controls: ['play', 'progress', 'current-time', 'mute', 'volume']
+                        });
+                    }
+                </script>
+                <br>
+                <br>
+                <h2>Downloads</h2>
+                <br>
+                <div class="pdf-download-container">
+                    <img src="/content/recovery/downloads/previews/01_Haunhorst_Puta_SportUndImmunfunktion.jpg" alt="PDF Sport und Immunfunktion Vorschau" class="pdf-preview">
+                    <a href="/content/recovery/downloads/01_Haunhorst_Puta_SportUndImmunfunktion.pdf" download class="download-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="pdf-download-container">
+                    <img src="/content/recovery/downloads/previews/02_HaunhorstBlochPuta_sportaerzte.jpg" alt="PDF Revocery und Immunsystem Vorschau" class="pdf-preview">
+                    <a href="/content/recovery/downloads/02_HaunhorstBlochPuta_sportaerzte.pdf" download class="download-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner subbanner banner-white">
+        <div class="banner-inner subbanner">
+            <h2>Contact</h2>
+        </div>
+    </div>
+
+    <div class="page-wrapper">
+        <div class="page-block" id="contact">
+            <script>loadHTML("/pages/comp/contact.html", "contact");</script>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+.auth-container {
+    margin: 10px 0;
+    text-align: center;
+}
+.password-input {
+    padding: 10px 10px;
+    font-size: 16px;
+}
+
+.login-btn {
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 16px;
+    border: 1px solid #000000;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #ededed;
+    border-color: #333333; 
+}
+
+.login-btn:active {
+    transform: scale(0.98);
+}

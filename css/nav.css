@@ -61,6 +61,7 @@ nav ul {
 .website-name {
     flex-shrink: 0;
     padding: 0px 15px;
+    margin-top: 3px;
     display: flex;
     align-items: center;
     color: #000000;

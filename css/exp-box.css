@@ -1,10 +1,13 @@
 /* Expandable box */
 .exp-box {
-    border-top: 1px solid #000000;
     border-bottom: 1px solid #000000;
     padding-top: 15px;
     padding-bottom: 15px;
     background-color: #ffffff;
+}
+
+.top-border {
+    border-top: 1px solid #000000;
 }
 
 .exp-box .hidden-content {

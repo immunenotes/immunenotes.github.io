@@ -1,9 +1,17 @@
 .pdf-download-container {
     position: relative;
     display: inline-block;
+    padding: 5px;
+}
+
+.pdf-download-container-portrait {
     width: 170px;
     height: 240px;
-    padding: 5px;
+}
+
+.pdf-download-container-landscape {
+    width: 240px;
+    height: 170px;
 }
 
 .pdf-preview {

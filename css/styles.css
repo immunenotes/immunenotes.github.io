@@ -53,6 +53,10 @@ main {
     align-items: center;
 }
 
+.centered-text {
+    text-align: center;
+}
+
 #contact p {
     text-align: center;
 }

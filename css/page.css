@@ -40,6 +40,27 @@
     flex-direction: column;
 }
 
+.footer-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 25px;
+    border-top: 1px solid #000000;
+}
+
+.footer-block a {
+    text-decoration: none;
+    color: #000000;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.page-block a:hover {
+    text-decoration: underline;
+}
+
 /* Page content (image) */
 .page-block img {
     width: 100%;

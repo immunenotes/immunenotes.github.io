@@ -29,3 +29,7 @@ button {
     text-align: center;
     color: #000000;
 }
+
+ul.datenschutz {
+  padding-left: 30px;
+}

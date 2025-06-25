@@ -2,6 +2,7 @@
     position: relative;
     display: inline-block;
     padding: 5px;
+    padding-bottom: 40px;
 }
 
 .pdf-download-container-portrait {
@@ -46,4 +47,10 @@
 
 .download-icon:hover {
     background-color: rgba(255, 255, 255, 1);
+}
+
+.download-subtitle {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 8px;
 }

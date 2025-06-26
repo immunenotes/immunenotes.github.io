@@ -36,9 +36,13 @@ button {
 }
 
 ul.datenschutz {
-  padding-left: 30px;
+    padding-left: 30px;
 }
 
 ul.indented {
-  padding-left: 30px;
+    padding-left: 30px;
+}
+
+a {
+    color: #000000;
 }

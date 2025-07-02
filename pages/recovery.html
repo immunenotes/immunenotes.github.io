@@ -1,172 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="/content/img/t-cell_icon.png">
-    <title>Recovery | Immunenotes</title>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Merriweather">
-    <script src="/js/nav.js"></script>
-    <script src="/js/html_loader.js"></script>
-    <script src="/js/exp-box.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/slideshow.js"></script>
+    <title>Protected Area - ImmuneNotes</title>
+    <script src="/js/crypto-js.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .auth-container {
+            text-align: center;
+            padding: 40px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+            margin-top: 100px;
+        }
+        
+        .password-input {
+            padding: 12px;
+            margin: 10px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            width: 250px;
+            font-size: 16px;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #007cba;
+        }
+        
+        .login-btn {
+            padding: 12px 25px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        
+        .login-btn:hover {
+            background: #005a87;
+        }
+        
+        .locked-content {
+            display: none;
+        }
+        
+        .error-message {
+            color: #d32f2f;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .protected-page {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .protected-page h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007cba;
+            padding-bottom: 10px;
+        }
+        
+        .page-content {
+            margin-top: 15px;
+        }
+        
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
 </head>
-
 <body>
-<div id="nav-placeholder"></div>
-
-<main>
-    <div class="page-wrapper">
-        <div class="header-block">
-            <h1>Recovery</h1>
+    <div class="auth-container">
+        <h2>🔒 Protected Area</h2>
+        <p>Please enter a password to access the protected contentn.</p>
+        <div>
+            <input type="password" class="password-input" placeholder="Passwort eingeben" autofocus>
+            <button class="login-btn">Log in</button>
         </div>
-        <div class="page-block">
-            <div class="auth-container">
-                <input type="password" class="password-input" placeholder="Enter password" />
-                <button class="login-btn">Login</button>
-            </div>
-            <div class="locked-content">
-                <h2>Return after Injury</h2>
-                <br>
-                <!-- <div class="slideshow-container">
-                    <div class="slide-left">&#x25C0;</div>
-                    <img class="slideshow-img" src="/content/recovery/PerformanceHealth_Frauen1Fbb_1.png" alt="Return after Injury and Infection Slideshow">
-                    <div class="slide-right">&#x25B6;</div>
-                </div> -->
-                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_1.png" alt="Return after Injury">
-                <br>
-                <br>
-                <br>
-                <h2>Return after Mild Infection</h2>
-                <br>
-                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_2.png" alt="Return after Mild Infection">
-                <br>
-                <br>
-                <br>
-                <h2>Activation-Hydration-Energy</h2>
-                <br>
-                <!-- <div class="slideshow-like-container">
-                    <img class="slideshow-like-img" src="/content/recovery/PerformanceHealth_Frauen1Fbb_3.png" alt="Activation-Hydration-Energy">
-                </div> -->
-                <img src="/content/recovery/PerformanceHealth_Frauen1Fbb_3.png" alt="Activation-Hydration-Energy">
-                <br>
-                <br>
-                <br>
-                <h2>Female cycle - Performance and Health</h2>
-                <br>
-                <img src="/content/recovery/female_cycle_and_exercise.png" alt="Female Cycle and Exercise">
-                <br>
-                <br>
-                <br>
-                <h2>Breathwork by Daniel Palsson | <a href="https://www.flowswitch.se" target="_blank" rel="noopener">Flowswitch</a></h2>
-                <br>
-                <p class="normal-text">Heart-Brain Coherence Gratitude</p>
-                <audio id="player1" controls>
-                    <source src="/content/recovery/audio/Heart-Brain-Coherence-Gratitude.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Humming with sound</p>
-                <audio id="player2" controls>
-                    <source src="/content/recovery/audio/Humming-with-sound-v.1.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Micro-Breathholds</p>
-                <audio id="player3" controls>
-                    <source src="/content/recovery/audio/Micro-Breathholds.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Post-Game Acute Recovery</p>
-                <audio id="player4" controls>
-                    <source src="/content/recovery/audio/Post-Game-Acute-Recovery-2.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Slow-Paced Nose Breathing 4-In-6-Out</p>
-                <audio id="player5" controls>
-                    <source src="/content/recovery/audio/Slow-paced-nose-breathing-4-in-6-out.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Slow-Paced Nose Breathing 5-In-5-Out</p>
-                <audio id="player6" controls>
-                    <source src="/content/recovery/audio/Slow-paced-nose-breathing-5-in-5-out.m4a" type="audio/mp4" />
-                </audio>
-                <br>
-                <p class="normal-text">Yoga Nidra</p>
-                <audio id="player7" controls>
-                    <source src="/content/recovery/audio/Yoga-Nidra.m4a" type="audio/mp4" />
-                </audio>
-                <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-                <script>
-                    for (let i = 1; i <= 7; i++) {
-                        new Plyr(`#player${i}`, {
-                            controls: ['play', 'progress', 'current-time', 'mute', 'volume']
-                        });
-                    }
-                </script>
-                <br>
-                <br>
-                <h2>Respiration and the autonomic nervous system (ANS) interact</h2>
-                <br>
-                <div id="respiration-ans-interact">
-                        <script>loadHTML("/content/recovery/respiration_ans_interact.html", "respiration-ans-interact")</script>
-                    </div>
-                <br>
-                <br>
-                <h2>Downloads</h2>
-                <br>
-                <div class="pdf-download-container pdf-download-container-portrait">
-                    <img src="/content/recovery/downloads/previews/01_Haunhorst_Puta_SportUndImmunfunktion.jpg" alt="PDF Sport und Immunfunktion Vorschau" class="pdf-preview">
-                    <p class="download-subtitle">Sport & Immunfunktion</p>
-                    <a href="/content/recovery/downloads/01_Haunhorst_Puta_SportUndImmunfunktion.pdf" download class="download-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="pdf-download-container pdf-download-container-portrait">
-                    <img src="/content/recovery/downloads/previews/02_HaunhorstBlochPuta_sportaerzte.jpg" alt="PDF Revocery und Immunsystem Vorschau" class="pdf-preview">
-                    <p class="download-subtitle">Recovery & Immunsystem</p>
-                    <a href="/content/recovery/downloads/02_HaunhorstBlochPuta_sportaerzte.pdf" download class="download-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="pdf-download-container pdf-download-container-landscape">
-                    <img src="/content/recovery/downloads/previews/immunenotes_sleep_cp_2025_06_19.jpg" alt="PDF Sleep Preview" class="pdf-preview">
-                    <p class="download-subtitle">Sleep</p>
-                    <a href="/content/recovery/downloads/immunenotes_sleep_cp_2025_06_19.pdf" download class="download-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
-                        </svg>
-                    </a>
-                </div>
-                <div class="pdf-download-container pdf-download-container-landscape">
-                    <img src="/content/recovery/downloads/previews/female_cycle_and_exercise.jpg" alt="PDF Female Cycle Preview" class="pdf-preview">
-                    <p class="download-subtitle">Female Cycle</p>
-                    <a href="/content/recovery/downloads/female_cycle_and_exercise.pdf" download class="download-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path d="M5 20h14v-2H5v2zm7-2l7-7h-4V3H9v8H5l7 7z"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
+        <div class="error-message"></div>
     </div>
-</main>
 
-<div class="footer">
-    <div class="page-wrapper">
-        <div class="page-block">
-            <div class="footer-block">
-                <a href="/pages/impressum.html">Impressum</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;   
-                <a href="/pages/datenschutz.html">Datenschutzerklärung</a>
-            </div>
-        </div>
+    <div class="locked-content">
+        <button class="logout-btn" onclick="logout()">Log out</button>
+        <div class="loading">Loading protected content …</div>
     </div>
-</div>
 
+    <script src="/js/auth.js"></script>
 </body>
 </html>

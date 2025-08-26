@@ -2,11 +2,10 @@
 name: Encrypt Protected Content
 
 on:
-  push:
-    branches: [ main, passwortschutz ]
-    paths: 
-      - 'protected/**'
-      - '.github/workflows/encrypt-content.yml'
+  workflow_run:
+    workflows: ["Upload Protected Files"]
+    types:
+      - completed
   workflow_dispatch: # Ermöglicht manuelles Ausführen
 
 jobs:

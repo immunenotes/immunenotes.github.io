@@ -2,10 +2,11 @@
 name: Encrypt Protected Content
 
 on:
-  workflow_run:
-    workflows: ["Upload Protected Files"]
-    types:
-      - completed
+  push:
+    branches: [ main ]
+    paths: 
+      - 'protected/**'
+      - '.github/workflows/encrypt-content.yml'
   workflow_dispatch: # Ermöglicht manuelles Ausführen
 
 jobs:
@@ -20,12 +21,6 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Download protected content
-      uses: actions/download-artifact@v4
-      with:
-        name: protected-content
-        path: protected/
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:

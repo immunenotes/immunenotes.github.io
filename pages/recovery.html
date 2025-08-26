@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,124 +9,52 @@
     <link rel="stylesheet" type="text/css" href="/css/fonts.css">
     <script src="/js/nav.js"></script>
     <script src="/js/html_loader.js"></script>
-    <script src="/js/crypto-js.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        
-        .auth-container {
-            text-align: center;
-            padding: 40px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background: #f9f9f9;
-            margin-top: 100px;
-        }
-        
-        .password-input {
-            padding: 12px;
-            margin: 10px;
-            border: 2px solid #ccc;
-            border-radius: 6px;
-            width: 250px;
-            font-size: 16px;
-        }
-        
-        .password-input:focus {
-            outline: none;
-            border-color: #007cba;
-        }
-        
-        .login-btn {
-            padding: 12px 25px;
-            background: #007cba;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 10px;
-        }
-        
-        .login-btn:hover {
-            background: #005a87;
-        }
-        
-        .locked-content {
-            display: none;
-        }
-        
-        .error-message {
-            color: #d32f2f;
-            margin-top: 15px;
-            font-weight: bold;
-            display: none;
-        }
-        
-        .protected-page {
-            margin: 30px 0;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            background: #fafafa;
-        }
-        
-        .protected-page h3 {
-            margin-top: 0;
-            color: #333;
-            border-bottom: 2px solid #007cba;
-            padding-bottom: 10px;
-        }
-        
-        .page-content {
-            margin-top: 15px;
-        }
-        
-        .logout-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .logout-btn:hover {
-            background: #c82333;
-        }
-        
-        .loading {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-        }
-    </style>
 </head>
+
 <body>
-    <div class="auth-container">
-        <h2>🔒 Protected Area</h2>
-        <p>Please enter a password to access the protected contentn.</p>
-        <div>
-            <input type="password" class="password-input" placeholder="Passwort eingeben" autofocus>
-            <button class="login-btn">Log in</button>
+<div id="nav-placeholder"></div>
+
+<main>
+    <div class="page-wrapper mobile-screen">
+        <div class="header-block">
+            <h1>Recovery</h1>
         </div>
-        <div class="error-message"></div>
+        <div class="page-block" id="breathwork-box-mobile">
+            <script>loadHTML("/pages/comp/box_breathwork.html", "breathwork-box-mobile");</script>
+        </div>
+        <div class="page-gap"></div>
+        <div class="page-block" id="athletes-box-mobile">
+            <script>loadHTML("/pages/comp/box_athletes.html", "athletes-box-mobile");</script>
+        </div>
     </div>
 
-    <div class="locked-content">
-        <button class="logout-btn" onclick="logout()">Log out</button>
-        <div class="loading">Loading protected content …</div>
+    <div class="page-wrapper wide-screen">
+        <div class="header-block">
+            <h1>Recovery</h1>
+        </div>
+        <div class="box-wrapper">
+            <div class="box-column">
+                <div id="box-element-11"></div>
+                <script>loadHTML("/pages/comp/box_breathwork.html", "box-element-11");</script>
+            </div>
+            <div class="box-column">
+                <div id="box-element-21"></div>
+                <script>loadHTML("/pages/comp/box_athletes.html", "box-element-21");</script>
+            </div>
+        </div>
     </div>
+</main>
 
-    <script src="/js/auth.js"></script>
+<div class="footer">
+    <div class="page-wrapper">
+        <div class="page-block">
+            <div class="footer-block">
+                <a href="/pages/impressum.html">Impressum</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;   
+                <a href="/pages/datenschutz.html">Datenschutzerklärung</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

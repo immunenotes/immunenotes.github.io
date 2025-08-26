@@ -9,9 +9,9 @@
     <link rel="stylesheet" type="text/css" href="/css/fonts.css">
     <script src="/js/nav.js"></script>
     <script src="/js/html_loader.js"></script>
+    <script src="/js/auth.js"></script>
     <script src="/js/crypto-js.min.js"></script>
     <style>
-        
         .protected-page {
             margin: 30px 0;
             padding: 20px;
@@ -55,18 +55,23 @@
 <div id="nav-placeholder"></div>
 
 <main>
-    <div class="auth-container">
-        <input type="password" class="password-input" placeholder="Enter password" />
-        <button class="login-btn">Login</button>
-        <div class="error-message"></div>
-    </div>
+    <div class="page-wrapper">
+        <div class="header-block">
+            <h1>Athletes</h1>
+        </div>
+        <div class="page-block">
+            <div class="auth-container">
+                <input type="password" class="password-input" placeholder="Enter password" />
+                <button class="login-btn">Login</button>
+                <div class="error-message"></div>
+            </div>
 
-    <div class="locked-content">
-        <button class="logout-btn" onclick="logout()">Log out</button>
-        <div class="loading">Loading protected content …</div>
+            <div class="locked-content">
+                <button class="logout-btn" onclick="logout()">Log out</button>
+                <div class="loading">Loading protected content …</div>
+            </div>
+        </div>
     </div>
-
-    <script src="/js/auth.js"></script>
 </main>
 
 <div class="footer">

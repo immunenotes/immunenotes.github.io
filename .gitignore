@@ -1,9 +1,3 @@
 .DS_Store
 
 todo.txt
-
-# Verschlüsselte Inhalte sollen ignoriert werden
-protected/
-
-# verschlüsselte Versionen erlauben
-!js/encrypted/

@@ -3,7 +3,7 @@
 todo.txt
 
 # Verschlüsselte Inhalte sollen ignoriert werden
-# protected/
+protected/
 
 # verschlüsselte Versionen erlauben
 !js/encrypted/

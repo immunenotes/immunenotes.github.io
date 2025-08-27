@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const password = sessionStorage.getItem('auth-password');
-    let contentHtml = '<h2>Geschützte Bereiche</h2>';
+    let contentHtml = '';
 
     for (const page of window.protectedPages) {
       try {
@@ -78,10 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const decrypted = tryDecrypt(encryptedContent, password);
             if (decrypted) {
               contentHtml += `
-                <div class="protected-page">
-                  <h3>${page.title}</h3>
-                  <div class="page-content">${decrypted}</div>
-                </div>
+                  <div>${decrypted}</div>
               `;
             } else {
               contentHtml += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;

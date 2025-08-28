@@ -41,3 +41,9 @@
     font-weight: bold;
     display: none;
 }
+
+.loading {
+    text-align: center;
+    color: #000000;
+    font-style: italic;
+}

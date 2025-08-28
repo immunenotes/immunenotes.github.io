@@ -1,7 +1,8 @@
 .DS_Store
-
-protected/
 notes.txt
-node_modules
 package-lock.json
 package.json
+node_modules/
+
+protected/
+!js/encrypted/

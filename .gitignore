@@ -6,3 +6,5 @@ node_modules/
 
 protected/
 !js/encrypted/
+
+scripts/

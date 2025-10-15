@@ -96,9 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         await loadNestedHTML(tempDiv, password);
 
         // Den vollständig entschlüsselten Inhalt an die richtige Stelle einfügen
-        while (tempDiv.firstChild) {
-          lockedContent.appendChild(tempDiv.firstChild);
-        }
+        lockedContent.appendChild(tempDiv);
 
       } catch (e) {
         console.error(`Fehler beim Laden/Entschlüsseln von ${page.path}:`, e);
@@ -106,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Rekursive Funktion für verschachtelte Platzhalter
   async function loadNestedHTML(container, password) {
     const placeholders = container.querySelectorAll("[data-load-html]");
     for (const el of placeholders) {
@@ -134,16 +131,18 @@ document.addEventListener("DOMContentLoaded", () => {
           continue;
         }
 
-        // Temporärer Container für weitere Verschachtelungen
+        // Temporärer Container, um HTML-String zu parsen
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = decrypted;
 
-        // Rekursion: Prüfen, ob dieser Inhalt weitere Platzhalter enthält
+        // Rekursion für weitere Platzhalter
         await loadNestedHTML(tempDiv, password);
 
-        // Inhalt einfügen
-        el.innerHTML = '';
-        el.appendChild(tempDiv);
+        // Statt appendChild: Platzhalter selbst ersetzen
+        while (tempDiv.firstChild) {
+          el.parentNode.insertBefore(tempDiv.firstChild, el);
+        }
+        el.remove();
 
       } catch (e) {
         console.error(`Fehler beim Laden/Entschlüsseln von ${file}:`, e);
@@ -151,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-
 
   const storedPass = sessionStorage.getItem("auth-password");
   if (sessionStorage.getItem("auth") === "true" && storedPass) {

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const script = document.createElement('script');
     script.src = '/js/encrypted/index.js';
     script.onload = () => {
+      console.log('Verschlüsselte Inhalte geladen:', window.protectedPages?.length || 0);
       const storedPass = sessionStorage.getItem("auth-password");
       if (sessionStorage.getItem("auth") === "true" && storedPass) {
         onLoginSuccess();

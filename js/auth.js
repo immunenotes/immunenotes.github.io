@@ -92,6 +92,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  async function loadNestedHTML(container, password) {
+    const placeholders = container.querySelectorAll("[data-load-html]");
+    for (const el of placeholders) {
+      const file = el.getAttribute("data-load-html");
+      
+      // Die verschlüsselte JS-Datei laden
+      try {
+        const response = await fetch(`/js/encrypted/${file.replace(/\.[^.]*$/, '.js')}`);
+        if (response.ok) {
+          const scriptText = await response.text();
+          eval(scriptText);
+
+          const encryptedContent = window.encryptedContent?.[file];
+          if (encryptedContent) {
+            const decrypted = tryDecrypt(encryptedContent, password);
+            if (decrypted) {
+              el.innerHTML = decrypted;
+              // Rekursiv prüfen, ob diese Inhalte selbst weitere verkettete Platzhalter enthalten
+              await loadNestedHTML(el, password);
+            } else {
+              el.innerHTML = `<p>Fehler beim Entschlüsseln von ${file}</p>`;
+            }
+          }
+        }
+      } catch (e) {
+        console.error(`Fehler beim Laden von ${file}:`, e);
+      }
+    }
+  }
+
   const storedPass = sessionStorage.getItem("auth-password");
   if (sessionStorage.getItem("auth") === "true" && storedPass) {
     onLoginSuccess();

@@ -96,7 +96,9 @@ document.addEventListener("DOMContentLoaded", () => {
         await loadNestedHTML(tempDiv, password);
 
         // Den vollständig entschlüsselten Inhalt an die richtige Stelle einfügen
-        lockedContent.appendChild(tempDiv);
+        while (tempDiv.firstChild) {
+          lockedContent.appendChild(tempDiv.firstChild);
+        }
 
       } catch (e) {
         console.error(`Fehler beim Laden/Entschlüsseln von ${page.path}:`, e);

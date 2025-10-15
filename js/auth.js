@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const password = sessionStorage.getItem('auth-password');
-    let contentHtml = '';
 
     for (const page of window.protectedPages) {
       try {
@@ -68,14 +67,23 @@ document.addEventListener("DOMContentLoaded", () => {
         if (response.ok) {
           const scriptText = await response.text();
           eval(scriptText);
-          
+
           const encryptedContent = window.encryptedContent?.[page.path];
           if (encryptedContent) {
             const decrypted = tryDecrypt(encryptedContent, password);
             if (decrypted) {
-              contentHtml += `<div>${decrypted}</div>`;
+              // Statt alles in lockedContent zu packen, prüfen wir, ob es einen passenden Platzhalter gibt
+              const placeholder = document.querySelector(`[data-load-html="${page.path}.html"]`);
+              if (placeholder) {
+                placeholder.innerHTML = decrypted;
+              } else {
+                // Fallback: Alles sonstige in lockedContent anhängen
+                const div = document.createElement('div');
+                div.innerHTML = decrypted;
+                lockedContent.appendChild(div);
+              }
             } else {
-              contentHtml += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
+              console.warn(`Fehler beim Entschlüsseln von ${page.title}`);
             }
           }
         }
@@ -83,14 +91,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(`Fehler beim Laden von ${page.path}:`, e);
       }
     }
-
-    lockedContent.innerHTML = contentHtml;
-
-    document.querySelectorAll("[data-load-html]").forEach(el => {
-      const file = el.getAttribute("data-load-html");
-      loadHTML(file, el.id);
-    });
   }
+
 
   const storedPass = sessionStorage.getItem("auth-password");
   if (sessionStorage.getItem("auth") === "true" && storedPass) {

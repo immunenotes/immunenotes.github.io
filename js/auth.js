@@ -60,39 +60,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const password = sessionStorage.getItem('auth-password');
+    let contentHtml = '';
 
     for (const page of window.protectedPages) {
       try {
-        // JS-Datei mit verschlüsseltem Inhalt laden
         const response = await fetch(`/js/encrypted/${page.encrypted.replace(/\.[^.]*$/, '.js')}`);
-        if (!response.ok) continue;
-
-        const scriptText = await response.text();
-        eval(scriptText);
-
-        const encryptedContent = window.encryptedContent?.[page.path];
-        if (!encryptedContent) continue;
-
-        const decrypted = tryDecrypt(encryptedContent, password);
-        if (!decrypted) continue;
-
-        // Zielplatzhalter suchen
-        const placeholder = document.querySelector(`[data-load-html="${page.path}.html"]`);
-        if (placeholder) {
-          placeholder.innerHTML = decrypted;
-        } else {
-          // Fallback: am Ende von lockedContent
-          const div = document.createElement('div');
-          div.innerHTML = decrypted;
-          lockedContent.appendChild(div);
+        if (response.ok) {
+          const scriptText = await response.text();
+          eval(scriptText);
+          
+          const encryptedContent = window.encryptedContent?.[page.path];
+          if (encryptedContent) {
+            const decrypted = tryDecrypt(encryptedContent, password);
+            if (decrypted) {
+              contentHtml += `<div>${decrypted}</div>`;
+            } else {
+              contentHtml += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
+            }
+          }
         }
-
       } catch (e) {
-        console.error(`Fehler beim Laden oder Entschlüsseln von ${page.path}:`, e);
+        console.error(`Fehler beim Laden von ${page.path}:`, e);
       }
     }
-  }
 
+    lockedContent.innerHTML = contentHtml;
+
+    
+  }
 
   const storedPass = sessionStorage.getItem("auth-password");
   if (sessionStorage.getItem("auth") === "true" && storedPass) {

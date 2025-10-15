@@ -63,32 +63,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (const page of window.protectedPages) {
       try {
+        // JS-Datei mit verschlüsseltem Inhalt laden
         const response = await fetch(`/js/encrypted/${page.encrypted.replace(/\.[^.]*$/, '.js')}`);
-        if (response.ok) {
-          const scriptText = await response.text();
-          eval(scriptText);
+        if (!response.ok) continue;
 
-          const encryptedContent = window.encryptedContent?.[page.path];
-          if (encryptedContent) {
-            const decrypted = tryDecrypt(encryptedContent, password);
-            if (decrypted) {
-              // Statt alles in lockedContent zu packen, prüfen wir, ob es einen passenden Platzhalter gibt
-              const placeholder = document.querySelector(`[data-load-html="${page.path}.html"]`);
-              if (placeholder) {
-                placeholder.innerHTML = decrypted;
-              } else {
-                // Fallback: Alles sonstige in lockedContent anhängen
-                const div = document.createElement('div');
-                div.innerHTML = decrypted;
-                lockedContent.appendChild(div);
-              }
-            } else {
-              console.warn(`Fehler beim Entschlüsseln von ${page.title}`);
-            }
-          }
+        const scriptText = await response.text();
+        eval(scriptText);
+
+        const encryptedContent = window.encryptedContent?.[page.path];
+        if (!encryptedContent) continue;
+
+        const decrypted = tryDecrypt(encryptedContent, password);
+        if (!decrypted) continue;
+
+        // Zielplatzhalter suchen
+        const placeholder = document.querySelector(`[data-load-html="${page.path}.html"]`);
+        if (placeholder) {
+          placeholder.innerHTML = decrypted;
+        } else {
+          // Fallback: am Ende von lockedContent
+          const div = document.createElement('div');
+          div.innerHTML = decrypted;
+          lockedContent.appendChild(div);
         }
+
       } catch (e) {
-        console.error(`Fehler beim Laden von ${page.path}:`, e);
+        console.error(`Fehler beim Laden oder Entschlüsseln von ${page.path}:`, e);
       }
     }
   }

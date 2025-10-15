@@ -60,98 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const password = sessionStorage.getItem('auth-password');
-
-    // Hauptcontainer leeren
-    lockedContent.innerHTML = '';
+    let contentHtml = '';
 
     for (const page of window.protectedPages) {
       try {
-        // Verschlüsselte JS-Datei laden
         const response = await fetch(`/js/encrypted/${page.encrypted.replace(/\.[^.]*$/, '.js')}`);
-        if (!response.ok) {
-          console.error(`Fehler beim Laden von ${page.path}`);
-          continue;
+        if (response.ok) {
+          const scriptText = await response.text();
+          eval(scriptText);
+          
+          const encryptedContent = window.encryptedContent?.[page.path];
+          if (encryptedContent) {
+            const decrypted = tryDecrypt(encryptedContent, password);
+            if (decrypted) {
+              contentHtml += `<div>${decrypted}</div>`;
+            } else {
+              contentHtml += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
+            }
+          }
         }
-
-        const scriptText = await response.text();
-        eval(scriptText);
-
-        const encryptedContent = window.encryptedContent?.[page.path];
-        if (!encryptedContent) {
-          console.error(`Keine verschlüsselten Inhalte für ${page.path}`);
-          continue;
-        }
-
-        const decrypted = tryDecrypt(encryptedContent, password);
-        if (!decrypted) {
-          lockedContent.innerHTML += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
-          continue;
-        }
-
-        // Temporärer Container zum Parsen des HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = decrypted;
-
-        // Verschachtelte Platzhalter laden
-        await loadNestedHTML(tempDiv, password);
-
-        // Anstelle von appendChild: eingefügte Knoten direkt in lockedContent einfügen
-        while (tempDiv.firstChild) {
-          lockedContent.appendChild(tempDiv.firstChild);
-        }
-
       } catch (e) {
-        console.error(`Fehler beim Laden/Entschlüsseln von ${page.path}:`, e);
+        console.error(`Fehler beim Laden von ${page.path}:`, e);
       }
     }
-  }
 
+    lockedContent.innerHTML = contentHtml;
 
-  async function loadNestedHTML(container, password) {
-    const placeholders = container.querySelectorAll("[data-load-html]");
-    for (const el of placeholders) {
+    document.querySelectorAll("[data-load-html]").forEach(el => {
       const file = el.getAttribute("data-load-html");
-
-      try {
-        const response = await fetch(`/js/encrypted/${file.replace(/\.[^.]*$/, '.js')}`);
-        if (!response.ok) {
-          el.innerHTML = `<p>Fehler beim Laden von ${file}</p>`;
-          continue;
-        }
-
-        const scriptText = await response.text();
-        eval(scriptText);
-
-        const encryptedContent = window.encryptedContent?.[file];
-        if (!encryptedContent) {
-          el.innerHTML = `<p>Keine verschlüsselten Inhalte für ${file}</p>`;
-          continue;
-        }
-
-        const decrypted = tryDecrypt(encryptedContent, password);
-        if (!decrypted) {
-          el.innerHTML = `<p>Fehler beim Entschlüsseln von ${file}</p>`;
-          continue;
-        }
-
-        // Temporärer Container, um HTML-String zu parsen
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = decrypted;
-
-        // Rekursion für weitere Platzhalter
-        await loadNestedHTML(tempDiv, password);
-
-        // Statt appendChild: Platzhalter selbst ersetzen
-        while (tempDiv.firstChild) {
-          el.parentNode.insertBefore(tempDiv.firstChild, el);
-        }
-        el.remove();
-
-      } catch (e) {
-        console.error(`Fehler beim Laden/Entschlüsseln von ${file}:`, e);
-        el.innerHTML = `<p>Fehler beim Laden von ${file}</p>`;
-      }
-    }
+      loadHTML(file, el.id);
+    });
   }
 
   const storedPass = sessionStorage.getItem("auth-password");

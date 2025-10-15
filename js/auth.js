@@ -92,17 +92,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = decrypted;
 
-        // Rekursiv verschachtelte Inhalte laden
+        // Verschachtelte Platzhalter laden
         await loadNestedHTML(tempDiv, password);
 
-        // Den vollständig entschlüsselten Inhalt an die richtige Stelle einfügen
-        lockedContent.appendChild(tempDiv);
+        // Anstelle von appendChild: eingefügte Knoten direkt in lockedContent einfügen
+        while (tempDiv.firstChild) {
+          lockedContent.appendChild(tempDiv.firstChild);
+        }
 
       } catch (e) {
         console.error(`Fehler beim Laden/Entschlüsseln von ${page.path}:`, e);
       }
     }
   }
+
 
   async function loadNestedHTML(container, password) {
     const placeholders = container.querySelectorAll("[data-load-html]");

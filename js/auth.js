@@ -60,96 +60,67 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const password = sessionStorage.getItem('auth-password');
-
-    // Hauptcontainer leeren
-    lockedContent.innerHTML = '';
+    let contentHtml = '';
 
     for (const page of window.protectedPages) {
       try {
         const response = await fetch(`/js/encrypted/${page.encrypted.replace(/\.[^.]*$/, '.js')}`);
-        if (!response.ok) {
-          console.error(`Fehler beim Laden von ${page.path}`);
-          continue;
+        if (response.ok) {
+          const scriptText = await response.text();
+          eval(scriptText);
+          
+          const encryptedContent = window.encryptedContent?.[page.path];
+          if (encryptedContent) {
+            const decrypted = tryDecrypt(encryptedContent, password);
+            if (decrypted) {
+              contentHtml += `<div>${decrypted}</div>`;
+            } else {
+              contentHtml += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
+            }
+          }
         }
-
-        const scriptText = await response.text();
-        eval(scriptText);
-
-        const encryptedContent = window.encryptedContent?.[page.path];
-        if (!encryptedContent) {
-          console.error(`Keine verschlüsselten Inhalte für ${page.path}`);
-          continue;
-        }
-
-        const decrypted = tryDecrypt(encryptedContent, password);
-        if (!decrypted) {
-          lockedContent.innerHTML += `<p>Fehler beim Entschlüsseln von ${page.title}</p>`;
-          continue;
-        }
-
-        // Temp-Div zum Parsen der HTML-Inhalte
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = decrypted;
-
-        // Verkettete Inhalte rekursiv laden
-        await loadNestedHTML(tempDiv, password);
-
-        // Den entschlüsselten und verschachtelten Inhalt in den Container einfügen
-        lockedContent.appendChild(tempDiv);
-
       } catch (e) {
-        console.error(`Fehler beim Laden/Entschlüsseln von ${page.path}:`, e);
+        console.error(`Fehler beim Laden von ${page.path}:`, e);
       }
     }
+
+    lockedContent.innerHTML = contentHtml;
+
+    document.querySelectorAll("[data-load-html]").forEach(el => {
+      const file = el.getAttribute("data-load-html");
+      loadHTML(file, el.id);
+    });
   }
 
-
-  // Rekursive Funktion zum Laden verketteter verschlüsselter Inhalte
   async function loadNestedHTML(container, password) {
     const placeholders = container.querySelectorAll("[data-load-html]");
     for (const el of placeholders) {
       const file = el.getAttribute("data-load-html");
-
+      
+      // Die verschlüsselte JS-Datei laden
       try {
         const response = await fetch(`/js/encrypted/${file.replace(/\.[^.]*$/, '.js')}`);
-        if (!response.ok) {
-          el.innerHTML = `<p>Fehler beim Laden von ${file}</p>`;
-          continue;
+        if (response.ok) {
+          const scriptText = await response.text();
+          eval(scriptText);
+
+          const encryptedContent = window.encryptedContent?.[file];
+          if (encryptedContent) {
+            const decrypted = tryDecrypt(encryptedContent, password);
+            if (decrypted) {
+              el.innerHTML = decrypted;
+              // Rekursiv prüfen, ob diese Inhalte selbst weitere verkettete Platzhalter enthalten
+              await loadNestedHTML(el, password);
+            } else {
+              el.innerHTML = `<p>Fehler beim Entschlüsseln von ${file}</p>`;
+            }
+          }
         }
-
-        const scriptText = await response.text();
-        eval(scriptText);
-
-        const encryptedContent = window.encryptedContent?.[file];
-        if (!encryptedContent) {
-          el.innerHTML = `<p>Keine verschlüsselten Inhalte für ${file}</p>`;
-          continue;
-        }
-
-        const decrypted = tryDecrypt(encryptedContent, password);
-        if (!decrypted) {
-          el.innerHTML = `<p>Fehler beim Entschlüsseln von ${file}</p>`;
-          continue;
-        }
-
-        // Temporärer Container für weitere Verschachtelungen
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = decrypted;
-
-        // Rekursion: Prüfen, ob dieser Inhalt weitere Platzhalter enthält
-        await loadNestedHTML(tempDiv, password);
-
-        // Verschachtelten Inhalt einfügen
-        el.innerHTML = '';
-        el.appendChild(tempDiv);
-
       } catch (e) {
-        console.error(`Fehler beim Laden/Entschlüsseln von ${file}:`, e);
-        el.innerHTML = `<p>Fehler beim Laden von ${file}</p>`;
+        console.error(`Fehler beim Laden von ${file}:`, e);
       }
     }
   }
-
 
   const storedPass = sessionStorage.getItem("auth-password");
   if (sessionStorage.getItem("auth") === "true" && storedPass) {

@@ -30,7 +30,7 @@ const dateStr = date.toLocaleDateString("de-DE", {
 const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?? null);
 ---
 
-<BaseLayout title={`${title} — Immunenotes`}>
+<BaseLayout title="News" description={title}>
   <div class="post-header">
     {image && (
       <div class="post-header__img-wrap">

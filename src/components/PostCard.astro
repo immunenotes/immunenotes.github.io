@@ -33,7 +33,10 @@ const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?
         <time class="post-card__date" datetime={date.toISOString()}>{dateStr}</time>
         {description && <p class="post-card__description">{description}</p>}
       </div>
-      {creditLine && <p class="post-card__credit">{creditLine}</p>}
+      <div class="post-card__footer">
+        {creditLine && <p class="post-card__credit">{creditLine}</p>}
+        <span class="post-card__arrow" aria-hidden="true">→</span>
+      </div>
     </div>
   </a>
 </article>

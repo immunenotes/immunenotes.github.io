@@ -1,6 +1,8 @@
 ---
 name: "Marc Gabriel"
 role: "Research Assistant · PhD Student"
+image: "/people/marc-gabriel.jpg"
+alt: "Marc Gabriel"
 ---
 
 Data scientist with a background in computer science. Works on data-driven approaches to

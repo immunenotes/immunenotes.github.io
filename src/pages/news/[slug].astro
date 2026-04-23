@@ -29,15 +29,18 @@ const dateStr = date.toLocaleDateString("de-DE", {
 ---
 
 <BaseLayout title={`${title} — Immunenotes`}>
-  {image && (
-    <div class="post-hero">
-      <img src={image} alt={title} class="post-hero__image" />
-      {photoSource && <p class="post-hero__source">{photoSource}</p>}
+  <div class="post-header">
+    {image && (
+      <div class="post-header__img-wrap">
+        <img src={image} alt={title} class="post-header__image" />
+        {photoSource && <p class="post-hero__source">{photoSource}</p>}
+      </div>
+    )}
+    <div class={`post-header__text${image ? " post-header__text--overlap" : ""}`}>
+      <h1 class="post-title">{title}</h1>
+      <time class="post-date" datetime={date.toISOString()}>{dateStr}</time>
     </div>
-  )}
-
-  <h1 class="post-title">{title}</h1>
-  <time class="post-date" datetime={date.toISOString()}>{dateStr}</time>
+  </div>
 
   <nav class="post-nav" aria-label="Post navigation">
     <div class="post-nav__prev">

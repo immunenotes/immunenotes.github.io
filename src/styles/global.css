@@ -61,7 +61,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.7;
   letter-spacing: 0.005em;
   min-height: 100vh;
@@ -94,8 +94,8 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.25;
   margin: 0 0 0.75em;
 }
-h1 { font-size: clamp(1.9rem, 2.2vw + 1rem, 2.6rem); }
-h2 { font-size: clamp(1.45rem, 1.2vw + 1rem, 1.8rem); margin-top: 0; }
+h1 { font-size: clamp(1.45rem, 1.2vw + 1rem, 1.8rem); }
+h2 { font-size: 1.35rem; margin-top: 0; }
 h3 { font-size: 1.2rem; }
 
 p { margin: 0 0 1.1em; }
@@ -122,6 +122,7 @@ hr {
    Subsections are created with regular markdown headings (## / ###). */
 .page {
   padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  overflow-x: clip;
 }
 
 /* Give each H2 inside the page a bit of extra breathing room above,
@@ -412,21 +413,55 @@ hr {
 /* -------------------------------------------------------------
    News: individual post page
    ------------------------------------------------------------- */
-.post-hero {
-  margin-bottom: 1.5rem;
+.post-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 55% 1fr;
+  align-items: end;
+  margin-bottom: 2rem;
+  /* Extend image beyond the left edge of the container */
+  margin-left: calc(-1 * var(--content-pad) - 4rem);
+  width: calc(100% + var(--content-pad) + 4rem);
 }
-.post-hero__image {
+
+.post-header__img-wrap {
+  grid-column: 1;
+  grid-row: 1;
+}
+.post-header__image {
   width: 100%;
-  max-height: 420px;
+  aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--border);
+  display: block;
 }
 .post-hero__source {
   font-size: 0.8rem;
   color: var(--fg-muted);
   margin: 0.35rem 0 0;
   font-style: italic;
+}
+
+.post-header__text {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 1.5rem;
+}
+.post-header__text--overlap {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  align-self: end;
+  justify-self: end;
+  width: 68%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem 1.75rem;
+  margin: 0 calc(-1 * var(--content-pad) - 4rem) 1rem 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
 }
 
 .post-title {
@@ -437,7 +472,37 @@ hr {
   display: block;
   font-size: 0.9rem;
   color: var(--fg-muted);
-  margin-bottom: 1.75rem;
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .post-header {
+    grid-template-columns: 1fr;
+    margin-left: calc(-1 * var(--content-pad));
+    width: calc(100% + 2 * var(--content-pad));
+    align-items: start;
+  }
+  .post-header__image {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    aspect-ratio: 16 / 9;
+  }
+  .post-header__text--overlap {
+    grid-column: 1;
+    grid-row: 2;
+    width: calc(100% - 2 * var(--content-pad));
+    justify-self: center;
+    align-self: auto;
+    margin: -2rem auto 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    background: var(--bg);
+    padding: 1rem 1.25rem;
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .post-nav {
@@ -448,6 +513,7 @@ hr {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 0.75rem 0;
+  margin-top: 1.75rem;
   margin-bottom: 2.25rem;
   font-size: 0.9rem;
 }

@@ -32,4 +32,27 @@ const people = defineCollection({
   }),
 });
 
-export const collections = { people };
+/**
+ * `posts` — one markdown file per news post under src/content/news/.
+ *
+ * Frontmatter schema:
+ *   title        required — post title, shown on overview and post page.
+ *   date         required — publication date (ISO 8601, e.g. "2026-04-23").
+ *   image        optional — path to a header image (e.g. "/news/my-post.jpg")
+ *   description  optional — short teaser shown on the news overview.
+ *   photoSource  optional — photo credit line shown below the hero image.
+ *
+ * The body of the .md file is the post text rendered on the post page.
+ */
+const posts = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/news" }),
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    image: z.string().optional(),
+    description: z.string().optional(),
+    photoSource: z.string().optional(),
+  }),
+});
+
+export const collections = { people, posts };

@@ -3,6 +3,8 @@ title: "Pathophysiologische Mechanismen von ME/CFS"
 date: 2026-03-30
 image: "/news/2026_03_30_Pathophysiologische_Mechanismen_von_ME_CFS.jpg"
 description: "3. internationale ME/CFS-Konferenz"
+sourceType: "Grafik"
+source: "A. Fehrer, aus Fehrer et al., Autoimmunity Reviews © Elsevier"
 ---
 
 

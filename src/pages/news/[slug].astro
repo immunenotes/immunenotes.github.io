@@ -19,13 +19,15 @@ export async function getStaticPaths() {
 
 const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
-const { title, date, image, photoSource } = post.data;
+const { title, date, image, sourceType, source } = post.data;
 
 const dateStr = date.toLocaleDateString("de-DE", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+
+const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?? null);
 ---
 
 <BaseLayout title={`${title} — Immunenotes`}>
@@ -33,20 +35,21 @@ const dateStr = date.toLocaleDateString("de-DE", {
     {image && (
       <div class="post-header__img-wrap">
         <img src={image} alt={title} class="post-header__image" />
-        {photoSource && <p class="post-hero__source">{photoSource}</p>}
+        {creditLine && <p class="post-img-credit post-img-credit--desktop">{creditLine}</p>}
       </div>
     )}
     <div class={`post-header__text${image ? " post-header__text--overlap" : ""}`}>
       <h1 class="post-title">{title}</h1>
       <time class="post-date" datetime={date.toISOString()}>{dateStr}</time>
     </div>
+    {creditLine && image && <p class="post-img-credit post-img-credit--mobile">{creditLine}</p>}
   </div>
 
   <nav class="post-nav" aria-label="Post navigation">
     <div class="post-nav__prev">
       {newer && (
         <a href={`/news/${newer.id}/`} class="post-nav__link">
-          ← {newer.data.title}
+          ← Newer
         </a>
       )}
     </div>
@@ -54,7 +57,7 @@ const dateStr = date.toLocaleDateString("de-DE", {
     <div class="post-nav__next">
       {older && (
         <a href={`/news/${older.id}/`} class="post-nav__link">
-          {older.data.title} →
+          Older →
         </a>
       )}
     </div>

@@ -5,15 +5,19 @@ interface Props {
   slug: string;
   image?: string;
   description?: string;
+  sourceType?: string;
+  source?: string;
 }
 
-const { title, date, slug, image, description } = Astro.props;
+const { title, date, slug, image, description, sourceType, source } = Astro.props;
 
 const dateStr = date.toLocaleDateString("de-DE", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
+
+const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?? null);
 ---
 
 <article class="post-card">
@@ -24,9 +28,12 @@ const dateStr = date.toLocaleDateString("de-DE", {
       </div>
     )}
     <div class="post-card__body">
-      <h2 class="post-card__title">{title}</h2>
-      <time class="post-card__date" datetime={date.toISOString()}>{dateStr}</time>
-      {description && <p class="post-card__description">{description}</p>}
+      <div class="post-card__top">
+        <h2 class="post-card__title">{title}</h2>
+        <time class="post-card__date" datetime={date.toISOString()}>{dateStr}</time>
+        {description && <p class="post-card__description">{description}</p>}
+      </div>
+      {creditLine && <p class="post-card__credit">{creditLine}</p>}
     </div>
   </a>
 </article>

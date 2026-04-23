@@ -40,7 +40,8 @@ const people = defineCollection({
  *   date         required — publication date (ISO 8601, e.g. "2026-04-23").
  *   image        optional — path to a header image (e.g. "/news/my-post.jpg")
  *   description  optional — short teaser shown on the news overview.
- *   photoSource  optional — photo credit line shown below the hero image.
+ *   sourceType   optional — type label for the image credit (e.g. "Foto").
+ *   source       optional — credit/rights holder (e.g. "Unsplash").
  *
  * The body of the .md file is the post text rendered on the post page.
  */
@@ -51,7 +52,8 @@ const posts = defineCollection({
     date: z.coerce.date(),
     image: z.string().optional(),
     description: z.string().optional(),
-    photoSource: z.string().optional(),
+    sourceType: z.string().optional(),
+    source: z.string().optional(),
   }),
 });
 

@@ -1,4 +1,15 @@
 /* -------------------------------------------------------------
+   Custom fonts
+   ------------------------------------------------------------- */
+@font-face {
+  font-family: "Merriweather";
+  src: url("/fonts/merriweather-v32-latin-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* -------------------------------------------------------------
    Design tokens
    ------------------------------------------------------------- */
 :root {
@@ -160,8 +171,8 @@ hr {
   padding: 0.9rem var(--content-pad);
 }
 .site-header__brand {
-  font-family: var(--font-serif);
-  font-weight: 600;
+  font-family: "Merriweather", var(--font-serif);
+  font-weight: 400;
   font-size: 1.25rem;
   color: var(--fg);
   border: none;

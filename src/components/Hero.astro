@@ -1,0 +1,26 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  logo?: string;
+  logoAlt?: string;
+}
+
+const {
+  title = "Immunenotes",
+  subtitle = "Exercise Immunology and Health Lab",
+  logo = "/immunenotes_logo.png",
+  logoAlt = "Immunenotes Logo",
+} = Astro.props;
+---
+
+<section class="hero" aria-label="Immunenotes">
+  <div class="hero__inner">
+    <div class="hero__brand">
+      <img class="hero__logo" src={logo} alt={logoAlt} />
+      <h1 class="hero__title">{title}</h1>
+    </div>
+    <p class="hero__subtitle">{subtitle}</p>
+    <div class="hero__divider" aria-hidden="true"></div>
+  </div>
+</section>

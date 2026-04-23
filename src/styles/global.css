@@ -587,3 +587,86 @@ hr {
 .post-nav a:hover { border: none; }
 
 .post-body { margin-top: 0; }
+
+/* -------------------------------------------------------------
+   Home hero
+   ------------------------------------------------------------- */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(2.5rem, 8vw, 6rem) 0 clamp(2rem, 6vw, 4.5rem);
+}
+.hero__inner {
+  width: 100%;
+}
+.hero__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  animation: hero-fade-up 0.9s var(--ease) 0.1s both;
+}
+.hero__logo {
+  width: clamp(64px, 9vw, 96px);
+  height: clamp(64px, 9vw, 96px);
+  object-fit: contain;
+  display: block;
+}
+.hero__title {
+  font-family: "Merriweather", var(--font-serif);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--fg);
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+.hero__subtitle {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 auto 2.2rem;
+  opacity: 0;
+  animation: hero-fade-up 0.9s var(--ease) 0.25s both;
+}
+.hero__divider {
+  width: 48px;
+  height: 1px;
+  background: var(--fg-muted);
+  margin: 0 auto;
+  opacity: 0;
+  animation: hero-fade-up 0.9s var(--ease) 0.35s both;
+}
+
+@keyframes hero-fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* When the hero is the first child of the prose column, tighten the top
+   padding slightly — the .page container already provides block padding. */
+.prose > .hero:first-child {
+  padding-top: clamp(1.5rem, 5vw, 3.5rem);
+}
+
+/* A first ## that comes right after the hero should still get its
+   separating rule, but without the normal huge top margin (the hero's
+   own bottom spacing already creates the gap). */
+.prose > .hero + h2 {
+  margin-top: 1.75rem;
+}
+
+@media (max-width: 480px) {
+  .hero__brand {
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+}

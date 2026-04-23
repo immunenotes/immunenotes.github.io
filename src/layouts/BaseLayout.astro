@@ -1,0 +1,36 @@
+---
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import "@styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Immunenotes — Exercise Immunology & Health Lab",
+  description = "Laboratory for Exercise Immunology and Health at the Friedrich Schiller University Jena.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/png" href="/immunenotes_icon.png" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <Header />
+    <main class="page">
+      <article class="container prose">
+        <slot />
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

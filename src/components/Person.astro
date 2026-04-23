@@ -1,0 +1,47 @@
+---
+/**
+ * Person card — used on the People page.
+ *
+ *   <Person
+ *     name="Christian Puta"
+ *     role="Head of the Exercise Immunology and Health Group"
+ *     image="/people/puta.jpg">
+ *     Short biography in MDX / HTML...
+ *   </Person>
+ *
+ * All fields except `name` are optional. If no image is provided, the component
+ * shows a tasteful monogram placeholder made from the person's initials.
+ */
+interface Props {
+  name: string;
+  role?: string;
+  image?: string;
+  alt?: string;
+}
+
+const { name, role, image, alt } = Astro.props;
+
+const initials = name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0]?.toUpperCase() ?? "")
+  .join("");
+---
+
+<article class="person">
+  <div class="person__photo">
+    {image ? (
+      <img src={image} alt={alt ?? name} loading="lazy" />
+    ) : (
+      <div class="person__placeholder" aria-hidden="true">{initials}</div>
+    )}
+  </div>
+  <div class="person__info">
+    <h3 class="person__name">{name}</h3>
+    {role && <p class="person__role">{role}</p>}
+    <div class="person__body">
+      <slot />
+    </div>
+  </div>
+</article>

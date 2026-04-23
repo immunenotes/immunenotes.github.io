@@ -1,0 +1,334 @@
+/* -------------------------------------------------------------
+   Design tokens
+   ------------------------------------------------------------- */
+:root {
+  /* Surfaces — all-white, single-tone design */
+  --bg:            #ffffff;
+  --surface-soft:  #f6f6f5;   /* subtle neutral gray for code blocks, placeholders */
+
+  /* Text */
+  --fg:            #262523;   /* grey-black */
+  --fg-muted:      #6b6b6b;
+
+  /* Accents */
+  --accent:        #1f2937;   /* near-black slate for links */
+  --accent-hover:  #000000;
+  --border:        #e8e6e1;   /* neutral hairline */
+
+  /* Typography */
+  --font-sans: "Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+
+  /* Layout */
+  --content-width: 720px;     /* central column: vertical, slim */
+  --content-pad:   1.5rem;
+
+  /* Motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:            #111111;
+    --surface-soft:  #1a1a1a;
+
+    --fg:            #e8e8e8;
+    --fg-muted:      #9a9a9a;
+
+    --accent:        #e8e8e8;
+    --accent-hover:  #ffffff;
+    --border:        #2a2a2a;
+  }
+}
+
+/* -------------------------------------------------------------
+   Reset & base
+   ------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.7;
+  letter-spacing: 0.005em;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 150ms var(--ease), border-color 150ms var(--ease);
+}
+a:hover {
+  color: var(--accent-hover);
+  border-bottom-color: currentColor;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin: 0 0 0.75em;
+}
+h1 { font-size: clamp(1.9rem, 2.2vw + 1rem, 2.6rem); }
+h2 { font-size: clamp(1.45rem, 1.2vw + 1rem, 1.8rem); margin-top: 0; }
+h3 { font-size: 1.2rem; }
+
+p { margin: 0 0 1.1em; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+::selection { background: var(--accent); color: var(--bg); }
+
+/* -------------------------------------------------------------
+   Layout: central column with free side margins
+   ------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
+  padding-inline: var(--content-pad);
+}
+
+/* Page column — pages flow as plain prose inside the central container.
+   Subsections are created with regular markdown headings (## / ###). */
+.page {
+  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* Give each H2 inside the page a bit of extra breathing room above,
+   so markdown-driven subsections feel clearly separated without needing
+   a wrapper component. */
+.prose > h2 {
+  margin-top: 2.75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+.prose > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.prose > h3 { margin-top: 2rem; }
+
+/* -------------------------------------------------------------
+   Header
+   ------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding: 0.9rem var(--content-pad);
+}
+.site-header__brand {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--fg);
+  border: none;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.site-header__logo {
+  height: 2.2rem;
+  width: auto;
+  display: block;
+}
+.site-header__brand:hover { color: var(--accent-hover); }
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: clamp(0.5rem, 1.5vw, 1.6rem);
+  align-items: center;
+}
+.nav a {
+  position: relative;
+  color: var(--fg);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.35rem 0.1rem;
+  border: none;
+  letter-spacing: 0.01em;
+  transition: color 150ms var(--ease);
+}
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 200ms var(--ease);
+}
+.nav a:hover::after,
+.nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+.nav a[aria-current="page"] { color: var(--accent); }
+
+/* Mobile nav */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+@media (max-width: 720px) {
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem var(--content-pad) 1rem;
+    gap: 0;
+  }
+  .nav.is-open { display: flex; }
+  .nav a {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav a:last-child { border-bottom: none; }
+  .nav a::after { display: none; }
+  .nav-toggle { display: inline-flex; }
+}
+
+/* -------------------------------------------------------------
+   Footer
+   ------------------------------------------------------------- */
+.site-footer {
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.88rem;
+  padding: 2rem var(--content-pad);
+  text-align: center;
+  background: var(--bg);
+}
+.site-footer a { color: var(--fg-muted); }
+.site-footer a:hover { color: var(--fg); }
+
+/* -------------------------------------------------------------
+   Person cards
+   ------------------------------------------------------------- */
+.person {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.person:last-child { border-bottom: none; }
+.person__photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+.person__photo img { width: 100%; height: 100%; object-fit: cover; }
+.person__placeholder {
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  color: var(--fg-muted);
+}
+.person__name {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+.person__role {
+  color: var(--fg-muted);
+  font-size: 0.92rem;
+  margin: 0.15rem 0 0.7rem;
+  font-style: italic;
+}
+.person__body { margin: 0; color: var(--fg); }
+
+@media (max-width: 560px) {
+  .person { grid-template-columns: 80px 1fr; gap: 1rem; }
+  .person__photo { width: 80px; height: 80px; }
+}
+
+/* -------------------------------------------------------------
+   MDX prose niceties
+   ------------------------------------------------------------- */
+.prose ul, .prose ol { padding-left: 1.2rem; margin: 0 0 1.1em; }
+.prose li { margin-bottom: 0.35rem; }
+.prose blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1.5rem 0;
+  padding: 0.3rem 0 0.3rem 1rem;
+  color: var(--fg-muted);
+  font-style: italic;
+}
+.prose code {
+  font-size: 0.9em;
+  background: var(--surface-soft);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+.prose pre {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.prose pre code { background: transparent; border: none; padding: 0; }

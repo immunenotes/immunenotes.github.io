@@ -1,0 +1,40 @@
+---
+layout: "@layouts/BaseLayout.astro"
+title: "People — Immunenotes"
+description: "Members of the Exercise Immunology and Health Lab."
+---
+
+import { getCollection, render } from "astro:content";
+import Person from "@components/Person.astro";
+
+export const all = await getCollection("people");
+
+export const firstNameKey = (p) => p.data.name.toLowerCase();
+
+export const sorted = [...all].filter((p) => !p.data.hidden).sort((a, b) =>
+  a.data.featured !== b.data.featured
+    ? (a.data.featured ? -1 : 1)
+    : firstNameKey(a).localeCompare(firstNameKey(b), "de")
+);
+
+export const entries = await Promise.all(
+  sorted.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { data: entry.data, Content };
+  })
+);
+
+# People
+
+The Exercise Immunology and Health Lab brings together researchers from sports medicine,
+immunology, data science, and clinical practice.
+
+{entries.map(({ data, Content }) => (
+  <Person
+    name={data.name}
+    role={data.role}
+    image={data.image}
+    alt={data.alt}>
+    <Content />
+  </Person>
+))}

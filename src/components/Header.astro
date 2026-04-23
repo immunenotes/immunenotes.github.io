@@ -1,0 +1,47 @@
+---
+const navItems = [
+  { href: "/",             label: "Home" },
+  { href: "/news/",        label: "News" },
+  { href: "/people/",      label: "People" },
+  { href: "/research/",    label: "Research" },
+  { href: "/teaching/",    label: "Teaching" },
+  { href: "/publications/",label: "Publications" },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, "") || "/";
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="/" class="site-header__brand">
+      <img src="/immunenotes_logo.png" alt="Immunenotes Logo" class="site-header__logo" />
+      Immunenotes
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      Menu
+    </button>
+
+    <nav class="nav" id="site-nav" aria-label="Primary">
+      {navItems.map((item) => {
+        const itemPath = item.href.replace(/\/$/, "") || "/";
+        const isCurrent = itemPath === current;
+        return (
+          <a href={item.href} aria-current={isCurrent ? "page" : undefined}>
+            {item.label}
+          </a>
+        );
+      })}
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile nav toggle
+  const btn = document.querySelector<HTMLButtonElement>(".nav-toggle");
+  const nav = document.querySelector<HTMLElement>("#site-nav");
+  btn?.addEventListener("click", () => {
+    const open = nav?.classList.toggle("is-open") ?? false;
+    btn.setAttribute("aria-expanded", String(open));
+  });
+</script>

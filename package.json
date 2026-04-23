@@ -1,0 +1,19 @@
+{
+  "name": "immunenotes",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@rollup/rollup-linux-arm64-gnu": "^4.60.2",
+    "astro": "^5.0.0"
+  }
+}

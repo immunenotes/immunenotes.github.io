@@ -57,4 +57,53 @@ const posts = defineCollection({
   }),
 });
 
-export const collections = { people, posts };
+/**
+ * `dashboards` — one MDX file per dashboard under src/content/dashboards/.
+ *
+ * A dashboard is either a self-hosted HTML document (e.g. under
+ * /public/dashboards/foo.html) or an externally hosted Shiny / streamlit app
+ * that is embedded via iframe.
+ *
+ * Frontmatter schema:
+ *   title         required — dashboard title.
+ *   description   optional — short blurb shown on the teaching overview card
+ *                 and as meta-description on the dashboard subpage.
+ *   publishDate   optional — ISO date string (used for sorting).
+ *   iframeSrc     required — URL or site-relative path embedded in the
+ *                 <iframe>. Site-relative paths should begin with "/".
+ *   iframeWidth   optional — intrinsic width of the embedded app (px). When
+ *                 set together with iframeHeight, the dashboard renders in
+ *                 fixed-size mode with CSS scaling.
+ *   iframeHeight  optional — intrinsic height of the embedded app (px).
+ *   iframeScale   optional — scale factor applied to the fixed-size iframe.
+ *                 Defaults to 1.
+ *   thumbnail     optional — path to a preview image shown on the teaching
+ *                 overview card.
+ *   thumbnailAlt  optional — alt text for the thumbnail.
+ *   draft         optional — if true, the dashboard is omitted from the
+ *                 teaching overview AND no subpage is generated. Defaults to
+ *                 false, so dashboards are included by default.
+ *   order         optional — explicit sort index; lower numbers come first.
+ *                 When absent, dashboards are sorted by publishDate
+ *                 (newest first) and then by title.
+ *
+ * The MDX body is rendered below the iframe on the dashboard subpage.
+ */
+const dashboards = defineCollection({
+  loader: glob({ pattern: "**/*.mdx", base: "./src/content/dashboards" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    publishDate: z.coerce.date().optional(),
+    iframeSrc: z.string(),
+    iframeWidth: z.number().optional(),
+    iframeHeight: z.number().optional(),
+    iframeScale: z.number().default(1),
+    thumbnail: z.string().optional(),
+    thumbnailAlt: z.string().optional(),
+    draft: z.boolean().default(false),
+    order: z.number().optional(),
+  }),
+});
+
+export const collections = { people, posts, dashboards };

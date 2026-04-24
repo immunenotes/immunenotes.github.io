@@ -1,0 +1,72 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import DashboardFrame from "@components/DashboardFrame.astro";
+
+export async function getStaticPaths() {
+  const all = await getCollection("dashboards");
+  const published = all.filter((d) => !d.data.draft);
+
+  const sorted = [...published].sort((a, b) => {
+    const ao = a.data.order;
+    const bo = b.data.order;
+    if (ao !== undefined && bo !== undefined) return ao - bo;
+    if (ao !== undefined) return -1;
+    if (bo !== undefined) return 1;
+    const ad = a.data.publishDate?.valueOf() ?? 0;
+    const bd = b.data.publishDate?.valueOf() ?? 0;
+    if (ad !== bd) return bd - ad;
+    return a.data.title.localeCompare(b.data.title);
+  });
+
+  return sorted.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const {
+  title,
+  description,
+  publishDate,
+  iframeSrc,
+  iframeWidth,
+  iframeHeight,
+  iframeScale,
+} = entry.data;
+
+const dateStr = publishDate
+  ? publishDate.toLocaleDateString("en-GB", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
+---
+
+<BaseLayout title="Dashboards" description={description ?? title} variant="wide">
+  <a class="dashboard-page__back" href="/teaching/#dashboards">← Back to Teaching</a>
+
+  <header class="dashboard-page__header">
+    <h1 class="dashboard-page__title">{title}</h1>
+    {dateStr && (
+      <p class="dashboard-page__meta">
+        <time datetime={publishDate!.toISOString()}>{dateStr}</time>
+      </p>
+    )}
+  </header>
+
+  <DashboardFrame
+    title={title}
+    iframeSrc={iframeSrc}
+    iframeWidth={iframeWidth}
+    iframeHeight={iframeHeight}
+    iframeScale={iframeScale}
+  />
+
+  <div class="dashboard-page__body">
+    <Content />
+  </div>
+</BaseLayout>

@@ -128,6 +128,9 @@ hr {
   margin-inline: auto;
   padding-inline: var(--content-pad);
 }
+.container--wide {
+  max-width: 1120px;
+}
 
 /* Page column — pages flow as plain prose inside the central container.
    Subsections are created with regular markdown headings (## / ###). */
@@ -792,5 +795,394 @@ hr {
   }
   .more-link:hover .more-link__arrow {
     transform: none;
+  }
+}
+
+/* -------------------------------------------------------------
+   Shared link-card
+   Base style for card-shaped links across the site.
+   Variants only adjust size and content, not the visual language.
+   ------------------------------------------------------------- */
+.link-card {
+  display: block;
+  position: relative;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  text-decoration: none;
+  transition:
+    border-color 180ms var(--ease),
+    background 180ms var(--ease),
+    transform 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+.link-card:hover {
+  color: inherit;
+  border-color: var(--fg);
+  background: var(--surface-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -12px rgba(0, 0, 0, 0.35);
+}
+.link-card__arrow {
+  display: inline-block;
+  line-height: 1;
+  transition: transform 180ms var(--ease);
+  will-change: transform;
+}
+.link-card:hover .link-card__arrow {
+  transform: translateX(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .link-card,
+  .link-card__arrow {
+    transition: color 180ms var(--ease), border-color 180ms var(--ease),
+                background 180ms var(--ease);
+    transform: none;
+  }
+  .link-card:hover { transform: none; box-shadow: none; }
+  .link-card:hover .link-card__arrow { transform: none; }
+}
+
+/* -- App card (prominent, with icon) ------------------------ */
+.link-card--app {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  grid-template-rows: auto auto;
+  column-gap: 1.1rem;
+  row-gap: 0.25rem;
+  align-items: center;
+  padding: 1.25rem 1.4rem;
+}
+.link-card--app .link-card__icon-wrap {
+  grid-row: 1 / span 2;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.link-card--app .link-card__icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+}
+.link-card--app .link-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--fg);
+  transition: color 150ms var(--ease);
+  border-top: none;
+  padding-top: 0;
+}
+.link-card--app:hover .link-card__title {
+  color: var(--accent-hover);
+}
+.link-card--app .link-card__desc {
+  grid-column: 2 / 3;
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+.link-card--app .link-card__arrow {
+  grid-column: 3 / 4;
+  grid-row: 1 / span 2;
+  align-self: center;
+  font-size: 1.15rem;
+  color: var(--fg-muted);
+}
+
+@media (max-width: 560px) {
+  .link-card--app {
+    grid-template-columns: 52px 1fr auto;
+    column-gap: 0.9rem;
+    padding: 1rem 1.1rem;
+  }
+  .link-card--app .link-card__icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+  }
+  .link-card--app .link-card__icon {
+    width: 34px;
+    height: 34px;
+  }
+  .link-card--app .link-card__title { font-size: 1.05rem; }
+}
+
+/* -- Dashboard card ------------------------------------------ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 0.25rem;
+}
+@media (max-width: 640px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+.link-card--dashboard {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+.link-card--dashboard .link-card__thumb {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  background: var(--surface-soft);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow: hidden;
+}
+.link-card--dashboard .link-card__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.link-card--dashboard .link-card__body {
+  padding: 0.9rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.link-card--dashboard .link-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--fg);
+  border-top: none;
+  padding-top: 0;
+  transition: color 150ms var(--ease);
+}
+.link-card--dashboard:hover .link-card__title {
+  color: var(--accent-hover);
+}
+.link-card--dashboard .link-card__desc {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+  line-height: 1.45;
+}
+.link-card--dashboard .link-card__footer {
+  margin-top: 0.45rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+}
+.link-card--dashboard .link-card__status {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+.link-card--dashboard .link-card__arrow {
+  font-size: 1rem;
+  color: var(--fg-muted);
+}
+
+/* Coming-soon state: visually de-emphasised, not a link */
+.link-card--dashboard.is-placeholder {
+  background: var(--surface-soft);
+  cursor: default;
+  pointer-events: none;
+}
+.link-card--dashboard.is-placeholder:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+  background: var(--surface-soft);
+}
+
+/* -- Course homepage card ------------------------------------ */
+.course-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0 1.5rem;
+}
+@media (max-width: 640px) {
+  .course-card-grid { grid-template-columns: 1fr; }
+}
+.link-card--course {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.05rem;
+}
+.link-card--course .link-card__title {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--fg);
+  border-top: none;
+  padding-top: 0;
+  line-height: 1.3;
+  transition: color 150ms var(--ease);
+}
+.link-card--course:hover .link-card__title {
+  color: var(--accent-hover);
+}
+.link-card--course .link-card__arrow {
+  font-size: 1rem;
+  color: var(--fg-muted);
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------
+   Teaching page specifics
+   ------------------------------------------------------------- */
+.programme-block {
+  margin: 1.25rem 0 0;
+}
+.programme-block + .programme-block {
+  margin-top: 1.75rem;
+}
+.programme-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 0.4rem;
+}
+.programme-label__degree {
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.14em;
+}
+.programme-block p {
+  margin: 0;
+}
+.course-group {
+  margin-top: 1.25rem;
+}
+.course-group > h4,
+.course-group__heading {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--fg);
+  border-top: none;
+  padding-top: 0;
+  letter-spacing: -0.005em;
+}
+.course-group + .course-group {
+  margin-top: 1.5rem;
+}
+.course-group ul {
+  margin: 0 0 0.6em;
+}
+.course-group p {
+  margin: 0;
+}
+
+/* Slightly tighter h3 below the Courses h2 */
+.prose > h3 + .course-card-grid {
+  margin-top: 0.75rem;
+}
+
+/* -------------------------------------------------------------
+   Dashboard subpage
+   ------------------------------------------------------------- */
+.dashboard-page__header {
+  margin-bottom: 1.25rem;
+}
+.dashboard-page__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.6rem, 1.5vw + 1rem, 2.1rem);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.35rem;
+  color: var(--fg);
+  border-top: none;
+  padding-top: 0;
+}
+.dashboard-page__meta {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+  letter-spacing: 0.01em;
+}
+.dashboard-page__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-family: var(--font-sans);
+  color: var(--fg-muted);
+  border-bottom: none;
+  margin-bottom: 1rem;
+}
+.dashboard-page__back:hover {
+  color: var(--accent-hover);
+  border-bottom: none;
+}
+
+.dashboard-frame {
+  margin: 1.25rem 0 1.75rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.dashboard-frame--fixed {
+  /* Content is sized exactly by the scaled iframe; the wrapper clips overflow. */
+  margin-inline: auto;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.dashboard-frame--fixed > .dashboard-frame__inner {
+  overflow: hidden;
+}
+.dashboard-frame__iframe {
+  display: block;
+  border: none;
+  background: var(--bg);
+}
+.dashboard-frame--dynamic .dashboard-frame__iframe {
+  width: 100%;
+  height: 200px; /* initial — resized by script */
+  transition: height 0.15s ease;
+}
+.dashboard-frame--fixed .dashboard-frame__iframe {
+  transform-origin: top left;
+}
+
+.dashboard-page__body {
+  margin-top: 1.5rem;
+}
+
+/* On narrow screens, fixed-size dashboards get a horizontal scroll inside
+   their wrapper rather than overflowing the page. */
+@media (max-width: 720px) {
+  .dashboard-frame--fixed {
+    border-radius: 8px;
   }
 }

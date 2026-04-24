@@ -1,0 +1,31 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  href: string;
+  icon?: string;
+  iconAlt?: string;
+  external?: boolean;
+}
+
+const {
+  title,
+  description,
+  href,
+  icon = "/immunenotes_logo.png",
+  iconAlt = "",
+  external = true,
+} = Astro.props;
+
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+<a class="link-card link-card--app" href={href} target={target} rel={rel}>
+  <span class="link-card__icon-wrap" aria-hidden="true">
+    <img class="link-card__icon" src={icon} alt={iconAlt} loading="lazy" />
+  </span>
+  <h3 class="link-card__title">{title}</h3>
+  {description && <p class="link-card__desc">{description}</p>}
+  <span class="link-card__arrow" aria-hidden="true">→</span>
+</a>

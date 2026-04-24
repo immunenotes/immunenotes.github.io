@@ -1,0 +1,17 @@
+---
+interface Props {
+  title: string;
+  href: string;
+  external?: boolean;
+}
+
+const { title, href, external = true } = Astro.props;
+
+const rel = external ? "noopener noreferrer" : undefined;
+const target = external ? "_blank" : undefined;
+---
+
+<a class="link-card link-card--course" href={href} target={target} rel={rel}>
+  <h3 class="link-card__title">{title}</h3>
+  <span class="link-card__arrow" aria-hidden="true">→</span>
+</a>

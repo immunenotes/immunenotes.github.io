@@ -1,0 +1,90 @@
+---
+interface Props {
+  title: string;
+  iframeSrc: string;
+  iframeWidth?: number;
+  iframeHeight?: number;
+  iframeScale?: number;
+}
+
+const { title, iframeSrc, iframeWidth, iframeHeight, iframeScale = 1 } =
+  Astro.props;
+
+const hasFixedSize = iframeWidth !== undefined && iframeHeight !== undefined;
+const scaledWidth = hasFixedSize ? Math.round(iframeWidth! * iframeScale) : null;
+const scaledHeight = hasFixedSize ? Math.round(iframeHeight! * iframeScale) : null;
+---
+
+{hasFixedSize ? (
+  <div class="dashboard-frame dashboard-frame--fixed">
+    <div
+      class="dashboard-frame__inner"
+      style={`width: ${scaledWidth}px; height: ${scaledHeight}px;`}
+    >
+      <iframe
+        class="dashboard-frame__iframe"
+        src={iframeSrc}
+        width={iframeWidth}
+        height={iframeHeight}
+        style={`transform: scale(${iframeScale});`}
+        scrolling="no"
+        title={title}
+        loading="lazy"
+      />
+    </div>
+  </div>
+) : (
+  <div class="dashboard-frame dashboard-frame--dynamic">
+    <iframe
+      class="dashboard-frame__iframe"
+      id="dashboard-dynamic-iframe"
+      src={iframeSrc}
+      scrolling="no"
+      title={title}
+      loading="lazy"
+    />
+  </div>
+)}
+
+{!hasFixedSize && (
+  <script>
+    (function () {
+      const iframe = document.getElementById(
+        "dashboard-dynamic-iframe"
+      ) as HTMLIFrameElement | null;
+      if (!iframe) return;
+
+      // Method 1 — postMessage from embedded widget (cross-origin friendly).
+      // The embedded HTML may post:
+      //   window.parent.postMessage({ type: 'iframeResize', height: h }, '*');
+      window.addEventListener("message", (event) => {
+        if (
+          event.data &&
+          event.data.type === "iframeResize" &&
+          typeof event.data.height === "number"
+        ) {
+          iframe.style.height = event.data.height + "px";
+        }
+      });
+
+      // Method 2 — same-origin scrollHeight polling as fallback.
+      iframe.addEventListener("load", () => {
+        try {
+          const doc =
+            iframe.contentDocument || iframe.contentWindow?.document;
+          if (!doc) return;
+          const syncHeight = () => {
+            const h =
+              doc.documentElement.scrollHeight || doc.body.scrollHeight;
+            if (h > 0) iframe.style.height = h + "px";
+          };
+          syncHeight();
+          const ro = new ResizeObserver(syncHeight);
+          ro.observe(doc.documentElement);
+        } catch {
+          /* cross-origin — rely on postMessage. */
+        }
+      });
+    })();
+  </script>
+)}

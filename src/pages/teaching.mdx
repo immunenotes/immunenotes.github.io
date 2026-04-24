@@ -4,35 +4,100 @@ title: "Teaching"
 description: "Teaching at the Exercise Immunology and Health Lab."
 ---
 
+import AppCard from "@components/AppCard.astro";
+import DashboardCard from "@components/DashboardCard.astro";
+import CourseCard from "@components/CourseCard.astro";
+import { getCollection } from "astro:content";
+
+export const dashboardOrder = (d) =>
+  d.data.order === undefined ? Number.POSITIVE_INFINITY : d.data.order;
+
+export const dashboardDate = (d) =>
+  d.data.publishDate ? d.data.publishDate.valueOf() : 0;
+
+export const compareDashboards = (a, b) =>
+  dashboardOrder(a) !== dashboardOrder(b)
+    ? dashboardOrder(a) - dashboardOrder(b)
+    : dashboardDate(a) !== dashboardDate(b)
+    ? dashboardDate(b) - dashboardDate(a)
+    : a.data.title.localeCompare(b.data.title);
+
+export const dashboards = [...(await getCollection("dashboards"))]
+  .filter((d) => !d.data.draft)
+  .sort(compareDashboards);
+
 # Teaching
 
-Within the B.Sc. programme in Sport Science — Performance & Health, Prof. Puta holds module
-responsibility for six core modules spanning scientific foundations, sports medicine, and
-health promotion (AMS I, GSA, GSM, VSM I, VSM II, NSW); at the M.Sc. level, he heads the two
-Sports Medicine modules covering exercise physiology, immunology, and sports medical
-diagnostics and data analysis (M-SMED1, M-SMED2).
+Prof. Puta holds module responsibility across two degree programmes at Friedrich Schiller
+University Jena:
+
+<div class="programme-block">
+  <p class="programme-label"><span class="programme-label__degree">B.Sc.</span> <span>Sport Science — Performance & Health</span></p>
+  <p>Within the B.Sc. programme, Prof. Puta heads six core modules spanning scientific foundations, sports medicine, and health promotion (AMS I, GSA, GSM, VSM I, VSM II, NSW).</p>
+</div>
+
+<div class="programme-block">
+  <p class="programme-label"><span class="programme-label__degree">M.Sc.</span> <span>Sport Science — Performance & Health</span></p>
+  <p>At the M.Sc. level, he heads the two Sports Medicine modules covering exercise physiology, immunology, and sports medical diagnostics and data analysis (M-SMED1, M-SMED2).</p>
+</div>
 
 ## Immunenotes apps
 
-Immunenotes apps are provided for teaching and research purposes exclusively. The use of the
-apps is restricted to lectures, seminars and projects developed by Christian Puta and Marc Gabriel.
+Immunenotes apps are provided for teaching and research purposes exclusively. Their use is
+restricted to lectures, seminars and projects developed by Christian Puta and Marc Gabriel.
 
-Visit the Immunenotes app server <a href="https://spomed.svwiswp05.uni-jena.de/" target="_blank" rel="noopener"><u>here</u></a>.
+<AppCard
+  title="Immunenotes app server"
+  description="Interactive apps for teaching and research — login required."
+  href="https://spomed.svwiswp05.uni-jena.de/"
+/>
 
 ## Dashboards
 
-... under construction.
+Interactive dashboards providing accessible overviews of key immunology topics — for teaching, research, and public communication.
 
-## Course homepages
-
-- [Basics of Sports Medicine and Health Promotion / Basics in Exercise Physiology](https://chrisputa.github.io/basics_exercise_physiology/)
-- [Exercise Immunology (S)](https://chrisputa.github.io/exercise_immunology/)
-- [Applied Sports Medicine](https://chrisputa.github.io/applied_sportsmedicine/)
-- [Exercise Nutrition and Immune Function](https://chrisputa.github.io/exercise_nutrition_immune_function/)
+{dashboards.length > 0 ? (
+  <div class="dashboard-grid">
+    {dashboards.map((d) => (
+      <DashboardCard
+        title={d.data.title}
+        description={d.data.description}
+        href={`/dashboards/${d.id}/`}
+        thumbnail={d.data.thumbnail}
+        thumbnailAlt={d.data.thumbnailAlt ?? d.data.title}
+      />
+    ))}
+  </div>
+) : (
+  <p>No dashboards are published yet — they will appear here as they become available.</p>
+)}
 
 ## Courses
 
-**B.Sc. Sportwissenschaft Performance und Health**
+### Course homepages
+
+<div class="course-card-grid">
+  <CourseCard
+    title="Basics of Sports Medicine · Basics in Exercise Physiology"
+    href="https://chrisputa.github.io/basics_exercise_physiology/"
+  />
+  <CourseCard
+    title="Exercise Immunology (S)"
+    href="https://chrisputa.github.io/exercise_immunology/"
+  />
+  <CourseCard
+    title="Applied Sports Medicine"
+    href="https://chrisputa.github.io/applied_sportsmedicine/"
+  />
+  <CourseCard
+    title="Exercise Nutrition and Immune Function"
+    href="https://chrisputa.github.io/exercise_nutrition_immune_function/"
+  />
+</div>
+
+<div class="course-group">
+
+#### B.Sc. Sportwissenschaft Performance und Health
 
 - Science Propaedeutics (VL)
 - Academic skills and abilities (S)
@@ -47,11 +112,21 @@ Visit the Immunenotes app server <a href="https://spomed.svwiswp05.uni-jena.de/"
 
 [Module catalogue](https://friedolin.uni-jena.de/download/modulkataloge/de/82_229_spowi.pdf)
 
-**M.Sc. Sportwissenschaft Performance und Gesundheit**
+</div>
+
+<div class="course-group">
+
+#### M.Sc. Sportwissenschaft Performance und Gesundheit
 
 - Exercise Immunology
 - Medical Diagnostic and Data Analysis (S)
 
-**Teaching profession**
+</div>
+
+<div class="course-group">
+
+#### Teaching profession
 
 - Sports Medicine — Anatomy, Physiology, Immunobiology, Biochemistry (VL)
+
+</div>

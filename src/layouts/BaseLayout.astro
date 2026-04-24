@@ -7,13 +7,19 @@ interface Props {
   title?: string;
   description?: string;
   frontmatter?: { title?: string; description?: string };
+  /**
+   * Layout width variant.
+   *   "prose" (default) — narrow reading column (≈720 px), ideal for text.
+   *   "wide"            — wider column for iframe embeds and dashboards.
+   */
+  variant?: "prose" | "wide";
 }
 
 const siteName = "Immunenotes";
 const defaultDescription =
   "Laboratory for Exercise Immunology and Health at the Friedrich Schiller University Jena.";
 
-const { title, description, frontmatter } = Astro.props;
+const { title, description, frontmatter, variant = "prose" } = Astro.props;
 
 // When the layout is used from an MDX/MD page via `layout:` frontmatter,
 // Astro passes the file's frontmatter via `Astro.props.frontmatter` rather
@@ -23,6 +29,14 @@ const resolvedDescription =
   description ?? frontmatter?.description ?? defaultDescription;
 
 const pageTitle = resolvedTitle ? `${resolvedTitle} | ${siteName}` : siteName;
+
+const containerClasses = [
+  "container",
+  variant === "wide" ? "container--wide" : null,
+  "prose",
+]
+  .filter(Boolean)
+  .join(" ");
 ---
 
 <!doctype html>
@@ -38,7 +52,7 @@ const pageTitle = resolvedTitle ? `${resolvedTitle} | ${siteName}` : siteName;
   <body>
     <Header />
     <main class="page">
-      <article class="container prose">
+      <article class={containerClasses}>
         <slot />
       </article>
     </main>

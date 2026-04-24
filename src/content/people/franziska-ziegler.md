@@ -1,6 +1,6 @@
 ---
 name: "Franziska Ziegler"
-role: "M.Sc. Student · Student Assistant"
+role: "Student Assistant · M.Sc. Student"
 ---
 
 Short biography to be added.

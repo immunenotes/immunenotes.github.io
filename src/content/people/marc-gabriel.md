@@ -1,6 +1,6 @@
 ---
 name: "Marc Gabriel"
-role: "Research Assistant · PhD Student · SynSys.PC project"
+role: "Research Assistant · PhD Student · SynoSys.PC project"
 mail: marc.gabriel@med.uni-jena.de
 image: "/people/marc-gabriel.jpg"
 alt: "Marc Gabriel"

@@ -651,7 +651,7 @@ hr {
   width: 48px;
   height: 1px;
   background: var(--fg-muted);
-  margin: 0 auto;
+  margin: 0 auto 2.2rem;
   opacity: 0;
   animation: hero-fade-up 0.9s var(--ease) 0.35s both;
 }
@@ -659,6 +659,59 @@ hr {
 @keyframes hero-fade-up {
   from { opacity: 0; transform: translateY(18px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Taglines beneath the divider — alternating left / right alignment,
+   each one sliding in from the side it finally anchors to. */
+.hero__taglines {
+  list-style: none;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.98rem, 0.4vw + 0.85rem, 1.15rem);
+  color: var(--fg-muted);
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+.hero__tagline {
+  opacity: 0;
+  animation-duration: 0.85s;
+  animation-timing-function: var(--ease);
+  animation-fill-mode: both;
+  will-change: opacity, transform;
+}
+.hero__tagline:nth-child(odd) {
+  text-align: left;
+  animation-name: hero-tagline-in-left;
+}
+.hero__tagline:nth-child(even) {
+  text-align: right;
+  animation-name: hero-tagline-in-right;
+}
+
+@keyframes hero-tagline-in-left {
+  from { opacity: 0; transform: translate3d(-14px, 6px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hero-tagline-in-right {
+  from { opacity: 0; transform: translate3d(14px, 6px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Respect user motion preferences — keep the hero readable but still. */
+@media (prefers-reduced-motion: reduce) {
+  .hero__brand,
+  .hero__subtitle,
+  .hero__divider,
+  .hero__tagline {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* When the hero is the first child of the prose column, tighten the top

@@ -4,6 +4,7 @@ interface Props {
   subtitle?: string;
   logo?: string;
   logoAlt?: string;
+  taglines?: string[];
 }
 
 const {
@@ -11,7 +12,21 @@ const {
   subtitle = "Exercise Immunology and Health Lab",
   logo = "/immunenotes_logo.png",
   logoAlt = "Immunenotes Logo",
+  taglines = [
+    "… explores the interaction of exercise, immunity and health.",
+    "… studies immunological responses in health and disease.",
+    "… focusses on immunological stress regulation.",
+    "… is an online source for immunology and health.",
+    "… is part of the Department of Health Promotion.",
+    "… is led by Prof. Dr. Christian Puta.",
+  ],
 } = Astro.props;
+
+// Staggered reveal after the divider (which finishes around 0.35 s + 0.9 s
+// = 1.25 s). Each tagline fades in 0.35 s after the previous; with three
+// taglines at 0.8 s each the whole hero wraps up well under 3 s.
+const firstDelay = 1.00;
+const step = 1.00;
 ---
 
 <section class="hero" aria-label="Immunenotes">
@@ -22,5 +37,16 @@ const {
     </div>
     <p class="hero__subtitle">{subtitle}</p>
     <div class="hero__divider" aria-hidden="true"></div>
+    {taglines.length > 0 && (
+      <ul class="hero__taglines" role="list">
+        {taglines.map((line, i) => (
+          <li
+            class="hero__tagline"
+            set:html={line}
+            style={`animation-delay: ${firstDelay + i * step}s;`}
+          />
+        ))}
+      </ul>
+    )}
   </div>
 </section>

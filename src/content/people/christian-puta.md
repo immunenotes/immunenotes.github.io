@@ -1,6 +1,8 @@
 ---
 name: "Christian Puta"
 role: "Head of the Exercise Immunology and Health Lab · apl. Professor"
+image: "/people/christian-puta.jpg"
+alt: "Christian Puta"
 featured: true
 ---
 

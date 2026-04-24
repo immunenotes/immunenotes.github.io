@@ -25,6 +25,7 @@ const people = defineCollection({
   schema: z.object({
     name: z.string(),
     role: z.string().optional(),
+    mail: z.union([z.string(), z.array(z.string())]).optional(),
     image: z.string().optional(),
     alt: z.string().optional(),
     featured: z.boolean().default(false),

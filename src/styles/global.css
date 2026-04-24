@@ -311,6 +311,11 @@ hr {
   font-size: 2rem;
   color: var(--fg-muted);
 }
+.person__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
 .person__name {
   font-family: var(--font-serif);
   font-size: 1.2rem;
@@ -320,10 +325,22 @@ hr {
 .person__role {
   color: var(--fg-muted);
   font-size: 0.92rem;
-  margin: 0.15rem 0 0.7rem;
+  margin: 0 !important;
   font-style: italic;
 }
-.person__body { margin: 0; color: var(--fg); }
+.person__mail {
+  color: var(--fg-muted);
+  font-size: 0.92rem;
+  font-style: italic;
+  margin: -0.1rem 0 0 !important;
+}
+.person__mail a {
+  color: var(--fg-muted);
+}
+.person__mail a:hover {
+  color: var(--fg);
+}
+.person__body { margin-top: 0.6rem; color: var(--fg); }
 
 @media (max-width: 560px) {
   .person { grid-template-columns: 80px 1fr; gap: 1rem; }

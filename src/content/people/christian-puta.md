@@ -1,6 +1,9 @@
 ---
 name: "Christian Puta"
 role: "Head of the Exercise Immunology and Health Lab · apl. Professor"
+mail:
+    - "christian.puta@uni-jena.de"
+    - "christian.puta@med.uni-jena.de"
 image: "/people/christian-puta.jpg"
 alt: "Christian Puta"
 featured: true

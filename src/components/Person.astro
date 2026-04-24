@@ -5,6 +5,7 @@
  *   <Person
  *     name="Christian Puta"
  *     role="Head of the Exercise Immunology and Health Group"
+ *     mail="christian.puta@uni-jena.de
  *     image="/people/puta.jpg">
  *     Short biography in MDX / HTML...
  *   </Person>
@@ -15,11 +16,13 @@
 interface Props {
   name: string;
   role?: string;
+  mail?: string | string[];
   image?: string;
   alt?: string;
 }
 
-const { name, role, image, alt } = Astro.props;
+const { name, role, mail, image, alt } = Astro.props;
+const mails = mail ? (Array.isArray(mail) ? mail : [mail]) : [];
 
 const initials = name
   .split(/\s+/)
@@ -40,6 +43,11 @@ const initials = name
   <div class="person__info">
     <h3 class="person__name">{name}</h3>
     {role && <p class="person__role">{role}</p>}
+    {mails.map((m) => (
+      <p class="person__mail">
+        <span aria-hidden="true" style="font-size: 1.1em; margin-right: 0.35rem; vertical-align: middle;">✉&#xFE0E;</span><a href={`mailto:${m}`} style="vertical-align: middle;">{m}</a>
+      </p>
+    ))}
     <div class="person__body">
       <slot />
     </div>

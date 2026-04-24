@@ -5,6 +5,12 @@ description: "Exercise Immunology and Health Lab"
 ---
 
 import Hero from "@components/Hero.astro";
+import PostCard from "@components/PostCard.astro";
+import { getCollection } from "astro:content";
+
+export const latestPosts = [...(await getCollection("posts"))]
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
 
 <Hero />
 
@@ -29,3 +35,22 @@ translates into measurable health outcomes for individuals and communities.
 Research into exercise immunology and health is inherently interdisciplinary — spanning
 exercise physiology, immunobiology, data science, and clinical research — reflecting the
 complexity of the human body under the dual demands of physical stress and immune challenge.
+
+
+## Latest news
+
+{latestPosts.map((post) => (
+  <PostCard
+    title={post.data.title}
+    date={post.data.date}
+    slug={post.id}
+    image={post.data.image}
+    description={post.data.description}
+    sourceType={post.data.sourceType}
+    source={post.data.source}
+  />
+))}
+
+<div class="more-link-wrap">
+  <a href="/news/" class="more-link"><span>All News</span><span class="more-link__arrow" aria-hidden="true">→</span></a>
+</div>

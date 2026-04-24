@@ -7,7 +7,7 @@ alt: "Marc Gabriel"
 
 Data scientist with a background in computer science. Works on data-driven approaches to
 better understand the immunological mechanisms underlying post-exertional malaise and
-postural orthostatic dysregulation in Long COVID patients, using wearable-based methods
-to capture physiological responses to physical activity and orthostatic stress. Also
-develops digital tools for teaching and practice, including the Immunenotes apps and
-dashboards.
+postural orthostatic dysregulation in infection associated chronic illness (e.g. Long COVID), 
+using wearable-based methods to analyze vital data (sleep, heart rate and physical activity). 
+Also develops digital tools for teaching and practice (educational dashboards), including the 
+Immunenotes apps (Shiny-based webapps).

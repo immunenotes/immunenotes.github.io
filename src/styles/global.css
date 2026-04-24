@@ -264,11 +264,21 @@ hr {
   border-top: 1px solid var(--border);
   color: var(--fg-muted);
   font-size: 0.88rem;
-  padding: 2rem var(--content-pad);
-  text-align: center;
   background: var(--bg);
 }
-.site-footer a { color: var(--fg-muted); }
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding: 1.5rem var(--content-pad);
+}
+.site-footer__nav {
+  display: flex;
+  gap: 1.5rem;
+}
+.site-footer a { color: var(--fg-muted); border: none; }
 .site-footer a:hover { color: var(--fg); }
 
 /* -------------------------------------------------------------

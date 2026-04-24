@@ -1,6 +1,6 @@
 ---
 name: "Steffen Koster"
-role: "Role to be added"
+role: "Physician · Bio-Sig PEM project"
 ---
 
 Short biography to be added.

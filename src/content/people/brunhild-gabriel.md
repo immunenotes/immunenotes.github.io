@@ -1,6 +1,6 @@
 ---
 name: "Brunhild Gabriel"
-role: "Role to be added"
+role: "Research Assistant · WATCH project"
 ---
 
 Short biography to be added.

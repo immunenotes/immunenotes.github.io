@@ -1,6 +1,6 @@
 ---
 name: "Sebastian Kirschke"
-role: "Role to be added"
+role: "PhD Student · SynSys.PC project"
 ---
 
 Short biography to be added.

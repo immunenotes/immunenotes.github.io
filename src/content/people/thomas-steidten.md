@@ -1,6 +1,6 @@
 ---
 name: "Thomas Steidten"
-role: "Role to be added"
+role: "PostDoc · SynSys.PC project"
 ---
 
 Short biography to be added.

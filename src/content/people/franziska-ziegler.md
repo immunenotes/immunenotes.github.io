@@ -1,6 +1,6 @@
 ---
 name: "Franziska Ziegler"
-role: "Role to be added"
+role: "M.Sc. Student · Student Assistant"
 ---
 
 Short biography to be added.

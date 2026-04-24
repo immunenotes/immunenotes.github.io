@@ -1,6 +1,6 @@
 ---
 name: "Marc Gabriel"
-role: "Research Assistant · PhD Student"
+role: "Research Assistant · PhD Student · SynSys.PC project"
 image: "/people/marc-gabriel.jpg"
 alt: "Marc Gabriel"
 ---

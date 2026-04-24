@@ -1,6 +1,6 @@
 ---
 name: "Wiebke Röhr"
-role: "Role to be added"
+role: "PhD Student · KIP project"
 ---
 
 Short biography to be added.

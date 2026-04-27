@@ -2,12 +2,24 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import rehypeExternalLinks from 'rehype-external-links';
+
+// Auto-add target="_blank" + safe rel attributes to all external links
+// (anything starting with http/https). Applied to both markdown and MDX.
+const externalLinks = [
+  rehypeExternalLinks,
+  { target: '_blank', rel: ['noopener', 'noreferrer'] },
+];
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://immunenotes.github.io',
-  integrations: [mdx(), sitemap()],
+  integrations: [
+    mdx({ rehypePlugins: [externalLinks] }),
+    sitemap(),
+  ],
   markdown: {
+    rehypePlugins: [externalLinks],
     shikiConfig: {
       theme: 'github-light',
       wrap: true,

@@ -6,7 +6,7 @@ description: "Teaching at the Exercise Immunology and Health Lab."
 
 import AppCard from "@components/AppCard.astro";
 import DashboardCard from "@components/DashboardCard.astro";
-import CourseCard from "@components/CourseCard.astro";
+import LinkCard from "@components/LinkCard.astro";
 import { getCollection } from "astro:content";
 
 export const dashboardOrder = (d) =>
@@ -76,20 +76,20 @@ Interactive dashboards providing accessible overviews of key immunology topics â
 
 ### Course homepages
 
-<div class="course-card-grid">
-  <CourseCard
+<div class="link-card-grid">
+  <LinkCard
     title="Basics in Exercise Physiology"
     href="https://chrisputa.github.io/basics_exercise_physiology/"
   />
-  <CourseCard
+  <LinkCard
     title="Exercise Immunology"
     href="https://chrisputa.github.io/exercise_immunology/"
   />
-  <CourseCard
+  <LinkCard
     title="Applied Sports Medicine"
     href="https://chrisputa.github.io/applied_sportsmedicine/"
   />
-  <CourseCard
+  <LinkCard
     title="Exercise Nutrition and<br>Immune Function"
     href="https://chrisputa.github.io/exercise_nutrition_immune_function/"
   />
@@ -110,7 +110,7 @@ Interactive dashboards providing accessible overviews of key immunology topics â
 - Basics of Exercise Performance and Training Physiology (V/S)
 - Exercise Nutrition and Immune Function (S)
 
-<a href="https://friedolin.uni-jena.de/download/modulkataloge/de/82_229_spowi.pdf" target="_blank" rel="noopener noreferrer">Module catalogue</a> â†—
+[Module catalogue](https://friedolin.uni-jena.de/download/modulkataloge/de/82_229_spowi.pdf) â†—
 
 </div>
 

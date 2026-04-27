@@ -1071,17 +1071,20 @@ hr {
   background: var(--surface-soft);
 }
 
-/* -- Course homepage card ------------------------------------ */
-.course-card-grid {
+/* -- Row-style link card --------------------------------------
+   Compact single-row variant (title left, arrow right) used for
+   course homepages, external publication profiles, and any other
+   "labelled link" use case. */
+.link-card-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.8rem;
   margin: 1rem 0 1.5rem;
 }
 @media (max-width: 640px) {
-  .course-card-grid { grid-template-columns: 1fr; }
+  .link-card-grid { grid-template-columns: 1fr; }
 }
-.link-card--course {
+.link-card--row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1089,7 +1092,7 @@ hr {
   padding: 0.85rem 1.05rem;
   min-height: calc(2 * 0.98rem * 1.3 + 2 * 0.85rem);
 }
-.link-card--course .link-card__title {
+.link-card--row .link-card__title {
   font-family: var(--font-serif);
   font-size: 0.98rem;
   font-weight: 600;
@@ -1100,10 +1103,10 @@ hr {
   line-height: 1.3;
   transition: color 150ms var(--ease);
 }
-.link-card--course:hover .link-card__title {
+.link-card--row:hover .link-card__title {
   color: var(--accent-hover);
 }
-.link-card--course .link-card__arrow {
+.link-card--row .link-card__arrow {
   font-size: 1rem;
   color: var(--fg-muted);
   flex-shrink: 0;
@@ -1162,7 +1165,7 @@ hr {
 }
 
 /* Slightly tighter h3 below the Courses h2 */
-.prose > h3 + .course-card-grid {
+.prose > h3 + .link-card-grid {
   margin-top: 0.75rem;
 }
 
@@ -1243,4 +1246,58 @@ hr {
   .dashboard-frame--fixed {
     border-radius: 8px;
   }
+}
+
+/* ----- Publications page ---------------------------------------------- */
+
+/* Citation list rendered as a stack of paragraphs with subtle dividers.
+   Each <p> is one full citation; the trailing __[doi: ...](URL)__ becomes
+   a bold inline link styled with the sans-serif font for a tighter, more
+   technical appearance. */
+.publications {
+  margin-top: 1.5rem;
+  /* Generous breathing room before any following section heading
+     (e.g. "Other publications"). */
+  margin-bottom: 4rem;
+}
+
+.publications > p {
+  margin: 0;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  color: var(--fg);
+}
+
+.publications > p:first-child {
+  padding-top: 0;
+}
+
+.publications > p:last-child {
+  border-bottom: none;
+}
+
+/* Style the bold link (DOI / URL) at the end of each citation a touch
+   smaller and in the sans-serif family so it stands apart from the prose. */
+.publications strong {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+}
+
+.publications strong a {
+  word-break: break-word;
+}
+
+/* Decorative ↗ arrow rendered after each publication link, mirroring the
+   "Module catalogue ↗" pattern on the teaching page. Lives outside the
+   <a>, so it isn't underlined and isn't part of the link's accessible name. */
+.publications strong::after {
+  content: " \2197"; /* ↗ */
+  color: var(--fg-muted);
+  font-weight: 400;
+  margin-left: 0.15em;
+  white-space: nowrap;
 }

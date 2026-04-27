@@ -89,7 +89,7 @@ img { max-width: 100%; height: auto; display: block; }
 a {
   color: var(--accent);
   text-decoration: none;
-  border-bottom: 1px solid transparent;
+  border-bottom: 1px solid currentColor;
   transition: color 150ms var(--ease), border-color 150ms var(--ease);
 }
 a:hover {

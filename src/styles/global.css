@@ -403,7 +403,7 @@ hr {
   grid-template-columns: 220px 1fr;
   gap: 1.5rem;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 0;
   color: inherit;
   align-items: start;
   padding: 0.75rem;
@@ -440,7 +440,7 @@ hr {
   width: 220px;
   height: 150px;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 0;
   background: var(--surface-soft);
   border: 1px solid var(--border);
   flex-shrink: 0;
@@ -866,7 +866,7 @@ hr {
   color: inherit;
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 0;
   padding: 1.1rem 1.25rem;
   text-decoration: none;
   transition:
@@ -911,6 +911,9 @@ hr {
   row-gap: 0.25rem;
   align-items: center;
   padding: 1.25rem 1.4rem;
+  /* Editorial accent bar — same black left edge as LinkCard /
+     ResearchCard, so all card variants share a single visual idiom. */
+  border-left: 3px solid var(--fg);
 }
 .link-card--app .link-card__icon-wrap {
   grid-row: 1 / span 2;
@@ -921,7 +924,7 @@ hr {
   justify-content: center;
   background: var(--surface-soft);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 0;
   flex-shrink: 0;
 }
 .link-card--app .link-card__icon {
@@ -967,7 +970,7 @@ hr {
   .link-card--app .link-card__icon-wrap {
     width: 52px;
     height: 52px;
-    border-radius: 10px;
+    border-radius: 0;
   }
   .link-card--app .link-card__icon {
     width: 34px;
@@ -1072,9 +1075,11 @@ hr {
 }
 
 /* -- Row-style link card --------------------------------------
-   Compact single-row variant (title left, arrow right) used for
-   course homepages, external publication profiles, and any other
-   "labelled link" use case. */
+   Compact single-row variant — editorial accent-bar treatment.
+   Tinted background, thick black left edge bar, rounded right
+   corners. Used for course homepages, publication profiles, and
+   any other "labelled link" use case. An optional small-caps
+   microlabel (`label` prop) sits above the title for context. */
 .link-card-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1088,13 +1093,40 @@ hr {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1.05rem;
-  min-height: calc(2 * 0.98rem * 1.3 + 2 * 0.85rem);
+  gap: 0.85rem;
+  padding: 0.9rem 1.15rem;
+  /* Editorial accent-bar look: white bg, black left bar,
+     fully squared corners for a clean editorial edge. */
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--fg);
+  border-radius: 0;
+  min-height: calc(2 * 1rem * 1.3 + 2 * 0.9rem);
+}
+.link-card--row:hover {
+  /* Subtle gray wash on hover. Lift + shadow come from
+     the global .link-card:hover. The black bar stays put. */
+  background: var(--surface-soft);
+}
+.link-card--row .link-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.link-card--row .link-card__label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0;
+  line-height: 1;
 }
 .link-card--row .link-card__title {
   font-family: var(--font-serif);
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 600;
   margin: 0;
   color: var(--fg);
@@ -1300,4 +1332,245 @@ hr {
   font-weight: 400;
   margin-left: 0.15em;
   white-space: nowrap;
+}
+
+/* ----- Research project cards ---------------------------------------- */
+
+/* Built on native <details>/<summary>: closed state shows title + chevron
+   in an editorial accent-bar card (soft tinted background, black left edge,
+   rounded right corners). Expanding reveals an image (left) and description
+   + external CTA (right). Mobile collapses to a single column. */
+
+.research-card {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--fg);
+  border-radius: 0;
+  background: var(--surface);
+  margin: 0.85rem 0;
+  overflow: hidden;
+  transition:
+    background 180ms var(--ease),
+    border-color 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+
+.research-card + .research-card {
+  margin-top: 0.85rem;
+}
+
+.research-card:hover {
+  background: var(--surface-soft);
+}
+
+.research-card[open] {
+  background: var(--surface);
+}
+
+/* Smooth slide-open: animate ::details-content height with
+   interpolate-size so the body actually slides in rather than
+   snapping. Older browsers (Safari, Firefox without support for
+   ::details-content) gracefully fall back to the instant native
+   open + the fade keyframe further down. */
+.research-card {
+  interpolate-size: allow-keywords;
+}
+.research-card::details-content {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    height 320ms var(--ease),
+    opacity 220ms var(--ease) 60ms,
+    content-visibility 320ms var(--ease) allow-discrete;
+}
+.research-card[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+/* Summary row — clickable header. Disable native disclosure markers so
+   we can render our own chevron. */
+.research-card__summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+.research-card__summary::-webkit-details-marker { display: none; }
+.research-card__summary::marker { content: ""; }
+
+.research-card__summary:hover .research-card__title {
+  color: var(--accent-hover);
+}
+
+.research-card__summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* Head — stacks an optional small-caps microlabel above the project title. */
+.research-card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.research-card__label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0;
+  line-height: 1;
+}
+
+.research-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--fg);
+  line-height: 1.3;
+  transition: color 150ms var(--ease);
+}
+
+/* Chevron — points down when closed, rotates 180° to point up when open. */
+.research-card__chevron {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--fg-muted);
+  transition:
+    transform 220ms var(--ease),
+    color 150ms var(--ease);
+}
+
+.research-card[open] .research-card__chevron {
+  transform: rotate(180deg);
+  color: var(--fg);
+}
+
+.research-card__summary:hover .research-card__chevron {
+  color: var(--fg);
+}
+
+/* Body — image left, text right. Collapses to single column under 640px. */
+.research-card__body {
+  padding: 0 1.25rem 1.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 240px) 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  /* Smooth fade-in for the body content when the card opens. The
+     <details> element itself snaps open, but the content inside fades
+     and slides in subtly for a more polished feel. */
+  animation: research-card-reveal 260ms var(--ease) both;
+}
+
+.research-card__body--no-image {
+  grid-template-columns: 1fr;
+}
+
+@keyframes research-card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .research-card__body { animation: none; }
+  .research-card__chevron { transition: none; }
+  .research-card::details-content { transition: none; }
+}
+
+/* Image wrapper — fixed aspect ratio, rounded corners, hover-zoom. */
+.research-card__image-wrap {
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-soft);
+  aspect-ratio: 4 / 3;
+  border: 1px solid var(--border);
+}
+
+.research-card__image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 400ms var(--ease);
+}
+
+.research-card[open]:hover .research-card__image-wrap img {
+  transform: scale(1.02);
+}
+
+/* Text column — description paragraphs followed by the CTA link. */
+.research-card__text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--fg);
+}
+
+.research-card__text > :first-child { margin-top: 0; }
+.research-card__text > :last-child { margin-bottom: 0; }
+
+.research-card__text p {
+  margin: 0 0 0.85rem;
+}
+
+.research-card__cta-wrap {
+  margin: 1rem 0 0 !important;
+}
+
+/* CTA link — small underlined accent link with a trailing ↗ arrow that
+   slides outward on hover. */
+.research-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition:
+    color 150ms var(--ease),
+    gap 200ms var(--ease);
+}
+
+.research-card__cta:hover {
+  color: var(--accent-hover);
+  gap: 0.6rem;
+  border-bottom-color: currentColor;
+}
+
+.research-card__cta-arrow {
+  display: inline-block;
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+@media (max-width: 640px) {
+  .research-card__body {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .research-card__image-wrap {
+    aspect-ratio: 16 / 9;
+  }
+  .research-card__summary { padding: 0.9rem 1.05rem; }
+  .research-card__body { padding: 0 1.05rem 1.1rem; }
+  .research-card__title { font-size: 1rem; }
 }

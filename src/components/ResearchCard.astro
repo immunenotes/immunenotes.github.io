@@ -1,0 +1,100 @@
+---
+/**
+ * ResearchCard — an expandable project card built on the native
+ * <details>/<summary> element. Closed state shows an optional small-caps
+ * microlabel above the title plus a downward chevron; click expands to
+ * reveal an image (left) plus a short description and an external CTA
+ * link (right).
+ *
+ * Visual style is the editorial accent-bar variant: a soft tinted
+ * background, a black left edge bar, and rounded right corners. Uses
+ * the same vocabulary as `.link-card--row`.
+ *
+ * Props:
+ *   title      required — project title (supports inline HTML, e.g. <br>)
+ *   label      optional — small-caps microlabel rendered above the title
+ *   image      optional — path to a thumbnail image
+ *   imageAlt   optional — alt text (defaults to title)
+ *   href       optional — external project page URL
+ *   ctaLabel   optional — label for the external CTA (default "Visit project page")
+ *   open       optional — render the card pre-expanded
+ *
+ * The body content (description, anything else above the CTA) goes in
+ * the default slot and supports MDX/markdown.
+ */
+interface Props {
+  title: string;
+  label?: string;
+  image?: string;
+  imageAlt?: string;
+  href?: string;
+  ctaLabel?: string;
+  open?: boolean;
+}
+
+const {
+  title,
+  label,
+  image,
+  imageAlt,
+  href,
+  ctaLabel = "Visit project page",
+  open = false,
+} = Astro.props;
+
+const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
+---
+
+<details class="research-card" open={open}>
+  <summary class="research-card__summary">
+    <div class="research-card__head">
+      {label && <span class="research-card__label">{label}</span>}
+      <h3 class="research-card__title"><Fragment set:html={title} /></h3>
+    </div>
+    <svg
+      class="research-card__chevron"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <polyline points="3 6 8 11 13 6"></polyline>
+    </svg>
+  </summary>
+
+  <div
+    class:list={[
+      "research-card__body",
+      !image && "research-card__body--no-image",
+    ]}
+  >
+    {
+      image && (
+        <div class="research-card__image-wrap">
+          <img src={image} alt={altText} loading="lazy" />
+        </div>
+      )
+    }
+    <div class="research-card__text">
+      <slot />
+      {
+        href && (
+          <p class="research-card__cta-wrap">
+            <a
+              class="research-card__cta"
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {ctaLabel}
+              <span class="research-card__cta-arrow" aria-hidden="true">↗</span>
+            </a>
+          </p>
+        )
+      }
+    </div>
+  </div>
+</details>

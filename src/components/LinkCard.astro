@@ -3,15 +3,19 @@ interface Props {
   title: string;
   href: string;
   external?: boolean;
+  label?: string;
 }
 
-const { title, href, external = true } = Astro.props;
+const { title, href, external = true, label } = Astro.props;
 
 const rel = external ? "noopener noreferrer" : undefined;
 const target = external ? "_blank" : undefined;
 ---
 
 <a class="link-card link-card--row" href={href} target={target} rel={rel}>
-  <h3 class="link-card__title"><Fragment set:html={title} /></h3>
+  <div class="link-card__head">
+    {label && <span class="link-card__label">{label}</span>}
+    <h3 class="link-card__title"><Fragment set:html={title} /></h3>
+  </div>
   <span class="link-card__arrow" aria-hidden="true">→</span>
 </a>

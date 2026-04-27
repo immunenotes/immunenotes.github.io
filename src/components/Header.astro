@@ -18,8 +18,10 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
       Immunenotes
     </a>
 
-    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-      Menu
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
+      <span class="nav-toggle__bar"></span>
     </button>
 
     <nav class="nav" id="site-nav" aria-label="Primary">

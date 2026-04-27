@@ -1,4 +1,4 @@
 # Immunenotes
-This is the source repository for the website https://immunenotes.github.io/.
+This is the source repository for the **Exercise Immunology and Health Lab**.  
 
-Immunenotes is a developing online resource designed to form a comprehensive guide to the interference between exercise, infection and immune system.
+The website can be accessed at [immunenotes.github.io](https://immunenotes.github.io).

@@ -3,6 +3,7 @@ title: "Long Covid & ME/CFS – Blackbox der Pandemie"
 date: 2026-03-16
 image: "/news/2026_03_16_Long_Covid_und_ME_CFS-Blackbox_der_Pandemie.png"
 description: "MAITHINK X - Die Show"
+language: "de"
 sourceType: "Foto"
 source: "ZDF"
 ---

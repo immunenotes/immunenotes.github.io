@@ -3,6 +3,7 @@ title: "Postinfektiöse Erkrankungen"
 date: 2026-02-02
 image: "/news/2026_02_02_Postinfektioese_Erkrankungen_Christian_Puta_Diana_Dudziak.png"
 description: "Christian Puta, Diana Dudziak"
+language: "de"
 sourceType: "Foto"
 source: "DGfI"
 ---

@@ -43,6 +43,9 @@ const people = defineCollection({
  *   description  optional — short teaser shown on the news overview.
  *   sourceType   optional — type label for the image credit (e.g. "Foto").
  *   source       optional — credit/rights holder (e.g. "Unsplash").
+ *   language     optional — "de" or "en". When set, a small flag badge is
+ *                shown in the top-right of the post card on the news
+ *                overview, indicating the language of the post.
  *
  * The body of the .md file is the post text rendered on the post page.
  */
@@ -55,6 +58,7 @@ const posts = defineCollection({
     description: z.string().optional(),
     sourceType: z.string().optional(),
     source: z.string().optional(),
+    language: z.enum(["de", "en"]).optional(),
   }),
 });
 

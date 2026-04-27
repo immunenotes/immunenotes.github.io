@@ -3,6 +3,7 @@ title: "International ME/CFS Conference 2026"
 date: 2026-02-23
 image: "/news/2026_02_23_International_ME_CFS_Conference_2026_01.png"
 description: "UNDERSTAND, DIAGNOSE, TREAT"
+language: "de"
 sourceType: "Foto"
 source: "ME/CFS Research Foundation"
 ---

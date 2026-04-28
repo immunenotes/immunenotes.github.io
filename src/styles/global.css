@@ -518,8 +518,8 @@ hr {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  width: 20px;
-  height: 13px;
+  width: 24px;
+  height: 16px;
   display: block;
   border: 1px solid var(--border);
   background: var(--surface);
@@ -550,6 +550,9 @@ hr {
   .post-card__img-wrap {
     width: 100%;
     height: 200px;
+  }
+  .post-card__flag {
+    top: calc(200px + 2.25rem);
   }
 }
 

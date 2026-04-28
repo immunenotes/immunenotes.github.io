@@ -15,6 +15,8 @@
  *   label      optional — small-caps microlabel rendered above the title
  *   image      optional — path to a thumbnail image
  *   imageAlt   optional — alt text (defaults to title)
+ *   sourceType optional — e.g. "Photo", "Illustration"
+ *   source     optional — credit name/source for the image
  *   href       optional — external project page URL
  *   ctaLabel   optional — label for the external CTA (default "Visit project page")
  *   open       optional — render the card pre-expanded
@@ -25,8 +27,12 @@
 interface Props {
   title: string;
   label?: string;
+  duration?: string;
   image?: string;
   imageAlt?: string;
+  imageFit?: "cover" | "contain";
+  sourceType?: string;
+  source?: string;
   href?: string;
   ctaLabel?: string;
   open?: boolean;
@@ -35,12 +41,18 @@ interface Props {
 const {
   title,
   label,
+  duration,
   image,
   imageAlt,
+  imageFit = "cover",
+  sourceType,
+  source,
   href,
   ctaLabel = "Visit project page",
   open = false,
 } = Astro.props;
+
+const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?? null);
 
 const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
 ---
@@ -51,18 +63,21 @@ const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
       {label && <span class="research-card__label">{label}</span>}
       <h3 class="research-card__title"><Fragment set:html={title} /></h3>
     </div>
-    <svg
-      class="research-card__chevron"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.75"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="3 6 8 11 13 6"></polyline>
-    </svg>
+    <div class="research-card__right">
+      {duration && <span class="research-card__duration">{duration}</span>}
+      <svg
+        class="research-card__chevron"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="3 6 8 11 13 6"></polyline>
+      </svg>
+    </div>
   </summary>
 
   <div
@@ -73,8 +88,13 @@ const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
   >
     {
       image && (
-        <div class="research-card__image-wrap">
-          <img src={image} alt={altText} loading="lazy" />
+        <div class="research-card__image-col">
+          <div class="research-card__image-wrap">
+            <img src={image} alt={altText} loading="lazy" style={`object-fit: ${imageFit}`} />
+          </div>
+          {creditLine && (
+            <p class="post-card__credit">{creditLine}</p>
+          )}
         </div>
       )
     }

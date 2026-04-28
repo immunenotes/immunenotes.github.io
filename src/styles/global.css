@@ -1469,6 +1469,27 @@ hr {
   transition: color 150ms var(--ease);
 }
 
+/* Right group — duration badge + chevron, flush to the right. */
+.research-card__right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Duration badge — e.g. "2022–2025" */
+.research-card__duration {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg-muted);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
 /* Chevron — points down when closed, rotates 180° to point up when open. */
 .research-card__chevron {
   width: 16px;
@@ -1492,18 +1513,13 @@ hr {
 /* Body — image left, text right. Collapses to single column under 640px. */
 .research-card__body {
   padding: 0 1.25rem 1.25rem;
-  display: grid;
-  grid-template-columns: minmax(0, 240px) 1fr;
-  gap: 1.5rem;
-  align-items: start;
-  /* Smooth fade-in for the body content when the card opens. The
-     <details> element itself snaps open, but the content inside fades
-     and slides in subtly for a more polished feel. */
+  /* Clearfix so the card expands to contain the floated image. */
   animation: research-card-reveal 260ms var(--ease) both;
 }
-
-.research-card__body--no-image {
-  grid-template-columns: 1fr;
+.research-card__body::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 @keyframes research-card-reveal {
@@ -1523,9 +1539,23 @@ hr {
   .research-card::details-content { transition: none; }
 }
 
-/* Image wrapper — fixed aspect ratio, rounded corners, hover-zoom. */
+/* Image column — floats left so text wraps around and below it. */
+.research-card__image-col {
+  float: left;
+  width: 240px;
+  margin-right: 1.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.research-card__image-col .post-card__credit {
+  margin: 0;
+}
+
+/* Image wrapper — fixed aspect ratio, hover-zoom. */
 .research-card__image-wrap {
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
   background: var(--surface-soft);
   aspect-ratio: 4 / 3;
@@ -1535,7 +1565,7 @@ hr {
 .research-card__image-wrap img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background: #ffffff;
   display: block;
   transition: transform 400ms var(--ease);
 }
@@ -1560,6 +1590,7 @@ hr {
 
 .research-card__cta-wrap {
   margin: 1rem 0 0 !important;
+  text-align: right;
 }
 
 /* CTA link — small underlined accent link with a trailing ↗ arrow that
@@ -1592,11 +1623,13 @@ hr {
 }
 
 @media (max-width: 640px) {
-  .research-card__body {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  .research-card__image-col {
+    float: none;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
   }
-  .research-card__image-wrap {
+  .research-card__image-col .research-card__image-wrap {
     aspect-ratio: 16 / 9;
   }
   .research-card__summary { padding: 0.9rem 1.05rem; }

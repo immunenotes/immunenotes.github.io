@@ -5,7 +5,7 @@ description: "News from the Exercise Immunology and Health Lab."
 ---
 
 import { getCollection } from "astro:content";
-import PostCard from "@components/PostCard.astro";
+import NewsList from "@components/NewsList.astro";
 
 export const all = await getCollection("posts");
 
@@ -16,16 +16,4 @@ export const sorted = [...all].sort(
 # News
 Here you’ll find the latest news and updates from **Immunenotes**. While the website is fully available in English, some news items may appear in German when they relate to German-language sources, topics, or linked content.
 
-
-{sorted.map((post) => (
-  <PostCard
-    title={post.data.title}
-    date={post.data.date}
-    slug={post.id}
-    image={post.data.image}
-    description={post.data.description}
-    sourceType={post.data.sourceType}
-    source={post.data.source}
-    language={post.data.language}
-  />
-))}
+<NewsList posts={sorted} pageSize={5} />

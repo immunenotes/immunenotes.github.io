@@ -1,7 +1,7 @@
 ---
 title: "WATCH"
 label: "Active project"
-duration: "2023-2026"
+duration: "2023-2027"
 image: "/research/WATCH-Logo.jpg"
 imageAlt: "WATCH project logo"
 imageFit: "contain"

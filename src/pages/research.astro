@@ -1,0 +1,94 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ResearchCard from "@components/ResearchCard.astro";
+import { getCollection, render } from "astro:content";
+
+const all = await getCollection("research");
+
+// Extract start year from duration string (e.g. "2023-2026" → 2023)
+const getStartYear = (duration?: string) => {
+  if (!duration) return null;
+  const match = duration.match(/^(\d{4})/);
+  return match ? parseInt(match[1]) : null;
+};
+
+// Sort: Active first, then Former. Within each group: start year descending, no year last.
+const sorted = [...all].sort((a, b) => {
+  if (a.data.label !== b.data.label) {
+    return a.data.label === "Active project" ? -1 : 1;
+  }
+  const yearA = getStartYear(a.data.duration);
+  const yearB = getStartYear(b.data.duration);
+  if (yearA === null && yearB === null) return 0;
+  if (yearA === null) return 1;
+  if (yearB === null) return -1;
+  return yearB - yearA;
+});
+
+const active = sorted.filter((p) => p.data.label === "Active project");
+const former = sorted.filter((p) => p.data.label === "Former project");
+
+const activeEntries = await Promise.all(
+  active.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { data: entry.data, Content };
+  })
+);
+
+const formerEntries = await Promise.all(
+  former.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { data: entry.data, Content };
+  })
+);
+---
+
+<BaseLayout title="Research" description="Research projects at the Exercise Immunology and Health Lab.">
+  <div class="prose">
+    <h1>Research projects</h1>
+    <p>
+      The <strong>Exercise Immunology and Health Lab</strong> conducts research at the
+      intersection of exercise science, immunobiology, and health. Below are some of our
+      current research endeavors:
+    </p>
+
+    {activeEntries.map(({ data, Content }) => (
+      <ResearchCard
+        label={data.label}
+        title={data.title}
+        duration={data.duration}
+        image={data.image}
+        imageAlt={data.imageAlt}
+        imageFit={data.imageFit}
+        sourceType={data.sourceType}
+        source={data.source}
+        href={data.href}
+        ctaLabel={data.ctaLabel ?? "Visit project page"}
+      >
+        <Content />
+      </ResearchCard>
+    ))}
+
+    {formerEntries.length > 0 && (
+      <>
+        <h2>Project history</h2>
+        {formerEntries.map(({ data, Content }) => (
+          <ResearchCard
+            label={data.label}
+            title={data.title}
+            duration={data.duration}
+            image={data.image}
+            imageAlt={data.imageAlt}
+            imageFit={data.imageFit}
+            sourceType={data.sourceType}
+            source={data.source}
+            href={data.href}
+            ctaLabel={data.ctaLabel ?? "Visit project page"}
+          >
+            <Content />
+          </ResearchCard>
+        ))}
+      </>
+    )}
+  </div>
+</BaseLayout>

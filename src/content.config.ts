@@ -111,4 +111,38 @@ const dashboards = defineCollection({
   }),
 });
 
-export const collections = { people, posts, dashboards };
+/**
+ * `research` — one markdown file per project under src/content/research/.
+ *
+ * Frontmatter schema:
+ *   title       required — project title.
+ *   label       required — "Active project" | "Former project"
+ *   duration    optional — e.g. "2022–2025". The start year is extracted for sorting.
+ *   image       optional — path to a project image.
+ *   imageAlt    optional — alt text for the image.
+ *   imageFit    optional — "cover" | "contain" (default "cover").
+ *   sourceType  optional — image credit type (e.g. "Photo").
+ *   source      optional — image credit name.
+ *   href        optional — external project page URL.
+ *   ctaLabel    optional — CTA link label (default "Visit project page").
+ *
+ * The body of the .md file is the project description rendered inside
+ * the <ResearchCard> slot.
+ */
+const research = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/research" }),
+  schema: z.object({
+    title: z.string(),
+    label: z.enum(["Active project", "Former project"]),
+    duration: z.string().optional(),
+    image: z.string().optional(),
+    imageAlt: z.string().optional(),
+    imageFit: z.enum(["cover", "contain"]).optional(),
+    sourceType: z.string().optional(),
+    source: z.string().optional(),
+    href: z.string().optional(),
+    ctaLabel: z.string().optional(),
+  }),
+});
+
+export const collections = { people, posts, dashboards, research };

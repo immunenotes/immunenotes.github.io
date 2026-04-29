@@ -1588,16 +1588,88 @@ hr {
   margin: 0 0 0.85rem;
 }
 
-.research-card__cta-wrap {
-  margin: 1rem 0 0 !important;
-  text-align: right;
+/* Action row — downloads (left) and CTA link (right) on the same line */
+.research-card__action-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
 }
+
+/* Downloads collapsible */
+.research-card__download-details {
+  margin-top: 0;
+}
+
+.research-card__download-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent);
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 1px;
+  transition: color 150ms var(--ease);
+}
+.research-card__download-summary::-webkit-details-marker { display: none; }
+.research-card__download-summary::marker { content: ""; }
+
+.research-card__download-summary:hover {
+  color: var(--accent-hover);
+}
+
+.research-card__download-chevron {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease);
+}
+
+.research-card__download-details[open] .research-card__download-chevron {
+  transform: rotate(180deg);
+}
+
+.research-card__downloads {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0 0 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid var(--border);
+}
+
+.research-card__download-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--fg);
+  padding: 0.1rem 0.5rem;
+  transition: color 150ms var(--ease);
+}
+
+.research-card__download-link:hover {
+  color: var(--accent-hover);
+}
+
+.research-card__download-link svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
 
 /* CTA link — small underlined accent link with a trailing ↗ arrow that
    slides outward on hover. */
 .research-card__cta {
   display: inline-flex;
   align-items: center;
+  margin-left: auto;
   gap: 0.4rem;
   font-family: var(--font-sans);
   font-size: 0.9rem;

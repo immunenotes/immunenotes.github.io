@@ -125,6 +125,7 @@ const dashboards = defineCollection({
  *   source      optional — image credit name.
  *   href        optional — external project page URL.
  *   ctaLabel    optional — CTA link label (default "Visit project page").
+ *   downloads   optional — list of downloadable files, each with a label and href.
  *
  * The body of the .md file is the project description rendered inside
  * the <ResearchCard> slot.
@@ -142,6 +143,10 @@ const research = defineCollection({
     source: z.string().optional(),
     href: z.string().optional(),
     ctaLabel: z.string().optional(),
+    downloads: z.array(z.object({
+      label: z.string(),
+      href: z.string(),
+    })).optional(),
   }),
 });
 

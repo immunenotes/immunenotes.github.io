@@ -1,7 +1,7 @@
 ---
 title: "KINGS 2.0"
 label: "Former project"
-duration: "2020-2024"
+duration: "2020-2023"
 image: "/research/KINGS_logo_2.0.png"
 imageAlt: "KINGS 2.0 project logo"
 imageFit: "contain"

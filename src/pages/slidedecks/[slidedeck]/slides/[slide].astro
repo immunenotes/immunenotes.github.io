@@ -1,0 +1,210 @@
+---
+/**
+ * Slide route — renders a single slide of a slidedeck.
+ *
+ * Supports both deck kinds defined in the `slidedecks` collection:
+ *
+ *   • kind="mdx"
+ *       The deck has individual MDX files under
+ *       src/content/slidedecks/{slug}/slides/. Each one becomes a route at
+ *       /slidedecks/{slug}/slides/{slideName}/, where {slideName} is the
+ *       file basename. The slide's MDX body is rendered inside the slide
+ *       canvas.
+ *
+ *   • kind="pdf"
+ *       The deck declares `pdf` (URL of the PDF) and `pages` (page count)
+ *       in its frontmatter. We generate one route per page at
+ *       /slidedecks/{slug}/slides/{N}/, where {N} is the 1-based page
+ *       number. Each route renders a <canvas> and lazy-loads PDF.js from
+ *       a CDN to render the requested page client-side.
+ *
+ * Navigation hrefs are computed relative to the current slide so that
+ * the same router works regardless of where the deck is mounted.
+ */
+import {
+  type CollectionEntry,
+  getCollection,
+  render,
+} from "astro:content";
+import SlideLayout from "@layouts/SlideLayout.astro";
+import { parseSlideId } from "@/utils/slide-path";
+
+type Deck = CollectionEntry<"slidedecks">;
+type SlideEntry = CollectionEntry<"slidedeckSlides">;
+
+interface PathItem {
+  params: { slidedeck: string; slide: string };
+  props: {
+    deck: Deck;
+    /** For mdx decks: the entry to render. Undefined for pdf decks. */
+    entry?: SlideEntry;
+    /** Index of this slide within the deck (0-based). */
+    index: number;
+    /** Total number of visible slides in this deck. */
+    total: number;
+    /** Slide names (for mdx) or page numbers as strings (for pdf), in order. */
+    sequence: string[];
+  };
+}
+
+export async function getStaticPaths(): Promise<PathItem[]> {
+  const decks = await getCollection("slidedecks", ({ data }) => {
+    if (!import.meta.env.DEV && data.draft) return false;
+    return true;
+  });
+  const allSlides = await getCollection("slidedeckSlides");
+
+  // Group mdx slides by parent slidedeck slug from their entry id.
+  const slidesByDeck = new Map<string, SlideEntry[]>();
+  for (const s of allSlides) {
+    const { slidedeck } = parseSlideId(s.id);
+    const list = slidesByDeck.get(slidedeck) ?? [];
+    list.push(s);
+    slidesByDeck.set(slidedeck, list);
+  }
+
+  const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+  const paths: PathItem[] = [];
+
+  for (const deck of decks) {
+    const slug = deck.id;
+
+    if (deck.data.kind === "pdf") {
+      const total = deck.data.pages ?? 0;
+      if (!deck.data.pdf || total <= 0) continue;
+      const sequence = Array.from({ length: total }, (_, i) => String(i + 1));
+      sequence.forEach((name, index) => {
+        paths.push({
+          params: { slidedeck: slug, slide: name },
+          props: { deck, index, total, sequence },
+        });
+      });
+      continue;
+    }
+
+    // kind === "mdx"
+    const list = (slidesByDeck.get(slug) ?? []).filter((s) => {
+      if (!import.meta.env.DEV && (s.data.draft || s.data.hidden)) return false;
+      return true;
+    });
+    list.sort((a, b) => {
+      const ao = a.data.order ?? Infinity;
+      const bo = b.data.order ?? Infinity;
+      if (ao !== bo) return ao - bo;
+      return collator.compare(parseSlideId(a.id).slide, parseSlideId(b.id).slide);
+    });
+    const sequence = list.map((s) => parseSlideId(s.id).slide);
+    list.forEach((entry, index) => {
+      const { slide } = parseSlideId(entry.id);
+      paths.push({
+        params: { slidedeck: slug, slide },
+        props: { deck, entry, index, total: list.length, sequence },
+      });
+    });
+  }
+
+  return paths;
+}
+
+const { deck, entry, index, total, sequence } = Astro.props;
+const { slidedeck: slug, slide: current } = Astro.params as {
+  slidedeck: string;
+  slide: string;
+};
+
+// Sibling-relative hrefs: slides live in the same /slides/ folder, so
+// "../{name}/" hops up one level and back down into the target name.
+const href = (name?: string) => (name ? `../${name}/` : undefined);
+const firstName = sequence[0];
+const startHref = href(firstName) ?? "./";
+const prevHref = index > 0 ? href(sequence[index - 1]) : undefined;
+const nextHref = index < sequence.length - 1 ? href(sequence[index + 1]) : undefined;
+
+const title = entry?.data.title ?? deck.data.title;
+const description = deck.data.description;
+const isDraft = !!entry?.data.draft && import.meta.env.DEV;
+const isHidden = !!entry?.data.hidden && import.meta.env.DEV;
+
+// Pre-render the mdx Content component if we have one.
+const Content = entry ? (await render(entry)).Content : null;
+
+// For PDF decks, expose the page number to the client-side renderer.
+const pdfUrl = deck.data.kind === "pdf" ? deck.data.pdf : undefined;
+const pdfPage = deck.data.kind === "pdf" ? Number(current) : undefined;
+---
+<SlideLayout
+  title={title}
+  description={description}
+  backHref={deck.data.backHref}
+  backLabel={deck.data.backLabel}
+  startHref={startHref}
+  prevHref={prevHref}
+  nextHref={nextHref}
+  slideNumber={index + 1}
+  totalSlides={total}
+  isDraft={isDraft}
+  isHidden={isHidden}
+>
+  {Content ? (
+    <Content />
+  ) : pdfUrl && pdfPage ? (
+    <div class="slide-pdf">
+      <canvas
+        id="slide-pdf-canvas"
+        class="slide-pdf__canvas"
+        data-pdf-url={pdfUrl}
+        data-pdf-page={pdfPage}
+      ></canvas>
+      <noscript>
+        <p class="slide-pdf__error">
+          This PDF slide needs JavaScript to render.
+          <a href={pdfUrl}>Open the PDF directly</a>.
+        </p>
+      </noscript>
+    </div>
+    <script is:inline>
+      (function () {
+        var canvas = document.getElementById("slide-pdf-canvas");
+        if (!canvas) return;
+        var url = canvas.getAttribute("data-pdf-url");
+        var page = parseInt(canvas.getAttribute("data-pdf-page") || "1", 10);
+
+        var PDFJS_VERSION = "4.7.76";
+        var PDFJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/pdf.min.mjs";
+        var PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/" + PDFJS_VERSION + "/pdf.worker.min.mjs";
+
+        function showError(msg) {
+          var parent = canvas.parentElement;
+          if (!parent) return;
+          parent.innerHTML = '<p class="slide-pdf__error">' + msg + '<br><a href="' + url + '">Open PDF</a></p>';
+        }
+
+        import(PDFJS_CDN).then(function (pdfjsLib) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+          return pdfjsLib.getDocument(url).promise;
+        }).then(function (pdf) {
+          return pdf.getPage(page);
+        }).then(function (pdfPage) {
+          // Render at the slide's intrinsic resolution. The canvas itself
+          // is already CSS-scaled together with the rest of the stage.
+          var viewport = pdfPage.getViewport({ scale: 1 });
+          var dpr = Math.min(2, window.devicePixelRatio || 1);
+          var scale = Math.min((1920 - 96) / viewport.width, (1080 - 200) / viewport.height);
+          var scaled = pdfPage.getViewport({ scale: scale });
+          canvas.width = Math.floor(scaled.width * dpr);
+          canvas.height = Math.floor(scaled.height * dpr);
+          canvas.style.width = scaled.width + "px";
+          canvas.style.height = scaled.height + "px";
+          var ctx = canvas.getContext("2d");
+          ctx.scale(dpr, dpr);
+          return pdfPage.render({ canvasContext: ctx, viewport: scaled }).promise;
+        }).catch(function (err) {
+          console.error("[slide-pdf]", err);
+          showError("Could not load this PDF page.");
+        });
+      })();
+    </script>
+  ) : (
+    <p class="slide-pdf__error">No content for this slide.</p>
+  )}
+</SlideLayout>

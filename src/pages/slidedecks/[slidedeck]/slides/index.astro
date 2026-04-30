@@ -1,0 +1,84 @@
+---
+/**
+ * /slidedecks/{slug}/slides/ — convenience redirect to the first slide.
+ *
+ * Slidedecks intentionally have no overview page (per the project's
+ * design: decks are linked to directly from individual content pages).
+ * Visiting the bare /slides/ URL therefore forwards to the first slide
+ * via a static <meta refresh>, which works on plain static hosting
+ * without a server-side redirect.
+ */
+import {
+  type CollectionEntry,
+  getCollection,
+} from "astro:content";
+import { parseSlideId } from "@/utils/slide-path";
+
+type Deck = CollectionEntry<"slidedecks">;
+type SlideEntry = CollectionEntry<"slidedeckSlides">;
+
+interface PathItem {
+  params: { slidedeck: string };
+  props: { firstName: string };
+}
+
+export async function getStaticPaths(): Promise<PathItem[]> {
+  const decks = await getCollection("slidedecks", ({ data }) => {
+    if (!import.meta.env.DEV && data.draft) return false;
+    return true;
+  });
+  const allSlides = await getCollection("slidedeckSlides");
+
+  const slidesByDeck = new Map<string, SlideEntry[]>();
+  for (const s of allSlides) {
+    const { slidedeck } = parseSlideId(s.id);
+    const list = slidesByDeck.get(slidedeck) ?? [];
+    list.push(s);
+    slidesByDeck.set(slidedeck, list);
+  }
+
+  const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+  const out: PathItem[] = [];
+
+  for (const deck of decks) {
+    const slug = deck.id;
+    let firstName: string | undefined;
+
+    if (deck.data.kind === "pdf") {
+      if (deck.data.pages && deck.data.pages > 0) firstName = "1";
+    } else {
+      const list = (slidesByDeck.get(slug) ?? []).filter((s) => {
+        if (!import.meta.env.DEV && (s.data.draft || s.data.hidden)) return false;
+        return true;
+      });
+      list.sort((a, b) => {
+        const ao = a.data.order ?? Infinity;
+        const bo = b.data.order ?? Infinity;
+        if (ao !== bo) return ao - bo;
+        return collator.compare(parseSlideId(a.id).slide, parseSlideId(b.id).slide);
+      });
+      const first = list[0];
+      if (first) firstName = parseSlideId(first.id).slide;
+    }
+
+    if (firstName) out.push({ params: { slidedeck: slug }, props: { firstName } });
+  }
+
+  return out;
+}
+
+const { firstName } = Astro.props;
+const target = `./${firstName}/`;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={new URL(target, Astro.url)} />
+    <title>Loading slidedeck…</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href={target}>the first slide</a>…</p>
+  </body>
+</html>

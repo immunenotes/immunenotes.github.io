@@ -1,0 +1,76 @@
+---
+/**
+ * Video — embed an .mp4 (or any browser-native source) inside a slide.
+ *
+ * The most common case is a single source served from /public, e.g.
+ *   <Video src="/videos/Tutorial_Sign_Up.mp4" controls={true} />
+ *
+ * Props:
+ *   src         required — URL of the video file.
+ *   poster      optional — public-relative URL of a poster image.
+ *   caption     optional — caption text (also via default slot).
+ *   controls    optional — show native controls (default true).
+ *   autoplay    optional — start playback automatically (forces muted).
+ *   muted       optional — mute audio (auto-true when autoplay).
+ *   loop        optional — restart when reaching the end.
+ *   playsInline optional — keep playback inline on iOS (default true).
+ *   preload     optional — "auto" | "metadata" (default) | "none".
+ *   class       optional — extra classes on the outer figure.
+ *   mediaClass  optional — extra classes on the media wrapper.
+ *   videoClass  optional — extra classes on the <video> element.
+ */
+export interface Props {
+  src: string;
+  poster?: string;
+  caption?: string;
+  controls?: boolean;
+  autoplay?: boolean;
+  muted?: boolean;
+  loop?: boolean;
+  playsInline?: boolean;
+  preload?: "auto" | "metadata" | "none";
+  class?: string;
+  mediaClass?: string;
+  videoClass?: string;
+}
+
+const {
+  src,
+  poster,
+  caption,
+  controls = true,
+  autoplay = false,
+  muted = false,
+  loop = false,
+  playsInline = true,
+  preload = "metadata",
+  class: className = "",
+  mediaClass = "",
+  videoClass = "",
+} = Astro.props;
+
+const effectiveMuted = autoplay ? true : muted;
+const hasCaption = !!caption || Astro.slots.has("default");
+---
+<figure class={`slide-video ${className}`}>
+  <div class={`slide-video__media ${mediaClass}`}>
+    <video
+      class={videoClass}
+      src={src}
+      poster={poster}
+      controls={controls}
+      autoplay={autoplay}
+      muted={effectiveMuted}
+      loop={loop}
+      playsinline={playsInline}
+      preload={preload}
+    >
+      Your browser does not support the video tag.
+    </video>
+  </div>
+  {hasCaption && (
+    <figcaption class="slide-video__caption">
+      {caption}<slot />
+    </figcaption>
+  )}
+</figure>

@@ -1,0 +1,47 @@
+---
+/**
+ * TitleSlide — opening "cover" slide with kicker / title / subtitle / meta.
+ *
+ * Props:
+ *   title       required — large display headline.
+ *   subtitle    optional — second-line headline (a touch smaller).
+ *   kicker      optional — small uppercase eyebrow ("Tutorial", "Lecture 3", …).
+ *   author      optional — author / lecturer line.
+ *   date        optional — date line (free-text — no parsing).
+ *   logo        optional — public-relative URL of a logo image.
+ *   logoAlt     optional — alt text for the logo (default: "Logo").
+ *   align       optional — "center" (default) | "left".
+ */
+export interface Props {
+  title: string;
+  subtitle?: string;
+  kicker?: string;
+  author?: string;
+  date?: string;
+  logo?: string;
+  logoAlt?: string;
+  align?: "center" | "left";
+}
+
+const {
+  title,
+  subtitle,
+  kicker,
+  author,
+  date,
+  logo,
+  logoAlt = "Logo",
+  align = "center",
+} = Astro.props;
+
+const meta = [author, date].filter(Boolean).join(" · ");
+---
+<article class={`slide-title slide-title--${align}`}>
+  <div class="slide-title__panel">
+    {logo && <img class="slide-title__logo" src={logo} alt={logoAlt} />}
+    {kicker && <p class="slide-title__kicker">{kicker}</p>}
+    <h1 class="slide-title__title">{title}</h1>
+    {subtitle && <h2 class="slide-title__subtitle">{subtitle}</h2>}
+    {meta && <p class="slide-title__meta">{meta}</p>}
+  </div>
+</article>

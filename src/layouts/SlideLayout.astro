@@ -1,0 +1,95 @@
+---
+/**
+ * SlideLayout — full-bleed presentation layout used by every slide route
+ * under /slidedecks/.
+ *
+ * Renders a fixed 1920×1080 canvas (.slide-stage) inside a fullscreen root
+ * (.slide-root) and scales the canvas with CSS to fit the viewport while
+ * preserving aspect ratio (letterboxing). This means slide-kit components
+ * can use absolute pixel sizes without worrying about responsive layout.
+ *
+ * The page deliberately does NOT include the regular site Header/Footer
+ * — slidedecks are presentation surfaces, not site pages.
+ */
+import "@styles/global.css";
+import "@styles/slides.css";
+import SlideNav from "@components/slide-kit/SlideNav.astro";
+
+export interface Props {
+  title: string;
+  description?: string;
+  backHref: string;
+  backLabel?: string;
+  startHref: string;
+  prevHref?: string;
+  nextHref?: string;
+  slideNumber: number;
+  totalSlides: number;
+  isDraft?: boolean;
+  isHidden?: boolean;
+}
+
+const {
+  title,
+  description = "",
+  backHref,
+  backLabel = "Back",
+  startHref,
+  prevHref,
+  nextHref,
+  slideNumber,
+  totalSlides,
+  isDraft = false,
+  isHidden = false,
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/png" href="/immunenotes_icon.png" />
+  </head>
+  <body class="slide-page">
+    <div id="slide-root" class="slide-root">
+      <div class="slide-stage">
+        <div class="slide-stage__inner">
+          <div class="slide-stage__content">
+            <slot />
+          </div>
+          <SlideNav
+            slideNumber={slideNumber}
+            totalSlides={totalSlides}
+            isDraft={isDraft}
+            isHidden={isHidden}
+            backHref={backHref}
+            backLabel={backLabel}
+            startHref={startHref}
+            prevHref={prevHref}
+            nextHref={nextHref}
+          />
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var root = document.getElementById("slide-root");
+        if (!root) return;
+        var cs = getComputedStyle(root);
+        var baseW = parseFloat(cs.getPropertyValue("--base-w")) || 1920;
+        var baseH = parseFloat(cs.getPropertyValue("--base-h")) || 1080;
+        function update() {
+          var vw = window.innerWidth || document.documentElement.clientWidth || 0;
+          var vh = window.innerHeight || document.documentElement.clientHeight || 0;
+          var s = Math.min(vw / baseW, vh / baseH);
+          root.style.setProperty("--slide-scale", String(s));
+        }
+        update();
+        window.addEventListener("resize", update, { passive: true });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+---
+/**
+ * ThreeCol — split a slide into three named slots ("left", "center",
+ * "right"), all equally wide.
+ *
+ * Props:
+ *   align   optional — "start" | "center" (default) | "end" — vertical
+ *                      alignment of each column's content.
+ *   class   optional — extra container classes.
+ */
+export interface Props {
+  align?: "start" | "center" | "end";
+  class?: string;
+}
+
+const {
+  align = "center",
+  class: className = "",
+} = Astro.props;
+---
+<div class={`slide-cols slide-cols--three ${className}`}>
+  <div class="slide-cols__col" data-align={align}><slot name="left" /></div>
+  <div class="slide-cols__col" data-align={align}><slot name="center" /></div>
+  <div class="slide-cols__col" data-align={align}><slot name="right" /></div>
+</div>

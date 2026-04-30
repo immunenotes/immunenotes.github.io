@@ -1,0 +1,28 @@
+---
+/**
+ * TwoCol — split a slide into two named slots ("left", "right").
+ *
+ * Props:
+ *   ratio   optional — "1:1" (default) | "2:1" | "1:2".
+ *   align   optional — "start" | "center" (default) | "end" — vertical
+ *                      alignment of each column's content.
+ *   class   optional — extra container classes (mostly for spacing).
+ *
+ * Slots: <div slot="left">…</div>, <div slot="right">…</div>
+ */
+export interface Props {
+  ratio?: "1:1" | "2:1" | "1:2";
+  align?: "start" | "center" | "end";
+  class?: string;
+}
+
+const {
+  ratio = "1:1",
+  align = "center",
+  class: className = "",
+} = Astro.props;
+---
+<div class={`slide-cols slide-cols--two ${className}`} data-ratio={ratio}>
+  <div class="slide-cols__col" data-align={align}><slot name="left" /></div>
+  <div class="slide-cols__col" data-align={align}><slot name="right" /></div>
+</div>

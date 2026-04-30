@@ -150,4 +150,69 @@ const research = defineCollection({
   }),
 });
 
-export const collections = { people, posts, dashboards, research };
+/**
+ * `slidedecks` — one MDX/Markdown index file per slidedeck under
+ * src/content/slidedecks/{slug}/index.{md,mdx}.
+ *
+ * A slidedeck is a self-contained presentation that can be linked to from
+ * anywhere on the site (there is no overview index page for slidedecks).
+ * Two construction modes are supported:
+ *
+ *   1. `kind: "mdx"` (default) — the deck is built from individual numbered
+ *      MDX slide files placed under `./slides/` next to the index file.
+ *      Slide order is taken from the optional `order` frontmatter on each
+ *      slide, then by filename (natural order). Videos (mp4) and other
+ *      rich content can be embedded inside slides via the slide-kit
+ *      components.
+ *
+ *   2. `kind: "pdf"` — the deck is a single PDF, served from somewhere
+ *      under /public (typically /slidedecks/{slug}/deck.pdf). The PDF is
+ *      processed at build time into one slide per page. Because Astro's
+ *      build pipeline does not parse PDFs natively, the page count must
+ *      be declared in the index frontmatter via `pages`.
+ *
+ * Frontmatter schema:
+ *   kind        optional  — "mdx" (default) | "pdf".
+ *   pdf         optional  — for kind="pdf": URL of the PDF file to render.
+ *   pages       optional  — for kind="pdf": total number of PDF pages.
+ *   backHref    optional  — destination of the "Back" button in the slide
+ *                           nav. Defaults to "/".
+ *   backLabel   optional  — label of the back button. Defaults to "Back".
+ */
+const slidedecks = defineCollection({
+  loader: glob({ pattern: "**/index.{md,mdx}", base: "./src/content/slidedecks" }),
+  schema: z.object({
+    kind: z.enum(["mdx", "pdf"]).default("mdx"),
+    pdf: z.string().optional(),
+    pages: z.number().int().positive().optional(),
+    backHref: z.string().default("/"),
+    backLabel: z.string().default("Back"),
+  }),
+});
+
+/**
+ * `slidedeckSlides` — individual MDX/Markdown slide files for `kind="mdx"`
+ * slidedecks. Files live under `src/content/slidedecks/{slug}/slides/*.mdx`.
+ *
+ * Each entry's `id` parses as "{slug}/slides/{slideName}". Slide ordering is
+ * controlled by the optional `order` frontmatter, then by filename (natural
+ * collation, so "slide-2" < "slide-10").
+ *
+ * Frontmatter schema:
+ *   title   optional — used for the document title in the browser tab.
+ *   order   optional — numeric ordering (lower comes first).
+ *   draft   optional — if true, the slide is skipped in production builds.
+ *   hidden  optional — same as draft, but also skipped from sequence
+ *                      navigation and counters.
+ */
+const slidedeckSlides = defineCollection({
+  loader: glob({ pattern: "**/slides/*.{md,mdx}", base: "./src/content/slidedecks" }),
+  schema: z.object({
+    title: z.string().optional(),
+    order: z.number().optional(),
+    draft: z.boolean().optional(),
+    hidden: z.boolean().optional(),
+  }),
+});
+
+export const collections = { people, posts, dashboards, research, slidedecks, slidedeckSlides };

@@ -1,0 +1,13 @@
+---
+/**
+ * SlideCounter — small "N / total" display rendered between the prev /
+ * next buttons in the slide nav. Uses tabular-nums so the numbers don't
+ * jitter as the slide index advances.
+ */
+export interface Props {
+  slideNumber: number;
+  totalSlides: number;
+}
+const { slideNumber, totalSlides } = Astro.props;
+---
+<span class="slide-nav__counter">{slideNumber} / {totalSlides}</span>

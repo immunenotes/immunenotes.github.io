@@ -1,0 +1,32 @@
+---
+/**
+ * /slidedecks/{slug}/ — convenience redirect to /slidedecks/{slug}/slides/,
+ * which in turn forwards to the first slide.
+ *
+ * Slidedecks have no standalone landing page on this site; this exists
+ * solely so that someone who lands on the bare deck URL still ends up
+ * inside the deck instead of seeing a 404.
+ */
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const decks = await getCollection("slidedecks", ({ data }) => {
+    if (!import.meta.env.DEV && data.draft) return false;
+    return true;
+  });
+  return decks.map((deck) => ({
+    params: { slidedeck: deck.id },
+  }));
+}
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=./slides/" />
+    <title>Loading slidedeck…</title>
+  </head>
+  <body>
+    <p>Redirecting to <a href="./slides/">the slidedeck</a>…</p>
+  </body>
+</html>

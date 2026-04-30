@@ -1,0 +1,322 @@
+/* -------------------------------------------------------------
+   Slide layout — fixed 1920×1080 canvas, scaled to viewport.
+   Self-contained styles for the slidedeck routes only; the rest
+   of the site is unaffected.
+   ------------------------------------------------------------- */
+
+:root {
+  --slide-bg:        #ffffff;
+  --slide-fg:        #1a1a1a;
+  --slide-muted:     #555555;
+  --slide-soft:      #f3f2ef;
+  --slide-border:    #c8c5be;
+  --slide-accent:    #1f2937;
+  --slide-nav-bg:    #1a1a1a;
+  --slide-nav-fg:    #ffffff;
+  --slide-nav-edge:  #3a3a3a;
+
+  --slide-font-sans: var(--font-sans, "Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  --slide-font-serif: var(--font-serif, "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --slide-bg:     #141414;
+    --slide-fg:     #ececec;
+    --slide-muted:  #a8a8a8;
+    --slide-soft:   #1f1f1f;
+    --slide-border: #3a3a3a;
+    --slide-accent: #ffffff;
+  }
+}
+
+/* The slide page replaces the regular site chrome entirely — make
+   sure no body/main padding bleeds in. */
+.slide-page {
+  margin: 0;
+  padding: 0;
+}
+
+.slide-root {
+  position: fixed;
+  inset: 0;
+  background: var(--slide-bg);
+  color: var(--slide-fg);
+  font-family: var(--slide-font-sans);
+  overflow: hidden;
+  --base-w: 1920;
+  --base-h: 1080;
+  --slide-scale: 1;
+}
+
+.slide-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--base-w) * 1px);
+  height: calc(var(--base-h) * 1px);
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(var(--slide-scale));
+  will-change: transform;
+}
+
+.slide-stage__inner {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 1.25rem;
+  padding: 3rem;
+  box-sizing: border-box;
+}
+
+.slide-stage__content {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide-stage__content > * {
+  min-height: 0;
+}
+
+/* Default typography inside the slide canvas. */
+.slide-stage {
+  font-size: 2rem;
+  line-height: 1.5;
+}
+.slide-stage h1,
+.slide-stage h2,
+.slide-stage h3 {
+  font-family: var(--slide-font-serif);
+  font-weight: 600;
+  color: var(--slide-fg);
+  margin: 0 0 1.25rem;
+  line-height: 1.15;
+  text-align: center;
+}
+.slide-stage h1 { font-size: 5.5rem; font-weight: 500; }
+.slide-stage h2 { font-size: 4rem;  margin-top: 2rem; }
+.slide-stage h3 { font-size: 2.5rem; margin: 1.25rem 0 0.5rem; text-align: left; }
+.slide-stage p { margin: 0 0 1rem; }
+.slide-stage ul,
+.slide-stage ol { padding-left: 2rem; margin: 0 0 1rem; }
+.slide-stage li { margin: 0.4rem 0; }
+.slide-stage a {
+  color: var(--slide-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.slide-stage img,
+.slide-stage video,
+.slide-stage canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* -------------------------------------------------------------
+   Slide nav — bottom bar with prev/next/start/back + counter.
+   ------------------------------------------------------------- */
+.slide-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+}
+.slide-nav__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--slide-nav-bg);
+  color: var(--slide-nav-fg) !important;
+  border: 1px solid var(--slide-nav-edge) !important;
+  border-radius: 8px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1.1rem;
+  font-family: var(--slide-font-sans);
+  text-decoration: none !important;
+  letter-spacing: 0.01em;
+  transition: background 150ms ease;
+}
+.slide-nav__btn:hover {
+  background: #2a2a2a;
+  color: var(--slide-nav-fg) !important;
+}
+.slide-nav__btn[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.slide-nav__counter {
+  font-family: var(--slide-font-sans);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  color: var(--slide-muted);
+  padding: 0 0.5rem;
+}
+.slide-nav__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+.slide-nav__badge--draft  { background: #c0392b; }
+.slide-nav__badge--hidden { background: #b03060; }
+
+/* -------------------------------------------------------------
+   slide-kit: TitleSlide
+   ------------------------------------------------------------- */
+.slide-title {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  text-align: center;
+}
+.slide-title__panel {
+  max-width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 1.25rem;
+  padding: 4.5rem 5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  .slide-title__panel {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+}
+.slide-title__kicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 1.3rem;
+  color: var(--slide-muted);
+}
+.slide-title__title {
+  font-family: var(--slide-font-serif);
+  font-weight: 500;
+  font-size: 5.5rem;
+  line-height: 1.05;
+  margin: 0;
+}
+.slide-title__subtitle {
+  font-family: var(--slide-font-sans);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 2.4rem;
+  line-height: 1.2;
+  color: var(--slide-muted);
+  margin: 0;
+}
+.slide-title__meta {
+  font-size: 1.4rem;
+  color: var(--slide-muted);
+  margin: 0;
+}
+.slide-title__logo {
+  max-height: 6rem;
+  width: auto;
+}
+
+/* -------------------------------------------------------------
+   slide-kit: TwoCol / ThreeCol
+   ------------------------------------------------------------- */
+.slide-cols {
+  display: grid;
+  gap: 2rem;
+  height: 100%;
+  min-height: 0;
+}
+.slide-cols--two   { grid-template-columns: 1fr 1fr; }
+.slide-cols--two[data-ratio="2:1"] { grid-template-columns: 2fr 1fr; }
+.slide-cols--two[data-ratio="1:2"] { grid-template-columns: 1fr 2fr; }
+.slide-cols--three { grid-template-columns: 1fr 1fr 1fr; }
+.slide-cols__col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.slide-cols__col[data-align="center"] { justify-content: center; }
+.slide-cols__col[data-align="end"]    { justify-content: flex-end; }
+
+/* -------------------------------------------------------------
+   slide-kit: Figure / Video
+   ------------------------------------------------------------- */
+.slide-figure,
+.slide-video {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.slide-figure__media,
+.slide-video__media {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slide-figure__media img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+.slide-video__media video {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.slide-figure__caption,
+.slide-video__caption {
+  margin-top: 0.75rem;
+  font-size: 1.4rem;
+  line-height: 1.4;
+  color: var(--slide-muted);
+  text-align: center;
+}
+
+/* -------------------------------------------------------------
+   slide-kit: PDF page
+   ------------------------------------------------------------- */
+.slide-pdf {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+}
+.slide-pdf__canvas {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--slide-border);
+}
+.slide-pdf__error {
+  font-family: var(--slide-font-sans);
+  color: var(--slide-muted);
+  font-size: 1.4rem;
+  text-align: center;
+  padding: 2rem;
+}

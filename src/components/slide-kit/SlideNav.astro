@@ -1,0 +1,111 @@
+---
+/**
+ * SlideNav — bottom bar for slide navigation.
+ *
+ * Provides four buttons (Back, Start, Prev, Next) and a slide counter.
+ * Disabled buttons render with reduced opacity and absorb clicks.
+ *
+ * Keyboard shortcuts (wired by an inline script):
+ *   ←  / →     — previous / next slide
+ *   Home       — jump to the first slide
+ *   Esc        — leave the deck (back)
+ */
+import SlideCounter from "./SlideCounter.astro";
+
+export interface Props {
+  backHref: string;
+  backLabel?: string;
+  startHref: string;
+  prevHref?: string;
+  nextHref?: string;
+  slideNumber: number;
+  totalSlides: number;
+  isDraft?: boolean;
+  isHidden?: boolean;
+}
+
+const {
+  backHref,
+  backLabel = "Back",
+  startHref,
+  prevHref,
+  nextHref,
+  slideNumber,
+  totalSlides,
+  isDraft = false,
+  isHidden = false,
+} = Astro.props;
+---
+<nav class="slide-nav" aria-label="Slide controls">
+  {isDraft && import.meta.env.DEV ? (
+    <span class="slide-nav__badge slide-nav__badge--draft">Draft</span>
+  ) : null}
+  {isHidden && import.meta.env.DEV ? (
+    <span class="slide-nav__badge slide-nav__badge--hidden">Hidden</span>
+  ) : null}
+
+  <a id="slide-nav-back" class="slide-nav__btn" href={backHref}>{backLabel}</a>
+
+  <SlideCounter slideNumber={slideNumber} totalSlides={totalSlides} />
+
+  <a id="slide-nav-start" class="slide-nav__btn" rel="start" href={startHref}>Start</a>
+
+  <a
+    id="slide-nav-prev"
+    class="slide-nav__btn"
+    rel="prev"
+    href={prevHref ?? "#"}
+    aria-disabled={prevHref ? "false" : "true"}
+    tabindex={prevHref ? undefined : -1}
+  >Prev</a>
+
+  <a
+    id="slide-nav-next"
+    class="slide-nav__btn"
+    rel="next"
+    href={nextHref ?? "#"}
+    aria-disabled={nextHref ? "false" : "true"}
+    tabindex={nextHref ? undefined : -1}
+  >Next</a>
+</nav>
+
+<script is:inline>
+  (function () {
+    var prev  = document.getElementById("slide-nav-prev");
+    var next  = document.getElementById("slide-nav-next");
+    var start = document.getElementById("slide-nav-start");
+    var back  = document.getElementById("slide-nav-back");
+
+    function isDisabled(a) {
+      return !a || a.getAttribute("aria-disabled") === "true" || a.getAttribute("href") === "#";
+    }
+
+    function shouldIgnore(e) {
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return true;
+      var t = e.target;
+      return !!(t && (
+        t.tagName === "INPUT" ||
+        t.tagName === "TEXTAREA" ||
+        t.tagName === "SELECT" ||
+        t.isContentEditable
+      ));
+    }
+
+    window.addEventListener("keydown", function (e) {
+      if (shouldIgnore(e)) return;
+      if (e.key === "ArrowLeft" && !isDisabled(prev)) {
+        e.preventDefault();
+        location.assign(prev.getAttribute("href"));
+      } else if (e.key === "ArrowRight" && !isDisabled(next)) {
+        e.preventDefault();
+        location.assign(next.getAttribute("href"));
+      } else if (e.key === "Home" && start) {
+        e.preventDefault();
+        location.assign(start.getAttribute("href"));
+      } else if (e.key === "Escape" && back) {
+        e.preventDefault();
+        location.assign(back.getAttribute("href"));
+      }
+    });
+  })();
+</script>

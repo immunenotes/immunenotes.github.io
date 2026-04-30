@@ -1,0 +1,52 @@
+---
+/**
+ * Figure — image inside a slide, with an optional caption.
+ *
+ * Props:
+ *   src        required — public-relative URL of the image (e.g. "/foo.png").
+ *   alt        required — accessible alt text.
+ *   caption    optional — caption text (also available via the default slot).
+ *   fit        optional — "contain" (default) | "cover".
+ *   class      optional — extra figure classes.
+ *   mediaClass optional — extra classes on the inner media wrapper.
+ *   imgClass   optional — extra classes on the <img> itself.
+ */
+export interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  fit?: "contain" | "cover";
+  class?: string;
+  mediaClass?: string;
+  imgClass?: string;
+}
+
+const {
+  src,
+  alt,
+  caption,
+  fit = "contain",
+  class: className = "",
+  mediaClass = "",
+  imgClass = "",
+} = Astro.props;
+
+const hasCaption = !!caption || Astro.slots.has("default");
+---
+<figure class={`slide-figure ${className}`}>
+  <div class={`slide-figure__media ${mediaClass}`}>
+    <img
+      src={src}
+      alt={alt}
+      class={imgClass}
+      style={`object-fit: ${fit};`}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  {hasCaption && (
+    <figcaption class="slide-figure__caption">
+      {caption}<slot />
+    </figcaption>
+  )}
+</figure>

@@ -177,7 +177,7 @@ const research = defineCollection({
  *   pages       optional  — for kind="pdf": total number of PDF pages.
  *   backHref    optional  — destination of the "Back" button in the slide
  *                           nav. Defaults to "/".
- *   backLabel   optional  — label of the back button. Defaults to "Back".
+ *   backLabel   optional  — destination label shown in "Back to {label}". Defaults to "Teaching".
  */
 const slidedecks = defineCollection({
   loader: glob({ pattern: "**/index.{md,mdx}", base: "./src/content/slidedecks" }),
@@ -186,7 +186,7 @@ const slidedecks = defineCollection({
     pdf: z.string().optional(),
     pages: z.number().int().positive().optional(),
     backHref: z.string().default("/"),
-    backLabel: z.string().default("Back"),
+    backLabel: z.string().default("Teaching"),
   }),
 });
 

@@ -26,7 +26,7 @@ export interface Props {
 
 const {
   backHref,
-  backLabel = "Back",
+  backLabel = "Teaching",
   startHref,
   prevHref,
   nextHref,
@@ -44,7 +44,7 @@ const {
     <span class="slide-nav__badge slide-nav__badge--hidden">Hidden</span>
   ) : null}
 
-  <a id="slide-nav-back" class="slide-nav__btn" href={backHref}>{backLabel}</a>
+  <a id="slide-nav-back" class="slide-nav__btn" href={backHref}>← Back to {backLabel}</a>
 
   <SlideCounter slideNumber={slideNumber} totalSlides={totalSlides} />
 

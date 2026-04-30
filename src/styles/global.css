@@ -1635,8 +1635,8 @@ hr {
 
 .research-card__downloads {
   list-style: none;
-  margin: 0.6rem 0 0;
-  padding: 0 0 0 0.25rem;
+  margin: 0;
+  padding: 0.3rem 0 0 0.25rem;
   display: flex;
   flex-direction: column;
   gap: 0;

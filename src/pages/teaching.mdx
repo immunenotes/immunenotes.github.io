@@ -5,6 +5,7 @@ description: "Teaching at the Exercise Immunology and Health Lab."
 ---
 
 import AppCard from "@components/AppCard.astro";
+import DropdownLinks from "@components/DropdownLinks.astro";
 import DashboardCard from "@components/DashboardCard.astro";
 import LinkCard from "@components/LinkCard.astro";
 import { getCollection } from "astro:content";
@@ -52,6 +53,17 @@ To get started, view the [→ Server Sign Up — Slidedeck](/slidedecks/server-s
   title="Immunenotes app server"
   description="Interactive apps for teaching and research — login required."
   href="https://spomed.svwiswp05.uni-jena.de/"
+/>
+
+<div style="margin-top: 1.5rem;" />
+
+<DropdownLinks
+  label="App-specific tutorials"
+  items={[
+    { label: "PExOL Activity — Slidedeck", href: "/slidedecks/pexol-activity/slides/slide-1-intro/" },
+    { label: "PExOL Easy Plot — Slidedeck", href: "/slidedecks/pexol-easy-plot/slides/slide-1-intro/" },
+    { label: "PExOL Exercise Physiology — Slidedeck", href: "/slidedecks/pexol-exercise-physiology/slides/slide-1-intro/" },
+  ]}
 />
 
 ## Dashboards

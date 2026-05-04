@@ -1,0 +1,37 @@
+---
+title: PExOL Activity Tutorial
+order: 3
+---
+
+import TwoCol from "@components/slide-kit/TwoCol.astro";
+import Video from "@components/slide-kit/Video.astro";
+
+
+# Personal information and RMR
+
+<TwoCol ratio="1:2" align="center">
+
+  <div slot="left">
+
+    ### Steps
+    - Open the **PExOL_Activity** app
+    - Enter your **weight**
+    - Select your **training condition** (either directly or via the **questionnaire**)
+    - Optionally, adjust your **resting metabolic rate** (linear and non-linear models available, confer with figures on the right)
+    - Click **Confirm** to update the figures and **Continue** to proceed to the next step
+
+  </div>
+
+  <div slot="right">
+
+    <Video
+      src="/tutorials/2_Tutorial_Personal_Infos.mp4"
+      controls={true}
+      autoplay={true}
+      loop={false}
+      muted={true}
+    />
+
+  </div>
+
+</TwoCol>

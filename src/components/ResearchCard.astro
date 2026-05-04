@@ -107,10 +107,12 @@ const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
           {downloads && downloads.length > 0 && (
             <details class="research-card__download-details">
               <summary class="research-card__download-summary">
-                Downloads
-                <svg class="research-card__download-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <polyline points="3 6 8 11 13 6"></polyline>
-                </svg>
+                <span class="research-card__download-summary-inner">
+                  Downloads
+                  <svg class="research-card__download-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 8 11 13 6"></polyline>
+                  </svg>
+                </span>
               </summary>
               <ul class="research-card__downloads">
                 {downloads.map((file) => (

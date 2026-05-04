@@ -1603,31 +1603,39 @@ hr {
 }
 
 .research-card__download-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
+  display: block;  /* override list-item — removes the marker box entirely */
   list-style: none;
   cursor: pointer;
+}
+.research-card__download-summary::-webkit-details-marker { display: none; }
+.research-card__download-summary::marker { display: none; }
+
+.research-card__download-summary-inner {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  gap: 0.35rem;
+  font-family: inherit;
   font-size: 0.9rem;
   font-weight: 500;
   color: var(--accent);
   border-bottom: 1px solid currentColor;
-  padding-bottom: 1px;
+  padding-bottom: 2px;
   transition: color 150ms var(--ease);
 }
-.research-card__download-summary::-webkit-details-marker { display: none; }
-.research-card__download-summary::marker { content: ""; }
 
-.research-card__download-summary:hover {
+.research-card__download-summary:hover .research-card__download-summary-inner {
   color: var(--accent-hover);
 }
 
 .research-card__download-chevron {
+  display: block;  /* removes inline baseline quirk */
   width: 13px;
   height: 13px;
   flex-shrink: 0;
   transition: transform 200ms var(--ease);
 }
+
 
 .research-card__download-details[open] .research-card__download-chevron {
   transform: rotate(180deg);
@@ -1644,8 +1652,10 @@ hr {
 }
 
 .research-card__download-link {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  width: fit-content;
+  line-height: 1;
   gap: 0.35rem;
   font-size: 0.88rem;
   color: var(--fg);
@@ -1658,10 +1668,12 @@ hr {
 }
 
 .research-card__download-link svg {
+  display: block;  /* removes inline baseline quirk */
   width: 13px;
   height: 13px;
   flex-shrink: 0;
 }
+
 
 
 /* CTA link — small underlined accent link with a trailing ↗ arrow that

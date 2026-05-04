@@ -1,0 +1,118 @@
+---
+/**
+ * DropdownLinks — a collapsible list of internal/external links.
+ *
+ * Uses native <details>/<summary> for open/close behaviour.
+ * Scoped styles prevent interference from global prose rules.
+ *
+ * Props:
+ *   label   required — text shown on the trigger button.
+ *   items   required — array of { label: string; href: string }.
+ */
+interface Props {
+  label: string;
+  items: { label: string; href: string }[];
+}
+
+const { label, items } = Astro.props;
+---
+
+<details class="dl">
+  <summary class="dl__trigger">
+    {label}
+    <svg class="dl__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <polyline points="3 6 8 11 13 6"/>
+    </svg>
+  </summary>
+  <ul class="dl__list">
+    {items.map((item) => (
+      <li>
+        <a href={item.href} class="dl__link">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="2" y1="8" x2="13" y2="8"/>
+            <polyline points="9 4 13 8 9 12"/>
+          </svg>
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+
+<style>
+  .dl {
+    margin: 0;
+  }
+
+  /* display: flex (block-level) overrides the browser's default
+     display: list-item on <summary>, removing the marker box entirely.
+     Scoped styles ensure no global rule can interfere. */
+  .dl__trigger {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: 0.35rem;
+    line-height: 1;
+    list-style: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: normal;
+    color: var(--accent);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: color 150ms var(--ease, ease);
+  }
+  .dl__trigger::-webkit-details-marker { display: none; }
+  .dl__trigger::marker { display: none; }
+
+  .dl__trigger:hover {
+    color: var(--accent-hover, var(--accent));
+  }
+
+  .dl__chevron {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    transition: transform 200ms var(--ease, ease);
+  }
+
+  .dl[open] .dl__chevron {
+    transform: rotate(180deg);
+  }
+
+  .dl__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.4rem 0 0 0.25rem;
+    display: flex;
+    flex-direction: column;
+    border-left: 2px solid var(--border, #e0e0e0);
+  }
+
+  /* Reset global `a { border-bottom }` — scoped specificity wins. */
+  .dl__link {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: 0.35rem;
+    line-height: 1;
+    font-size: 1rem;
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: none;
+    padding: 0.15rem 0.5rem;
+    transition: color 150ms var(--ease, ease);
+  }
+
+  .dl__link:hover {
+    color: var(--accent-hover, var(--accent));
+    border-bottom: none;
+  }
+
+  .dl__link svg {
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+  }
+</style>

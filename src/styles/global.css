@@ -355,6 +355,7 @@ hr {
   color: var(--fg);
 }
 .person__body { margin-top: 0.6rem; color: var(--fg); }
+.person__body p + ul { margin-top: -1.0rem; }
 
 @media (max-width: 560px) {
   .person { grid-template-columns: 80px 1fr; gap: 1rem; }

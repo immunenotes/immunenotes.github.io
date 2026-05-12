@@ -11,7 +11,7 @@ source: "LongCARE"
 
 ## "Mit unserem Projekt wollen wir das Wissen und die Aufklärung über Long COVID verbessern"
 
-### LongCARE - Koordinationsprojekt für den Förderschwerpunkt „Long COVID“ des Bundesministeriums für Gesundheit
+**LongCARE - Koordinationsprojekt für den Förderschwerpunkt „Long COVID“ des Bundesministeriums für Gesundheit**
 
 In diesem Interview beschreibt Prof. Dr. Christian Puta, einer der Leiter des Projekts Synergy of Wearable Data Systems for Post COVID (SynoSys.PC), die Arbeit mit Wearable-Daten und erläutert, welche Kriterien für die Erforschung postinfektiöser Erkrankungen entscheidend sind. 
 

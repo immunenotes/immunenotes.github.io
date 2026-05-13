@@ -19,6 +19,10 @@
  *   source     optional — credit name/source for the image
  *   href       optional — external project page URL
  *   ctaLabel   optional — label for the external CTA (default "Visit project page")
+ *   more       optional — entries for the "More" dropdown. Each item has
+ *              { label, href, type }, where type is "download" (default,
+ *              shows the download icon and uses the download attribute) or
+ *              "link" (shows a NE-arrow and opens in a new tab).
  *   open       optional — render the card pre-expanded
  *
  * The body content (description, anything else above the CTA) goes in
@@ -35,7 +39,7 @@ interface Props {
   source?: string;
   href?: string;
   ctaLabel?: string;
-  downloads?: { label: string; href: string }[];
+  more?: { label: string; href: string; type?: "download" | "link" }[];
   open?: boolean;
 }
 
@@ -50,7 +54,7 @@ const {
   source,
   href,
   ctaLabel = "Visit project page",
-  downloads,
+  more,
   open = false,
 } = Astro.props;
 
@@ -102,30 +106,46 @@ const altText = imageAlt ?? title.replace(/<[^>]*>/g, "");
     }
     <div class="research-card__text">
       <slot />
-      {(downloads && downloads.length > 0 || href) && (
+      {(more && more.length > 0 || href) && (
         <div class="research-card__action-row">
-          {downloads && downloads.length > 0 && (
-            <details class="research-card__download-details">
-              <summary class="research-card__download-summary">
-                <span class="research-card__download-summary-inner">
-                  Downloads
-                  <svg class="research-card__download-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          {more && more.length > 0 && (
+            <details class="research-card__more-details">
+              <summary class="research-card__more-summary">
+                <span class="research-card__more-summary-inner">
+                  More
+                  <svg class="research-card__more-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="3 6 8 11 13 6"></polyline>
                   </svg>
                 </span>
               </summary>
-              <ul class="research-card__downloads">
-                {downloads.map((file) => (
-                  <li>
-                    <a href={file.href} download class="research-card__download-link">
-                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M8 2v8M5 7l3 3 3-3" />
-                        <path d="M3 13h10" />
-                      </svg>
-                      {file.label}
-                    </a>
-                  </li>
-                ))}
+              <ul class="research-card__more-items">
+                {more.map((item) => {
+                  const isLink = item.type === "link";
+                  return (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="research-card__more-link"
+                        {...(isLink
+                          ? { target: "_blank", rel: "noopener noreferrer" }
+                          : { download: true })}
+                      >
+                        {isLink ? (
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 11L11 5" />
+                            <path d="M6 5h5v5" />
+                          </svg>
+                        ) : (
+                          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M8 2v8M5 7l3 3 3-3" />
+                            <path d="M3 13h10" />
+                          </svg>
+                        )}
+                        {item.label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </details>
           )}

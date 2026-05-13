@@ -1598,20 +1598,20 @@ hr {
   margin-top: 1rem;
 }
 
-/* Downloads collapsible */
-.research-card__download-details {
+/* "More" collapsible — holds downloads and external links */
+.research-card__more-details {
   margin-top: 0;
 }
 
-.research-card__download-summary {
+.research-card__more-summary {
   display: block;  /* override list-item — removes the marker box entirely */
   list-style: none;
   cursor: pointer;
 }
-.research-card__download-summary::-webkit-details-marker { display: none; }
-.research-card__download-summary::marker { display: none; }
+.research-card__more-summary::-webkit-details-marker { display: none; }
+.research-card__more-summary::marker { display: none; }
 
-.research-card__download-summary-inner {
+.research-card__more-summary-inner {
   display: inline-flex;
   align-items: center;
   line-height: 1;
@@ -1625,11 +1625,11 @@ hr {
   transition: color 150ms var(--ease);
 }
 
-.research-card__download-summary:hover .research-card__download-summary-inner {
+.research-card__more-summary:hover .research-card__more-summary-inner {
   color: var(--accent-hover);
 }
 
-.research-card__download-chevron {
+.research-card__more-chevron {
   display: block;  /* removes inline baseline quirk */
   width: 13px;
   height: 13px;
@@ -1638,11 +1638,11 @@ hr {
 }
 
 
-.research-card__download-details[open] .research-card__download-chevron {
+.research-card__more-details[open] .research-card__more-chevron {
   transform: rotate(180deg);
 }
 
-.research-card__downloads {
+.research-card__more-items {
   list-style: none;
   margin: 0;
   padding: 0.3rem 0 0 0.25rem;
@@ -1652,7 +1652,7 @@ hr {
   border-left: 2px solid var(--border);
 }
 
-.research-card__download-link {
+.research-card__more-link {
   display: flex;
   align-items: center;
   width: fit-content;
@@ -1664,11 +1664,11 @@ hr {
   transition: color 150ms var(--ease);
 }
 
-.research-card__download-link:hover {
+.research-card__more-link:hover {
   color: var(--accent-hover);
 }
 
-.research-card__download-link svg {
+.research-card__more-link svg {
   display: block;  /* removes inline baseline quirk */
   width: 13px;
   height: 13px;

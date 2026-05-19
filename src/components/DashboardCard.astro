@@ -5,6 +5,7 @@ interface Props {
   href?: string;
   thumbnail?: string;
   thumbnailAlt?: string;
+  label?: string;
 }
 
 const {
@@ -13,6 +14,7 @@ const {
   href,
   thumbnail,
   thumbnailAlt = "",
+  label,
 } = Astro.props;
 
 const isPlaceholder = !href;
@@ -35,6 +37,7 @@ const Tag = isPlaceholder ? "div" : "a";
     )}
   </div>
   <div class="link-card__body">
+    {label && <span class="link-card__label">{label}</span>}
     <h3 class="link-card__title">{title}</h3>
     {description && <p class="link-card__desc">{description}</p>}
     <div class="link-card__footer">

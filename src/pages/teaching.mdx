@@ -50,7 +50,7 @@ restricted to lectures, seminars and projects developed by Christian Puta and Ma
 To get started, view the [→ Server Sign Up — Slidedeck](/slidedecks/server-sign-up/slides/slide-1-intro/).
 
 <AppCard
-  title="Immunenotes app server"
+  title="Immunenotes App Server"
   description="Interactive apps for teaching and research — login required."
   href="https://spomed.svwiswp05.uni-jena.de/"
 />
@@ -79,6 +79,7 @@ Interactive dashboards providing accessible overviews of key immunology topics �
         href={`/dashboards/${d.id}/`}
         thumbnail={d.data.thumbnail}
         thumbnailAlt={d.data.thumbnailAlt ?? d.data.title}
+        label={d.data.label}
       />
     ))}
   </div>

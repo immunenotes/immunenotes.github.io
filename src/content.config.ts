@@ -85,6 +85,8 @@ const posts = defineCollection({
  *   thumbnail     optional — path to a preview image shown on the teaching
  *                 overview card.
  *   thumbnailAlt  optional — alt text for the thumbnail.
+ *   label         optional — short type label rendered above the title on the
+ *                 teaching overview card (e.g. "Python Shiny", "HTML").
  *   draft         optional — if true, the dashboard is omitted from the
  *                 teaching overview AND no subpage is generated. Defaults to
  *                 false, so dashboards are included by default.
@@ -106,6 +108,7 @@ const dashboards = defineCollection({
     iframeScale: z.number().default(1),
     thumbnail: z.string().optional(),
     thumbnailAlt: z.string().optional(),
+    label: z.string().optional(),
     draft: z.boolean().default(false),
     order: z.number().optional(),
   }),

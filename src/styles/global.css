@@ -1052,6 +1052,16 @@ hr {
   flex-direction: column;
   gap: 0.25rem;
 }
+.link-card--dashboard .link-card__label {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 0 0 0.15rem;
+  line-height: 1;
+}
 .link-card--dashboard .link-card__title {
   font-family: var(--font-serif);
   font-size: 1.05rem;

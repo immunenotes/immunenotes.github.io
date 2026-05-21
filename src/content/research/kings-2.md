@@ -13,7 +13,7 @@ more:
   - label: "Praxis Manual"
     href: "/research/downloads/KINGS_Praxis_Manual_2_0.pdf"
     type: "download"
-  - label: "Frontier Research Topics"
+  - label: "Frontiers Research Topics"
     href: "/research/downloads/Neuromuscular_Training_and_Adaptations_in_Youth_Athletes.pdf"
     type: "download"
   - label: "LSP Strength Training Competence"

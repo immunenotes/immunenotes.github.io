@@ -1,0 +1,39 @@
+---
+title: "PEM Severity Score: An Interactive Explorer"
+description: "Examine the workflow of the PEM Severity Score."
+publishDate: "2026-03-17"
+label: "Python Shiny Dashboard"
+iframeSrc: "https://spomed.svwiswp05.uni-jena.de/Immunenotes_PSS_Exploration/"
+iframeWidth: 1090
+iframeHeight: 700
+iframeScale: 0.982
+thumbnail: "/dashboards/thumbnails/tn-pss-exploration.png"
+thumbnailAlt: "Preview PSS Exploration"
+draft: false
+---
+
+### About the App
+
+This application visualizes the computation of the PEM Severity Score (PSS), a metric that
+quantifies the severity of post-exertional malaise (PEM). The app allows the user to rate
+five symptoms by their respective frequency and severity and watch the score
+be derived step by step.
+
+### Workflow
+
+The five symptom questions are taken from the DSQ-PEM (Cotler et al., 2018), each rated on
+two 0-4 scales. The PSS is the average of the per-question harmonic means of
+frequency and severity, normalized to a 0-1 range. Based on the result, a severity state
+is derived. Computation follows these four steps:  
+*1. Feasibility:* At least three of five questions must be fully answered.  
+*2. Necessity:* Based on the evaluation guidelines of the DSQ-PEM, PEM is present only
+if at least one question has frequency &ge; 2 and severity &ge; 2. Otherwise the PSS is set to 0.  
+*3. Calculation:* The answered questions are combined into the score.  
+*4. Categorization:* The score is mapped onto four severity states: not affected (=0),
+mildly affected (&lt; 0.5), moderately affected (&lt; 0.75) and severely affected (&le; 1.0).
+A gauge visualizes this aspect.
+
+### References
+
+Cotler, J., Holtzman, C., Dudun, C. &amp; Jason, L. A. A brief questionnaire to assess
+post-exertional malaise. *Diagnostics* **8**, 66 (2018).

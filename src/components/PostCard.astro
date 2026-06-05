@@ -21,7 +21,7 @@ const {
   language,
 } = Astro.props;
 
-const dateStr = date.toLocaleDateString("de-DE", {
+const dateStr = date.toLocaleDateString(language === "en" ? "en-GB" : "de-DE", {
   year: "numeric",
   month: "long",
   day: "numeric",

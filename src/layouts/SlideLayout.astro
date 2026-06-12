@@ -51,6 +51,20 @@ const {
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="icon" type="image/png" href="/immunenotes_icon.png" />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/source-serif-4-latin-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
   </head>
   <body class="slide-page">
     <div id="slide-root" class="slide-root">

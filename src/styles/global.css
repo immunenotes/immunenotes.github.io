@@ -443,13 +443,17 @@ hr {
 .person-profiles__icon svg { display: block; width: 100%; height: 100%; }
 .person__body { margin-top: 0.6rem; color: var(--fg); }
 .person__body p + ul { margin-top: -1.0rem; }
+/* Drop the trailing paragraph's bottom margin so the gap to the sections below
+   is governed only by `.person__sections` margin-top — matching the text-to-mail
+   gap above (`.person__info` is a flex column, so these margins don't collapse). */
+.person__body > :last-child { margin-bottom: 0; }
 
 /* ----- Per-person Publications / Teaching sections ------------------- *
  * Sit inside the person's text column, so they align ("indent") with the
  * bio text on wide screens. Their hairlines live within this column and are
  * therefore inset from the full-width separators between people. */
 .person__sections {
-  margin-top: 0.9rem;
+  margin-top: 0.6rem;
 }
 
 /* Section headings ("Publications", "Teaching") deliberately match the

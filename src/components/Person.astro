@@ -5,24 +5,65 @@
  *   <Person
  *     name="Christian Puta"
  *     role="Head of the Exercise Immunology and Health Group"
- *     mail="christian.puta@uni-jena.de
- *     image="/people/puta.jpg">
+ *     mail="christian.puta@uni-jena.de"
+ *     image="/people/puta.jpg"
+ *     publications={{ href: "/publications" }}
+ *     teaching={{ items: [{ text: "…", href: "…" }] }}>
  *     Short biography in MDX / HTML...
  *   </Person>
  *
  * All fields except `name` are optional. If no image is provided, the component
  * shows a tasteful monogram placeholder made from the person's initials.
+ *
+ * `bio`, `teaching` and `publications` add collapsible sections below the
+ * intro (always in that order). Each is either a link (`href` → renders a
+ * heading with a trailing "→") or a list (`items` → renders a <Disclosure
+ * panel> with a flat, continuous list). See the `personSection` schema in
+ * content.config.ts.
+ *
+ * `profiles` (Google Scholar, ORCID, …) are appended inside the person's
+ * Publications disclosure panel, under a small "Profiles" label — so they sit
+ * with the publication list they belong to. They only appear when Publications
+ * renders as a panel (auto-generated list); a person whose Publications is a
+ * plain link to the big /publications page (e.g. Christian Puta) shows no
+ * profiles here, since those already live on that page.
  */
+import Disclosure from "@components/Disclosure.astro";
+
+interface SectionItem {
+  text: string;
+  href?: string;
+  linkText?: string;
+}
+interface Section {
+  href?: string;
+  items?: SectionItem[];
+  count?: number;
+}
+interface Profile {
+  name: string;
+  href: string;
+}
 interface Props {
   name: string;
   role?: string;
   mail?: string | string[];
   image?: string;
   alt?: string;
+  bio?: Section;
+  teaching?: Section;
+  publications?: Section;
+  profiles?: Profile[];
 }
 
-const { name, role, mail, image, alt } = Astro.props;
+const { name, role, mail, image, alt, bio, teaching, publications, profiles } = Astro.props;
 const mails = mail ? (Array.isArray(mail) ? mail : [mail]) : [];
+
+const sections = [
+  { label: "Bio", data: bio, profiles: undefined as Profile[] | undefined },
+  { label: "Teaching", data: teaching, profiles: undefined as Profile[] | undefined },
+  { label: "Publications", data: publications, profiles },
+].filter((s) => s.data && (s.data.href || (s.data.items && s.data.items.length > 0)));
 
 const initials = name
   .split(/\s+/)
@@ -51,5 +92,45 @@ const initials = name
     <div class="person__body">
       <slot />
     </div>
+
+    {sections.length > 0 && (
+      <div class="person__sections">
+        {sections.map((s) =>
+          s.data!.href ? (
+            <a class="person-section__link" href={s.data!.href}>
+              <span class="person-section__title">{s.label}</span>
+              <span class="person-section__arrow" aria-hidden="true">→</span>
+            </a>
+          ) : (
+            <Disclosure label={s.label} count={s.data!.count ?? s.data!.items!.length} variant="panel" class="person-section">
+              {s.profiles && s.profiles.length > 0 && (
+                <ul class="person-profiles__list">
+                  {s.profiles.map((p) => (
+                    <li>
+                      <a class="person-profiles__link" href={p.href} target="_blank" rel="noopener noreferrer">
+                        <span class="person-profiles__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg></span>
+                        <span class="person-profiles__name">{p.name}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <ul class="person-list">
+                {s.data!.items!.map((item) => (
+                  <li class="person-list__item">
+                    <Fragment set:html={item.text} />
+                    {item.href && (
+                      <strong class="person-list__link">
+                        <a href={item.href} target="_blank" rel="noopener noreferrer">{item.linkText ?? item.href}</a>
+                      </strong>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Disclosure>
+          )
+        )}
+      </div>
+    )}
   </div>
 </article>

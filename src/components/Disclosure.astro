@@ -1,0 +1,178 @@
+---
+/**
+ * Disclosure — a shared collapsible built on native <details>/<summary>.
+ *
+ * One trigger vocabulary, two visual scales:
+ *
+ *   variant="inline" (default)
+ *     A small underlined accent-text trigger with an optional count pill and
+ *     a chevron. For short link lists — e.g. "App-specific tutorials" on the
+ *     Teaching page, or the "More" downloads in a research card.
+ *
+ *   variant="panel"
+ *     A full-width row (title left, count + chevron right) separated by a
+ *     hairline, opening into an accent-bar panel with a soft tinted ground.
+ *     For long content — e.g. a person's publication list on the People page.
+ *
+ * The trigger (label, count pill, chevron, open animation) lives here; the
+ * body is provided by the caller via the default slot, so each context keeps
+ * its own list styling.
+ *
+ * Props:
+ *   label    required — trigger text.
+ *   count    optional — number shown in a small pill beside the label.
+ *   variant  optional — "inline" (default) | "panel".
+ *   open     optional — render pre-expanded.
+ *   class    optional — extra class(es) forwarded to the <details>.
+ */
+interface Props {
+  label: string;
+  count?: number;
+  variant?: "inline" | "panel";
+  open?: boolean;
+  class?: string;
+}
+
+const { label, count, variant = "inline", open = false, class: className } = Astro.props;
+---
+
+<details class:list={["disclosure", `disclosure--${variant}`, className]} open={open}>
+  <summary class="disclosure__summary">
+    <span class="disclosure__label">{label}</span>
+    <span class="disclosure__meta">
+      {typeof count === "number" && <span class="disclosure__count">{count}</span>}
+      <svg class="disclosure__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="3 6 8 11 13 6"></polyline>
+      </svg>
+    </span>
+  </summary>
+  <div class="disclosure__panel">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .disclosure {
+    margin: 0;
+    /* Smooth slide-open (progressive enhancement): animate the height of
+       ::details-content. Browsers without support fall back to the instant
+       native toggle. */
+    interpolate-size: allow-keywords;
+  }
+
+  .disclosure::details-content {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      height 300ms var(--ease),
+      opacity 220ms var(--ease) 40ms,
+      content-visibility 300ms var(--ease) allow-discrete;
+  }
+  .disclosure[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+
+  /* Strip the native disclosure marker so we can render our own chevron. */
+  .disclosure__summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .disclosure__summary::-webkit-details-marker { display: none; }
+  .disclosure__summary::marker { content: ""; }
+  .disclosure__summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .disclosure__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Count pill — mirrors the research-card duration badge. */
+  .disclosure__count {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--fg-muted);
+    font-variant-numeric: tabular-nums;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.05em 0.5em;
+    line-height: 1.5;
+  }
+
+  .disclosure__chevron {
+    display: block; /* removes inline baseline quirk */
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
+    transition: transform 200ms var(--ease);
+  }
+  .disclosure[open] .disclosure__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* ---- variant: inline ------------------------------------------------ */
+  .disclosure--inline .disclosure__summary {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    gap: 0.5rem;
+    line-height: 1;
+    color: var(--accent);
+    transition: color 150ms var(--ease);
+  }
+  .disclosure--inline .disclosure__summary:hover {
+    color: var(--accent-hover);
+  }
+  .disclosure--inline .disclosure__label {
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+  }
+  .disclosure--inline .disclosure__panel {
+    padding-top: 0.5rem;
+  }
+
+  /* ---- variant: panel ------------------------------------------------- */
+  .disclosure--panel .disclosure__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    /* Horizontal padding + equal negative margin lets the hover fill bleed
+       out to both sides without shifting the title, chevron or divider. */
+    padding: 0.75rem 0.7rem;
+    margin: 0 -0.7rem;
+    border-top: 1px solid var(--border);
+    transition: background 150ms var(--ease);
+  }
+  /* Soft grey fill on hover, mirroring the research-card hover. */
+  .disclosure--panel .disclosure__summary:hover {
+    background: var(--surface-soft);
+  }
+  .disclosure--panel .disclosure__label {
+    font-weight: 600;
+    color: var(--fg);
+    line-height: 1.3;
+    transition: color 150ms var(--ease);
+  }
+  .disclosure--panel .disclosure__summary:hover .disclosure__label {
+    color: var(--accent-hover);
+  }
+  .disclosure--panel .disclosure__panel {
+    border-left: 2px solid var(--border);
+    /* Symmetric top/bottom so the last item isn't double-padded. */
+    padding: 0.1rem 0 0.1rem 0.9rem;
+    margin: 0 0 0.6rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disclosure::details-content { transition: none; }
+    .disclosure__chevron { transition: none; }
+  }
+</style>

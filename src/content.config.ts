@@ -17,9 +17,49 @@ import { glob } from "astro/loaders";
  *             page. Useful for draft entries or alumni we want to keep on
  *             file but not display.
  *
+ *   bio / teaching / publications
+ *             optional — add a collapsible "Bio", "Teaching" resp.
+ *             "Publications" section below the person's intro. They always
+ *             render in the order Bio → Teaching → Publications. Two mutually
+ *             exclusive modes:
+ *               • link mode — set `href` to point at a full page. The section
+ *                 renders as a heading with a trailing "→" link instead of a
+ *                 dropdown (used for Christian Puta, who links to the site's
+ *                 /publications and /teaching pages).
+ *               • list mode — set `items` to a list of entries. Each entry
+ *                 has `text` (the citation, inline HTML allowed) and optional
+ *                 `href` + `linkText` for a trailing DOI/link. Renders as a
+ *                 <Disclosure panel> with a flat, continuous list.
+ *             Omit the key entirely to show no section.
+ *
+ *   profiles  optional — a list of external publication-profile links
+ *             (Google Scholar, ORCID, ResearchGate, …), rendered as small
+ *             horizontal buttons below the sections. Each entry has `name`
+ *             (the button label) and `href`.
+ *
+ *   authorKey optional — override for auto-generated publications. By default
+ *             a person's Publications list is generated from the shared
+ *             publications data by matching "last name + first initial"
+ *             derived from `name`. Set `authorKey` (e.g. "Braun-Dullaeus R")
+ *             when the derived key is wrong (compound surname, differing
+ *             initial). Ignored if a manual `publications` block is given.
+ *
  * The body of the .md file is the biography and is rendered inside the
  * <Person> component.
  */
+const personSection = z.object({
+  href: z.string().optional(),
+  items: z
+    .array(
+      z.object({
+        text: z.string(),
+        href: z.string().optional(),
+        linkText: z.string().optional(),
+      })
+    )
+    .optional(),
+});
+
 const people = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/people" }),
   schema: z.object({
@@ -30,6 +70,13 @@ const people = defineCollection({
     alt: z.string().optional(),
     featured: z.boolean().default(false),
     hidden: z.boolean().default(false),
+    bio: personSection.optional(),
+    teaching: personSection.optional(),
+    publications: personSection.optional(),
+    authorKey: z.string().optional(),
+    profiles: z
+      .array(z.object({ name: z.string(), href: z.string() }))
+      .optional(),
   }),
 });
 

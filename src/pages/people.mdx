@@ -6,6 +6,8 @@ description: "Members of the Exercise Immunology and Health Lab."
 
 import { getCollection, render } from "astro:content";
 import Person from "@components/Person.astro";
+import { publications } from "@/data/publications";
+import { personPublications } from "@/utils/authorMatch";
 
 export const all = await getCollection("people");
 
@@ -20,7 +22,7 @@ export const sorted = [...all].filter((p) => !p.data.hidden).sort((a, b) =>
 export const entries = await Promise.all(
   sorted.map(async (entry) => {
     const { Content } = await render(entry);
-    return { data: entry.data, Content };
+    return { data: entry.data, Content, publications: personPublications(publications, entry.data) };
   })
 );
 
@@ -29,13 +31,17 @@ export const entries = await Promise.all(
 The **Exercise Immunology and Health Lab** brings together researchers from sports medicine,
 immunology, data science, and clinical practice.
 
-{entries.map(({ data, Content }) => (
+{entries.map(({ data, Content, publications }) => (
   <Person
     name={data.name}
     role={data.role}
     mail={data.mail}
     image={data.image}
-    alt={data.alt}>
+    alt={data.alt}
+    bio={data.bio}
+    teaching={data.teaching}
+    publications={publications}
+    profiles={data.profiles}>
     <Content />
   </Person>
 ))}

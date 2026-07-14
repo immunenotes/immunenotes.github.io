@@ -17,5 +17,5 @@ const target = external ? "_blank" : undefined;
     {label && <span class="link-card__label">{label}</span>}
     <h3 class="link-card__title"><Fragment set:html={title} /></h3>
   </div>
-  <span class="link-card__arrow" aria-hidden="true">→</span>
+  <span class="link-card__arrow" aria-hidden="true">{external ? "↗" : "→"}</span>
 </a>

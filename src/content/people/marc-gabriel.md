@@ -4,6 +4,9 @@ role: "Research Assistant · PhD Student · SynoSys.PC project"
 mail: marc.gabriel@med.uni-jena.de
 image: "/people/marc-gabriel.jpg"
 alt: "Marc Gabriel"
+profiles:
+    - name: "ORCID"
+      href: "https://orcid.org/0009-0004-1527-5960"
 ---
 
 Data scientist with a background in computer science. Works on data-driven approaches to

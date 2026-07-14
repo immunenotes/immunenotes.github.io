@@ -21,13 +21,6 @@ teaching:
     href: "/teaching"
 publications:
     href: "/publications"
-profiles:
-    - name: "Google Scholar"
-      href: "https://scholar.google.de/citations?hl=de&user=49aca7gAAAAJ"
-    - name: "ORCID"
-      href: "https://orcid.org/0000-0003-3936-4605"
-    - name: "ResearchGate"
-      href: "https://www.researchgate.net/profile/Christian-Puta"
 ---
 
 As head of the Exercise Immunology and Health Promotion Laboratory, Christian Puta is guided by the conviction that physical activity is one of the most powerful and universally accessible modulators of immune function, resilience, and long-term wellbeing. The laboratory translates mechanistic insights from exercise immunology into evidence-based strategies that empower individuals — from healthy populations to those recovering from infection or managing infection-associated chronic illness.  

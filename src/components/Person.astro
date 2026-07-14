@@ -38,6 +38,7 @@ interface SectionItem {
 interface Section {
   href?: string;
   items?: SectionItem[];
+  count?: number;
 }
 interface Profile {
   name: string;
@@ -101,7 +102,7 @@ const initials = name
               <span class="person-section__arrow" aria-hidden="true">→</span>
             </a>
           ) : (
-            <Disclosure label={s.label} count={s.data!.items!.length} variant="panel" class="person-section">
+            <Disclosure label={s.label} count={s.data!.count ?? s.data!.items!.length} variant="panel" class="person-section">
               {s.profiles && s.profiles.length > 0 && (
                 <ul class="person-profiles__list">
                   {s.profiles.map((p) => (

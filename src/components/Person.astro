@@ -86,6 +86,11 @@ const initials = name
         <span aria-hidden="true" style="font-size: 1.1em; margin-right: 0.35rem; vertical-align: middle;">✉&#xFE0E;</span><a href={`mailto:${m}`} style="vertical-align: middle;">{m}</a>
       </p>
     ))}
+    {profiles && profiles.length > 0 && profiles.map((p) => (
+      <p class="person__profile">
+        <span class="person__profile-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg></span><a href={p.href} target="_blank" rel="noopener noreferrer" style="vertical-align: middle;">{p.name}</a>
+      </p>
+    ))}
     <div class="person__body">
       <slot />
     </div>
@@ -115,20 +120,6 @@ const initials = name
             </Disclosure>
           )
         )}
-      </div>
-    )}
-
-    {profiles && profiles.length > 0 && (
-      <div class="person-profiles">
-        {profiles.map((p) => (
-          <a class="person-profiles__link" href={p.href} target="_blank" rel="noopener noreferrer">
-            {p.name}
-            <svg class="person-profiles__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 11L11 5" />
-              <path d="M6 5h5v5" />
-            </svg>
-          </a>
-        ))}
       </div>
     )}
   </div>

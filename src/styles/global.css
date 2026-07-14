@@ -398,6 +398,32 @@ hr {
 .person__mail a:hover {
   color: var(--fg);
 }
+/* Profile links (Google Scholar, ORCID, …) — listed like the mail lines:
+   small, italic, muted, one per line with a leading link glyph, directly
+   beneath the e-mail(s). The link mark is a thin inline SVG (currentColor) so
+   it matches the fine, monochrome stroke of the ✉ glyph rather than a
+   coloured 🔗 emoji. */
+.person__profile {
+  color: var(--fg-muted);
+  font-size: 0.88rem;
+  font-style: italic;
+  margin: -0.1rem 0 0 !important;
+}
+.person__profile a {
+  color: var(--fg-muted);
+}
+.person__profile a:hover {
+  color: var(--fg);
+}
+.person__profile-icon {
+  display: inline-block;
+  width: 0.95em;
+  height: 0.95em;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+  color: var(--fg-muted);
+}
+.person__profile-icon svg { display: block; width: 100%; height: 100%; }
 .person__body { margin-top: 0.6rem; color: var(--fg); }
 .person__body p + ul { margin-top: -1.0rem; }
 
@@ -448,68 +474,6 @@ hr {
 .person-section__link:hover .person-section__arrow {
   color: var(--accent-hover);
   transform: translateX(3px);
-}
-
-/* Publication-profile buttons — a compact, horizontal variant of the
-   .link-card--row cards on the /publications page: white box, hairline
-   border, thin left accent bar, squared corners. The hover mirrors the
-   large link cards: black border, grey wash, slight lift + shadow, and the
-   arrow slides outward. */
-.person-profiles {
-  margin-top: 1.1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.person-profiles__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.4rem 0.75rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-left: 2px solid var(--fg);
-  border-radius: 0;
-  font-family: var(--font-serif);
-  font-size: 0.85rem;
-  font-weight: var(--weight-heading);
-  color: var(--fg);
-  line-height: 1.25;
-  transition:
-    color 180ms var(--ease),
-    border-color 180ms var(--ease),
-    background 180ms var(--ease),
-    transform 180ms var(--ease),
-    box-shadow 180ms var(--ease);
-}
-.person-profiles__link:hover {
-  color: var(--accent-hover);
-  border-color: var(--fg);
-  background: var(--surface-soft);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px -12px rgba(0, 0, 0, 0.35);
-}
-.person-profiles__arrow {
-  display: block;
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-  color: var(--fg-muted);
-  transition: transform 180ms var(--ease);
-  will-change: transform;
-}
-.person-profiles__link:hover .person-profiles__arrow {
-  transform: translate(2px, -2px);
-}
-@media (prefers-reduced-motion: reduce) {
-  .person-profiles__link,
-  .person-profiles__arrow {
-    transition: color 180ms var(--ease), border-color 180ms var(--ease),
-                background 180ms var(--ease);
-    transform: none;
-  }
-  .person-profiles__link:hover { transform: none; box-shadow: none; }
-  .person-profiles__link:hover .person-profiles__arrow { transform: none; }
 }
 
 /* Flat, continuous list inside a panel (Bio milestones / publications) —

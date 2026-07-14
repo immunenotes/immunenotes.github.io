@@ -401,6 +401,155 @@ hr {
 .person__body { margin-top: 0.6rem; color: var(--fg); }
 .person__body p + ul { margin-top: -1.0rem; }
 
+/* ----- Per-person Publications / Teaching sections ------------------- *
+ * Sit inside the person's text column, so they align ("indent") with the
+ * bio text on wide screens. Their hairlines live within this column and are
+ * therefore inset from the full-width separators between people. */
+.person__sections {
+  margin-top: 0.9rem;
+}
+
+/* Section headings ("Publications", "Teaching") deliberately match the
+   weight/size of the inline "Bio" label in the bio — clearly subordinate to
+   the person's name, clearly attached to the person. */
+.person-section__title {
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* Link mode (e.g. Christian Puta → the site's big /publications & /teaching
+   pages): same look as a panel trigger, but a plain link with a trailing → */
+.person-section__link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  /* Match the panel dropdown: horizontal padding + negative margin so the
+     hover fill bleeds sideways without shifting the title/arrow/divider. */
+  padding: 0.75rem 0.7rem;
+  margin: 0 -0.7rem;
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  color: var(--fg);
+  transition: color 150ms var(--ease), background 150ms var(--ease);
+}
+/* Same soft grey hover as the panel dropdowns, so the visually identical
+   link rows (e.g. Christian Puta's Teaching/Publications) behave alike. */
+.person-section__link:hover {
+  color: var(--accent-hover);
+  background: var(--surface-soft);
+  border-bottom: none;
+}
+.person-section__arrow {
+  flex-shrink: 0;
+  color: var(--fg-muted);
+  transition: transform 150ms var(--ease), color 150ms var(--ease);
+}
+.person-section__link:hover .person-section__arrow {
+  color: var(--accent-hover);
+  transform: translateX(3px);
+}
+
+/* Publication-profile buttons — a compact, horizontal variant of the
+   .link-card--row cards on the /publications page: white box, hairline
+   border, thin left accent bar, squared corners. The hover mirrors the
+   large link cards: black border, grey wash, slight lift + shadow, and the
+   arrow slides outward. */
+.person-profiles {
+  margin-top: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.person-profiles__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--fg);
+  border-radius: 0;
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  font-weight: var(--weight-heading);
+  color: var(--fg);
+  line-height: 1.25;
+  transition:
+    color 180ms var(--ease),
+    border-color 180ms var(--ease),
+    background 180ms var(--ease),
+    transform 180ms var(--ease),
+    box-shadow 180ms var(--ease);
+}
+.person-profiles__link:hover {
+  color: var(--accent-hover);
+  border-color: var(--fg);
+  background: var(--surface-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px -12px rgba(0, 0, 0, 0.35);
+}
+.person-profiles__arrow {
+  display: block;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--fg-muted);
+  transition: transform 180ms var(--ease);
+  will-change: transform;
+}
+.person-profiles__link:hover .person-profiles__arrow {
+  transform: translate(2px, -2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .person-profiles__link,
+  .person-profiles__arrow {
+    transition: color 180ms var(--ease), border-color 180ms var(--ease),
+                background 180ms var(--ease);
+    transform: none;
+  }
+  .person-profiles__link:hover { transform: none; box-shadow: none; }
+  .person-profiles__link:hover .person-profiles__arrow { transform: none; }
+}
+
+/* Flat, continuous list inside a panel (Bio milestones / publications) —
+   mirrors the styling of the main /publications page (hairline between
+   entries, no bullets, no grouping). Selectors are prefixed with
+   `.person__sections` so they outrank the generic `.prose ul`/`.prose li`
+   rules (people render inside a .prose column), which would otherwise add a
+   stray margin below the list and each item. */
+.person__sections .person-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.person__sections .person-list__item {
+  margin: 0;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.6;
+  font-size: 0.9rem;
+  color: var(--fg);
+}
+.person__sections .person-list__item:first-child { padding-top: 0.35rem; }
+.person__sections .person-list__item:last-child { border-bottom: none; padding-bottom: 0.35rem; }
+
+/* Trailing DOI / link — smaller sans, with a decorative ↗ (as on /publications). */
+.person-list__link {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+}
+.person-list__link a { word-break: break-word; }
+.person-list__link::after {
+  content: " \2197"; /* ↗ */
+  color: var(--fg-muted);
+  font-weight: 400;
+  margin-left: 0.15em;
+  white-space: nowrap;
+}
+
 @media (max-width: 560px) {
   .person { grid-template-columns: 80px 1fr; gap: 1rem; }
   .person__photo { width: 80px; height: 80px; }
@@ -1652,54 +1801,13 @@ hr {
   margin-top: 1rem;
 }
 
-/* "More" collapsible — holds downloads and external links */
-.research-card__more-details {
-  margin-top: 0;
-}
-
-.research-card__more-summary {
-  display: block;  /* override list-item — removes the marker box entirely */
-  list-style: none;
-  cursor: pointer;
-}
-.research-card__more-summary::-webkit-details-marker { display: none; }
-.research-card__more-summary::marker { display: none; }
-
-.research-card__more-summary-inner {
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
-  gap: 0.35rem;
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--accent);
-  border-bottom: 1px solid currentColor;
-  padding-bottom: 2px;
-  transition: color 150ms var(--ease);
-}
-
-.research-card__more-summary:hover .research-card__more-summary-inner {
-  color: var(--accent-hover);
-}
-
-.research-card__more-chevron {
-  display: block;  /* removes inline baseline quirk */
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
-  transition: transform 200ms var(--ease);
-}
-
-
-.research-card__more-details[open] .research-card__more-chevron {
-  transform: rotate(180deg);
-}
-
+/* "More" collapsible — holds downloads and external links. The trigger
+   (label, count pill, chevron) is the shared <Disclosure inline>; the list
+   below is styled here. */
 .research-card__more-items {
   list-style: none;
   margin: 0;
-  padding: 0.3rem 0 0 0.25rem;
+  padding: 0 0 0 0.25rem;
   display: flex;
   flex-direction: column;
   gap: 0;

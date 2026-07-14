@@ -2,13 +2,15 @@
 /**
  * DropdownLinks — a collapsible list of internal/external links.
  *
- * Uses native <details>/<summary> for open/close behaviour.
- * Scoped styles prevent interference from global prose rules.
+ * Built on the shared <Disclosure> (inline variant): a small underlined
+ * trigger with a count pill. The link list below is this component's own.
  *
  * Props:
- *   label   required — text shown on the trigger button.
+ *   label   required — text shown on the trigger.
  *   items   required — array of { label: string; href: string }.
  */
+import Disclosure from "@components/Disclosure.astro";
+
 interface Props {
   label: string;
   items: { label: string; href: string }[];
@@ -17,13 +19,7 @@ interface Props {
 const { label, items } = Astro.props;
 ---
 
-<details class="dl">
-  <summary class="dl__trigger">
-    {label}
-    <svg class="dl__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <polyline points="3 6 8 11 13 6"/>
-    </svg>
-  </summary>
+<Disclosure label={label} count={items.length} variant="inline">
   <ul class="dl__list">
     {items.map((item) => (
       <li>
@@ -37,54 +33,13 @@ const { label, items } = Astro.props;
       </li>
     ))}
   </ul>
-</details>
+</Disclosure>
 
 <style>
-  .dl {
-    margin: 0;
-  }
-
-  /* display: flex (block-level) overrides the browser's default
-     display: list-item on <summary>, removing the marker box entirely.
-     Scoped styles ensure no global rule can interfere. */
-  .dl__trigger {
-    display: flex;
-    align-items: center;
-    width: fit-content;
-    gap: 0.35rem;
-    line-height: 1;
-    list-style: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: normal;
-    color: var(--accent);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 2px;
-    transition: color 150ms var(--ease, ease);
-  }
-  .dl__trigger::-webkit-details-marker { display: none; }
-  .dl__trigger::marker { display: none; }
-
-  .dl__trigger:hover {
-    color: var(--accent-hover, var(--accent));
-  }
-
-  .dl__chevron {
-    width: 13px;
-    height: 13px;
-    flex-shrink: 0;
-    transition: transform 200ms var(--ease, ease);
-  }
-
-  .dl[open] .dl__chevron {
-    transform: rotate(180deg);
-  }
-
   .dl__list {
     list-style: none;
     margin: 0;
-    padding: 0.4rem 0 0 0.25rem;
+    padding: 0 0 0 0.25rem;
     display: flex;
     flex-direction: column;
     border-left: 2px solid var(--border, #e0e0e0);

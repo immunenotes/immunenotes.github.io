@@ -1,0 +1,27 @@
+---
+/**
+ * PublicationList — renders the shared publications data as the editorial
+ * hairline-separated list used on the /publications page. Each entry is a
+ * paragraph "Authors (Year). Title. Source. <DOI link>", styled by the
+ * `.publications` rules in global.css (the trailing link gets a ↗).
+ *
+ * Props:
+ *   items — publications to render (already ordered by the caller).
+ */
+import type { Publication } from "@/data/publications";
+
+interface Props {
+  items: Publication[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="publications">
+  {items.map((p) => (
+    <p>
+      {p.authors} ({p.year}). {p.body}{" "}
+      <strong><a href={p.url}>{p.linkText}</a></strong>
+    </p>
+  ))}
+</div>

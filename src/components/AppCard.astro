@@ -27,5 +27,5 @@ const target = external ? "_blank" : undefined;
   </span>
   <h3 class="link-card__title">{title}</h3>
   {description && <p class="link-card__desc">{description}</p>}
-  <span class="link-card__arrow" aria-hidden="true">→</span>
+  <span class="link-card__arrow" aria-hidden="true">{external ? "↗" : "→"}</span>
 </a>

@@ -5,24 +5,62 @@
  *   <Person
  *     name="Christian Puta"
  *     role="Head of the Exercise Immunology and Health Group"
- *     mail="christian.puta@uni-jena.de
- *     image="/people/puta.jpg">
+ *     mail="christian.puta@uni-jena.de"
+ *     image="/people/puta.jpg"
+ *     publications={{ href: "/publications" }}
+ *     teaching={{ items: [{ text: "…", href: "…" }] }}>
  *     Short biography in MDX / HTML...
  *   </Person>
  *
  * All fields except `name` are optional. If no image is provided, the component
  * shows a tasteful monogram placeholder made from the person's initials.
+ *
+ * `bio`, `teaching` and `publications` add collapsible sections below the
+ * intro (always in that order). Each is either a link (`href` → renders a
+ * heading with a trailing "→") or a list (`items` → renders a <Disclosure
+ * panel> with a flat, continuous list). See the `personSection` schema in
+ * content.config.ts.
+ *
+ * `profiles` renders a row of small external-link buttons (Google Scholar,
+ * ORCID, …) below the sections.
  */
+import Disclosure from "@components/Disclosure.astro";
+
+interface SectionItem {
+  text: string;
+  href?: string;
+  linkText?: string;
+}
+interface Section {
+  href?: string;
+  items?: SectionItem[];
+}
+interface Profile {
+  name: string;
+  href: string;
+}
 interface Props {
   name: string;
   role?: string;
   mail?: string | string[];
   image?: string;
   alt?: string;
+  bio?: Section;
+  teaching?: Section;
+  publications?: Section;
+  profiles?: Profile[];
 }
 
-const { name, role, mail, image, alt } = Astro.props;
+const { name, role, mail, image, alt, bio, teaching, publications, profiles } = Astro.props;
 const mails = mail ? (Array.isArray(mail) ? mail : [mail]) : [];
+
+const sections = (
+  [
+    { label: "Bio", data: bio },
+    { label: "Teaching", data: teaching },
+    { label: "Publications", data: publications },
+  ] as const
+).filter((s) => s.data && (s.data.href || (s.data.items && s.data.items.length > 0)));
 
 const initials = name
   .split(/\s+/)
@@ -51,5 +89,47 @@ const initials = name
     <div class="person__body">
       <slot />
     </div>
+
+    {sections.length > 0 && (
+      <div class="person__sections">
+        {sections.map((s) =>
+          s.data!.href ? (
+            <a class="person-section__link" href={s.data!.href}>
+              <span class="person-section__title">{s.label}</span>
+              <span class="person-section__arrow" aria-hidden="true">→</span>
+            </a>
+          ) : (
+            <Disclosure label={s.label} count={s.data!.items!.length} variant="panel" class="person-section">
+              <ul class="person-list">
+                {s.data!.items!.map((item) => (
+                  <li class="person-list__item">
+                    <Fragment set:html={item.text} />
+                    {item.href && (
+                      <strong class="person-list__link">
+                        <a href={item.href} target="_blank" rel="noopener noreferrer">{item.linkText ?? item.href}</a>
+                      </strong>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Disclosure>
+          )
+        )}
+      </div>
+    )}
+
+    {profiles && profiles.length > 0 && (
+      <div class="person-profiles">
+        {profiles.map((p) => (
+          <a class="person-profiles__link" href={p.href} target="_blank" rel="noopener noreferrer">
+            {p.name}
+            <svg class="person-profiles__arrow" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 11L11 5" />
+              <path d="M6 5h5v5" />
+            </svg>
+          </a>
+        ))}
+      </div>
+    )}
   </div>
 </article>

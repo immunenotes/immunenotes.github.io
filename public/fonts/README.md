@@ -5,7 +5,10 @@ All fonts in this directory are licensed under the **SIL Open Font License 1.1**
 | File(s) | Family | Source | Copyright |
 |---|---|---|---|
 | `inter-latin-variable.woff2`, `inter-latin-italic-variable.woff2` | Inter (variable, 100–900) | rsms/inter | © The Inter Project Authors |
+| `inter-arrows-variable.woff2` | Inter (variable, 100–900) — arrows only (U+2190–2199) | rsms/inter | © The Inter Project Authors |
 | `source-serif-4-latin-variable.woff2`, `source-serif-4-latin-italic-variable.woff2` | Source Serif 4 (variable, 100–900) | Adobe Fonts | © Adobe (Frank Grießhammer) |
 | `merriweather-v32-latin-regular.woff2`, `merriweather-v32-latin-700.woff2` | Merriweather (400, 700) | Sorkin Type | © Sorkin Type Co |
 
 Files are the **latin subset** (woff2), distributed via the Fontsource project. Referenced from `src/styles/global.css` via `@font-face`; the two primary faces are `<link rel="preload">`-ed in `BaseLayout.astro` and `SlideLayout.astro`.
+
+`inter-arrows-variable.woff2` is an extra glyphs-only subset (the arrows block U+2190–2199) cut from the upstream InterVariable, mapped to the same `"Inter"` family via a `unicode-range`-scoped `@font-face`. It exists because the latin subset omits arrow glyphs, which made the link arrows (↗ / →) fall back to a system font and render inconsistently across browsers/OSes.

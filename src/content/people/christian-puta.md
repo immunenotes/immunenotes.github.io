@@ -24,7 +24,7 @@ publications:
         - text: "<a href=\"/publications\">List of selected publications&nbsp;&rarr;</a> "
 profiles:
     - name: "Google Scholar"
-      href: "https://scholar.google.de/citations?hl=de&user=49aca7gAAAAJ"
+      href: "https://scholar.google.com/citations?user=49aca7gAAAAJ"
     - name: "ORCID"
       href: "https://orcid.org/0000-0003-3936-4605"
     - name: "ResearchGate"

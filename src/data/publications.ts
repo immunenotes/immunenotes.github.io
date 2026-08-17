@@ -16,6 +16,13 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    "authors": "Röhr W, Simon R, Kirschke S, von Loga I, Putrino D, Bloch W, Reuken PA, Dudziak D, Kipp AP, Stallmach A, Puta C",
+    "year": 2026,
+    "body": "Acute effects of the 1-minute sit-to-stand test (STST) on immune-metabolic stress indices. Sci Rep 16(1): 25484.",
+    "linkText": "doi: 10.1038/s41598-026-66330-6",
+    "url": "https://doi.org/10.1038/s41598-026-66330-6"
+  },
+  {
     "authors": "Schrenk SJ, Bang C, Best L, Dost T, Flor S, Frahm C, Gaser C, Hamdan RA, Herbsleb M, Kaleta C, Kattlun F, Müller HJ, Puta C, Radscheidt M, Ruiz-Rizzo AL, Scherag A, Steidten T, Witte OW, Brodoehl S, Finke K",
     "year": 2026,
     "body": "Impact of an online-guided physical activity intervention on cognition, resting-state brain connectivity, and the gut microbiome in healthy older adults—a randomized controlled trial. GeroScience. Epub ahead of print.",

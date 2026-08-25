@@ -4,6 +4,7 @@ role: "Head of the Exercise Immunology and Health Lab · apl. Professor for Spor
 mail:
     - "christian.puta@uni-jena.de"
     - "christian.puta@med.uni-jena.de"
+phone: "03641 945 607"
 image: "/people/christian-puta.jpg"
 alt: "Christian Puta"
 featured: true

@@ -8,6 +8,10 @@ import { glob } from "astro/loaders";
  *   name      required — full display name. Also used as the sort key
  *             (alphabetical by first name, via locale-aware compare).
  *   role      optional — short role / affiliation label
+ *   mail      optional — one address or a list of addresses
+ *   phone     optional — one phone number or a list of them. Written as it
+ *             should be displayed (e.g. "+49 1234 5-67890"); the tel: link
+ *             is derived automatically.
  *   image     optional — path to a portrait photo (e.g. "/people/puta.jpg")
  *   alt       optional — alt text for the photo (defaults to the name)
  *   featured  optional — if true, the person is pinned to the top of the
@@ -67,6 +71,7 @@ const people = defineCollection({
     name: z.string(),
     role: z.string().optional(),
     mail: z.union([z.string(), z.array(z.string())]).optional(),
+    phone: z.union([z.string(), z.array(z.string())]).optional(),
     image: z.string().optional(),
     alt: z.string().optional(),
     featured: z.boolean().default(false),

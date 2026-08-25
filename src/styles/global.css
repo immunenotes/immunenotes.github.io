@@ -395,16 +395,19 @@ hr {
   margin: 0 !important;
   font-style: italic;
 }
-.person__mail {
+.person__mail,
+.person__phone {
   color: var(--fg-muted);
   font-size: 0.88rem;
   font-style: italic;
   margin: -0.1rem 0 0 !important;
 }
-.person__mail a {
+.person__mail a,
+.person__phone a {
   color: var(--fg-muted);
 }
-.person__mail a:hover {
+.person__mail a:hover,
+.person__phone a:hover {
   color: var(--fg);
 }
 /* Profiles (Google Scholar, ORCID, …) — sit at the very top of the person's

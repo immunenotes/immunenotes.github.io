@@ -2,6 +2,7 @@
 name: "Marco Herbsleb"
 role: "PostDoc · Clinical Exercise Physiology"
 mail: "marco.herbsleb@uni-jena.de"
+phone: "03641 945 663"
 bio:
     items:
         - text: "Diploma in Sport Science (Prevention and Rehabilitation), Department of Sports Medicine and Health Promotion, Friedrich Schiller University Jena (2003)"

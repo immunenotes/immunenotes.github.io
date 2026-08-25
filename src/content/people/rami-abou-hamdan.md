@@ -6,6 +6,7 @@ authorKey:
     - "Abou Hamdan R"
     - "Abou-Hamdan R"
 mail: "rami.abou-hamdan@uni-jena.de"
+phone: "03641 945 655"
 bio:
     items:
         - text: "Diploma studies in Sport Science, Tishreen University, Latakia (2000–2004)"

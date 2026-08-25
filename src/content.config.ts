@@ -42,7 +42,8 @@ import { glob } from "astro/loaders";
  *             publications data by matching "last name + first initial"
  *             derived from `name`. Set `authorKey` (e.g. "Braun-Dullaeus R")
  *             when the derived key is wrong (compound surname, differing
- *             initial). Ignored if a manual `publications` block is given.
+ *             initial), or a list of forms when the person is cited in more
+ *             than one way. Ignored if a manual `publications` block is given.
  *
  * The body of the .md file is the biography and is rendered inside the
  * <Person> component.
@@ -73,7 +74,7 @@ const people = defineCollection({
     bio: personSection.optional(),
     teaching: personSection.optional(),
     publications: personSection.optional(),
-    authorKey: z.string().optional(),
+    authorKey: z.union([z.string(), z.array(z.string())]).optional(),
     profiles: z
       .array(z.object({ name: z.string(), href: z.string() }))
       .optional(),

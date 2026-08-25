@@ -121,6 +121,13 @@ export const publications: Publication[] = [
     "url": "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1392946/full"
   },
   {
+    "authors": "Warneke K, Oraže M, Plöschberger G, Herbsleb M, Afonso J, Wallot S",
+    "year": 2025,
+    "body": "When Testing Becomes Learning — Underscoring the Relevance of Habituation to Improve Internal Validity of Common Neurocognitive Tests. European Journal of Neuroscience 61(8): e70117.",
+    "linkText": "doi: 10.1111/ejn.70117",
+    "url": "https://doi.org/10.1111/ejn.70117"
+  },
+  {
     "authors": "Zhang B, Grau M, Puta C, Arvidsson D, Arz M, Böcker J, Chilibeck P, Forbes SC, Kaiser-Stolz C, McLaurin N, Miyamoto-Mikami E, Pesta D, Pustowalow W, Tanaka H, Rittweger J, Bloch W",
     "year": 2025,
     "body": "Post-COVID-19 Condition in Track and Field Master Athletes: Severity, Symptoms, and Associations With Quality of Life and C-Reactive Protein Levels. Scandinavian Journal of Medicine & Science in Sports 35(7): e70106.",
@@ -133,6 +140,13 @@ export const publications: Publication[] = [
     "body": "The acute effects of pre- and mid-exercise carbohydrate ingestion on the immunoregulatory stress hormone release in experienced endurance athletes — a systematic review. Frontiers in Sports and Active Living 6: 1264814.",
     "linkText": "doi: 10.3389/fspor.2024.1264814",
     "url": "https://www.frontiersin.org/articles/10.3389/fspor.2024.1264814/full"
+  },
+  {
+    "authors": "Geisler M, de la Cruz F, Makris N, Billah T, Zhang F, Rathi Y, O'Donnell LJ, Bouix S, Herbsleb M, Bär K-J, Kikinis Z, Weiss T",
+    "year": 2024,
+    "body": "Brains of endurance athletes differ in the association areas but not in the primary areas. Psychophysiology 61: e14483.",
+    "linkText": "doi: 10.1111/psyp.14483",
+    "url": "https://doi.org/10.1111/psyp.14483"
   },
   {
     "authors": "Haunhorst S, Dudziak D, Scheibenbogen C, Seifert M, Sotzny F, Finke C, Behrends U, Aden K, Schreiber S, Brockmann D, Burggraf P, Bloch W, Ellert C, Ramoji A, Popp J, Reuken P, Walter M, Stallmach A, Puta C",
@@ -252,5 +266,96 @@ export const publications: Publication[] = [
     "body": "Covid Pandemic Effects on the Physical Fitness of Primary School Children: Results of the German EMOTIKON Project. Sports Med Open 9(1): 77.",
     "linkText": "doi: 10.1186/s40798-023-00624-1",
     "url": "https://doi.org/10.1186/s40798-023-00624-1"
+  },
+  {
+    "authors": "de la Cruz F, Geisler M, Schumann A, Herbsleb M, Kikinis Z, Weiss T, Bär KJ",
+    "year": 2022,
+    "body": "Central autonomic network alterations in male endurance athletes. Scientific Reports 12: 16743.",
+    "linkText": "doi: 10.1038/s41598-022-20064-3",
+    "url": "https://doi.org/10.1038/s41598-022-20064-3"
+  },
+  {
+    "authors": "Herbsleb M",
+    "year": 2022,
+    "body": "Bewegung ins Leben bringen – Sport und Depression. physiopraxis 20(07/08): 48-51.",
+    "linkText": "thieme-connect.com/products/ejournals/pdf/10.1055/a-1802-3235.pdf",
+    "url": "https://www.thieme-connect.com/products/ejournals/pdf/10.1055/a-1802-3235.pdf"
+  },
+  {
+    "authors": "Herbsleb M",
+    "year": 2022,
+    "body": "Sporttherapie bei Depression. VPT Magazin 08(03): 16-18.",
+    "linkText": "doi: 10.1055/s-0042-1745926",
+    "url": "https://doi.org/10.1055/s-0042-1745926"
+  },
+  {
+    "authors": "Herbsleb M, Ziezio R, Stanek FD, Donath L, Puta C",
+    "year": 2022,
+    "body": "Prävention von haltungs- und inaktivitätsbedingten Funktionsstörungen: Prinzipien und Übungsbeispiele. Muskuloskelettale Physiotherapie 26(02): 87-95.",
+    "linkText": "doi: 10.1055/a-1731-6947",
+    "url": "https://doi.org/10.1055/a-1731-6947"
+  },
+  {
+    "authors": "Geisler M, Ritter C, Herbsleb M, Bär K-J, Weiss T",
+    "year": 2021,
+    "body": "Neural mechanisms of pain processing differ between endurance athletes and nonathletes: A functional connectivity magnetic resonance imaging study. Human Brain Mapping: 1-16.",
+    "linkText": "doi: 10.1002/hbm.25659",
+    "url": "https://doi.org/10.1002/hbm.25659"
+  },
+  {
+    "authors": "Geisler M, Rizzoni C, Makris N, Pasternak O, Rathi Y, Bouix S, Herbsleb M, Bär K-J, Weiss T, Kikinis Z",
+    "year": 2021,
+    "body": "Microstructural alterations in medial forebrain bundle are associated with interindividual pain sensitivity. Human Brain Mapping 42: 1130-1137.",
+    "linkText": "doi: 10.1002/hbm.25281",
+    "url": "https://doi.org/10.1002/hbm.25281"
+  },
+  {
+    "authors": "Herbsleb M, Schumann A, Lehmann L, Gabriel HHW, Bär KJ",
+    "year": 2020,
+    "body": "Cardio-Respiratory Fitness and Autonomic Function in Patients with Major Depressive Disorder. Front Psychiatry 10: 980. eCollection 2019.",
+    "linkText": "doi: 10.3389/fpsyt.2019.00980",
+    "url": "https://doi.org/10.3389/fpsyt.2019.00980"
+  },
+  {
+    "authors": "Scharschmidt R, Derlien S, Siebert T, Herbsleb M, Stutzig N",
+    "year": 2020,
+    "body": "Intraday and interday reliability of pelvic floor muscles electromyography in continent woman. Neurourol Urodyn 39: 271-278.",
+    "linkText": "doi: 10.1002/nau.24187",
+    "url": "https://doi.org/10.1002/nau.24187"
+  },
+  {
+    "authors": "Herbsleb M, Keller-Varady K, Wobrock T, Hasan A, Schmitt A, Falkai P, Gabriel HHW, Bär KJ, Malchow B",
+    "year": 2019,
+    "body": "The Influence of Continuous Exercising on Chronotropic Incompetence in Multi-Episode Schizophrenia. Frontiers in Psychiatry 10: 90.",
+    "linkText": "doi: 10.3389/fpsyt.2019.00090",
+    "url": "https://doi.org/10.3389/fpsyt.2019.00090"
+  },
+  {
+    "authors": "Kurz E, Herbsleb M, Gabriel HHW, Hilberg T",
+    "year": 2019,
+    "body": "Posturographic and ankle muscle activation characteristics in patients with haemophilia. Haemophilia 25: 136-143.",
+    "linkText": "doi: 10.1111/hae.13650",
+    "url": "https://doi.org/10.1111/hae.13650"
+  },
+  {
+    "authors": "Herbsleb M, Schumann A, Malchow B, Puta C, Schulze PC, Gabriel HW, Bär KJ",
+    "year": 2018,
+    "body": "Chronotropic incompetence of the heart is associated with exercise intolerance in patients with schizophrenia. Schizophrenia Research 197: 162-169.",
+    "linkText": "doi: 10.1016/j.schres.2018.02.020",
+    "url": "https://doi.org/10.1016/j.schres.2018.02.020"
+  },
+  {
+    "authors": "Abou Hamdan R, Schumann A, Herbsleb M, Schmidt M, Rose G, Bär K-J, Gabriel H",
+    "year": 2016,
+    "body": "Determining cardiac vagal threshold from short term heart rate complexity. Current Directions in Biomedical Engineering 2(1): 155-159.",
+    "linkText": "doi: 10.1515/cdbme-2016-0036",
+    "url": "https://doi.org/10.1515/cdbme-2016-0036"
+  },
+  {
+    "authors": "Herbsleb M, Abou-Hamdan R, Puta C, Donath L, Kobelt R, Stanek FD, Hilberg T, Gabriel HHW",
+    "year": 2012,
+    "body": "Schwere und mittelschwere Hämophilie unter prophylaktischer Substitutionstherapie: Maximale Drehmomente der Knieextensoren und Knieflexoren bei Kindern und Jugendlichen. Hamostaseologie 32 Suppl 1: S62-69.",
+    "linkText": "PMID: 22961403",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/22961403/"
   }
 ];

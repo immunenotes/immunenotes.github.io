@@ -10,7 +10,8 @@ import type { Publication } from "@/data/publications";
  *
  * A person can override the derived key via the `authorKey` frontmatter field
  * (e.g. compound surnames, or a citation initial that differs from the display
- * first name).
+ * first name). It also takes a list, for people whose name is cited in more
+ * than one form (e.g. "Hamdan RA" vs "Abou Hamdan R" vs "Abou-Hamdan R").
  */
 export interface AuthorKey {
   last: string;
@@ -37,25 +38,36 @@ export function citationAuthors(pub: Publication): AuthorKey[] {
     .filter((a): a is AuthorKey => a !== null);
 }
 
-/** Derive a person's match key from their display name, or an explicit override. */
-export function personAuthorKey(name: string, override?: string): AuthorKey | null {
-  if (override) return parseAuthorToken(override);
+/**
+ * Derive a person's match keys from their display name, or from an explicit
+ * override (a single citation form or a list of them).
+ */
+export function personAuthorKeys(
+  name: string,
+  override?: string | string[]
+): AuthorKey[] {
+  if (override) {
+    const forms = Array.isArray(override) ? override : [override];
+    return forms.map(parseAuthorToken).filter((k): k is AuthorKey => k !== null);
+  }
   const parts = name.trim().split(/\s+/);
-  if (parts.length < 2) return null;
-  return { last: parts[parts.length - 1], initial: parts[0][0] };
+  if (parts.length < 2) return [];
+  return [{ last: parts[parts.length - 1], initial: parts[0][0] }];
 }
 
 /** Publications a person (co-)authored, newest first. */
 export function publicationsForPerson(
   pubs: Publication[],
   name: string,
-  override?: string
+  override?: string | string[]
 ): Publication[] {
-  const key = personAuthorKey(name, override);
-  if (!key) return [];
+  const keys = personAuthorKeys(name, override);
+  if (keys.length === 0) return [];
   return pubs
     .filter((p) =>
-      citationAuthors(p).some((a) => a.last === key.last && a.initial === key.initial)
+      citationAuthors(p).some((a) =>
+        keys.some((key) => a.last === key.last && a.initial === key.initial)
+      )
     )
     .slice()
     .sort((a, b) => b.year - a.year);
@@ -81,7 +93,7 @@ export function toPersonItem(pub: Publication) {
  */
 export function personPublications(
   pubs: Publication[],
-  data: { name: string; authorKey?: string; publications?: unknown }
+  data: { name: string; authorKey?: string | string[]; publications?: unknown }
 ) {
   const matched = publicationsForPerson(pubs, data.name, data.authorKey);
   if (data.publications) {

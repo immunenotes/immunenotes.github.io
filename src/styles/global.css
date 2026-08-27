@@ -1525,7 +1525,7 @@ hr {
 .publications {
   margin-top: 1.5rem;
   /* Generous breathing room before any following section heading
-     (e.g. "Other publications"). */
+     (e.g. "Publication profiles"). */
   margin-bottom: 4rem;
 }
 
@@ -1538,11 +1538,31 @@ hr {
   color: var(--fg);
 }
 
-.publications > p:first-child {
-  padding-top: 0;
+.publications > p:last-child {
+  border-bottom: none;
 }
 
-.publications > p:last-child {
+/* Year subheadings splitting the list into groups. Sans-serif, letter-spaced
+   and muted so the numeral reads as a divider label rather than a section
+   title, sitting on a solid rule that opens each group. */
+.publications__year {
+  font-family: var(--font-sans);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--fg-muted);
+  margin: 2.5rem 0 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--fg);
+}
+
+.publications__year:first-child {
+  margin-top: 0;
+}
+
+/* The last entry of a group closes on the next year's rule, so drop its own
+   hairline — same treatment the final entry of the list already gets. */
+.publications > p:has(+ .publications__year) {
   border-bottom: none;
 }
 

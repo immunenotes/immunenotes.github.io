@@ -5,6 +5,14 @@
  * paragraph "Authors (Year). Title. Source. <DOI link>", styled by the
  * `.publications` rules in global.css (the trailing link gets a ↗).
  *
+ * The DOI link carries target/rel explicitly: rehype-external-links (see
+ * astro.config.mjs) only rewrites anchors that come from markdown/MDX, and
+ * these are emitted by the component, so they bypass that pipeline.
+ *
+ * Entries are grouped under a year subheading. Groups follow the order in
+ * which the years appear in `items`, so the caller's sort decides whether
+ * the page runs newest- or oldest-first.
+ *
  * Props:
  *   items — publications to render (already ordered by the caller).
  */
@@ -15,13 +23,25 @@ interface Props {
 }
 
 const { items } = Astro.props;
+
+const groups: { year: number; items: Publication[] }[] = [];
+for (const p of items) {
+  const current = groups.at(-1);
+  if (current?.year === p.year) current.items.push(p);
+  else groups.push({ year: p.year, items: [p] });
+}
 ---
 
 <div class="publications">
-  {items.map((p) => (
-    <p>
-      {p.authors} ({p.year}). {p.body}{" "}
-      <strong><a href={p.url}>{p.linkText}</a></strong>
-    </p>
+  {groups.map((group) => (
+    <>
+      <h2 class="publications__year">{group.year}</h2>
+      {group.items.map((p) => (
+        <p>
+          {p.authors} ({p.year}). {p.body}{" "}
+          <strong><a href={p.url} target="_blank" rel="noopener noreferrer">{p.linkText}</a></strong>
+        </p>
+      ))}
+    </>
   ))}
 </div>

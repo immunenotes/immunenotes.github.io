@@ -58,6 +58,27 @@ export const publications: Publication[] = [
     "url": "https://www.sciencedirect.com/science/article/pii/S0946672X26000143?via%3Dihub"
   },
   {
+    "authors": "Geisler M, Herbsleb M, de la Cruz F, von Au S, Schumann A, Croy I, Bär KJ",
+    "year": 2026,
+    "body": "Profound neuronal differences during exercise-induced hypoalgesia between athletes and non-athletes revealed by functional near-infrared spectroscopy. J Physiol 604(7): 2738-2756.",
+    "linkText": "doi: 10.1113/JP289766",
+    "url": "https://doi.org/10.1113/JP289766"
+  },
+  {
+    "authors": "Warneke K, Lebelt N, Liebermann F, Jöst B, Herbsleb M",
+    "year": 2026,
+    "body": "Reliability and device objectivity in oscillatory blood pressure measurement — a measurement error analysis to inform clinical decision making. BMC Cardiovasc Disord 26(1): 593.",
+    "linkText": "doi: 10.1186/s12872-026-06262-1",
+    "url": "https://doi.org/10.1186/s12872-026-06262-1"
+  },
+  {
+    "authors": "Warneke K, Oraze M, Herbsleb M, Afonso J, Wallot S",
+    "year": 2026,
+    "body": "Do sex differences influence test habituation and internal data validity in neurocognitive testing? A blinded measurement error analysis. Neuroscience 593: 106-121.",
+    "linkText": "doi: 10.1016/j.neuroscience.2025.12.007",
+    "url": "https://doi.org/10.1016/j.neuroscience.2025.12.007"
+  },
+  {
     "authors": "Bähr F, Wöhrl T, Teich P, Puta C, Kliegl R",
     "year": 2025,
     "body": "Impact of age, sex, body constitution, and the COVID-19 pandemic on the physical fitness of 38,084 German primary school children. Scientific Reports 15: 11300.",
@@ -275,6 +296,34 @@ export const publications: Publication[] = [
     "url": "https://doi.org/10.1038/s41598-022-20064-3"
   },
   {
+    "authors": "Haunhorst S, Bloch W, Ellert C, Puta C",
+    "year": 2022,
+    "body": "Recovered, but not healthy – Long Covid and the effects on physical performance. Sportphysio 10(03): 111-116.",
+    "linkText": "doi: 10.1055/a-1841-8209",
+    "url": "https://doi.org/10.1055/a-1841-8209"
+  },
+  {
+    "authors": "Haunhorst S, Bloch W, Javelle F, Krüger K, Baumgart S, Drube S, Lemhöfer C, Reuken P, Stallmach A, Müller M, Zielinski CE, Pletz MW, Gabriel HHW, Puta C",
+    "year": 2022,
+    "body": "A scoping review of regulatory T cell dynamics in convalescent COVID-19 patients – indications for their potential involvement in the development of Long COVID? Front Immunol 13: 1070994.",
+    "linkText": "doi: 10.3389/fimmu.2022.1070994",
+    "url": "https://doi.org/10.3389/fimmu.2022.1070994"
+  },
+  {
+    "authors": "Haunhorst S, Bloch W, Ringleb M, Fennen L, Wagner H, Gabriel HHW, Puta C",
+    "year": 2022,
+    "body": "Acute effects of heavy resistance exercise on biomarkers of neuroendocrine-immune regulation in healthy adults: a systematic review. Exerc Immunol Rev 28: 36-52.",
+    "linkText": "eir-isei.de/2022/eir-2022-036-article.pdf",
+    "url": "http://eir-isei.de/2022/eir-2022-036-article.pdf"
+  },
+  {
+    "authors": "Haunhorst S, Bloch W, Wagner H, Ellert C, Krüger K, Vilser DC, Finke K, Reuken P, Pletz MW, Stallmach A, Puta C",
+    "year": 2022,
+    "body": "Long COVID: a narrative review of the clinical aftermaths of COVID-19 with a focus on the putative pathophysiology and aspects of physical activity. Oxford Open Immunology 3(1): iqac006.",
+    "linkText": "doi: 10.1093/oxfimm/iqac006",
+    "url": "https://doi.org/10.1093/oxfimm/iqac006"
+  },
+  {
     "authors": "Herbsleb M",
     "year": 2022,
     "body": "Bewegung ins Leben bringen – Sport und Depression. physiopraxis 20(07/08): 48-51.",
@@ -296,18 +345,53 @@ export const publications: Publication[] = [
     "url": "https://doi.org/10.1055/a-1731-6947"
   },
   {
-    "authors": "Geisler M, Ritter C, Herbsleb M, Bär K-J, Weiss T",
+    "authors": "Kullik L, Kellmann M, Puta C, Jakowski S",
+    "year": 2022,
+    "body": "Sleep Behavior and Training Load in Adolescent Elite Basketball Players During Covid-19 Pandemic Development. Chronobiology International 39(11): 1454-1464.",
+    "linkText": "doi: 10.1080/07420528.2022.2117051",
+    "url": "https://doi.org/10.1080/07420528.2022.2117051"
+  },
+  {
+    "authors": "Markov A, Chaabene H, Hauser L, Behm S, Bloch W, Puta C, Granacher U",
+    "year": 2022,
+    "body": "Acute Effects of Aerobic Exercise on Muscle Strength and Power in Trained Male Individuals: A Systematic Review with Meta-analysis. Sports Medicine 52(6): 1385-1398.",
+    "linkText": "doi: 10.1007/s40279-021-01615-6",
+    "url": "https://doi.org/10.1007/s40279-021-01615-6"
+  },
+  {
+    "authors": "Stallmach A, Katzer K, Besteher B, Finke K, Giszas B, Gremme Y, Abou Hamdan R, Lehmann-Pohl K, Legen M, Lewejohann JC, Machnik M, Moshmosh Alsabbagh M, Nardini L, Puta C, Stallmach Z, Reuken PA",
+    "year": 2022,
+    "body": "Mobile primary care for post-COVID patients in rural areas: a proof-of-concept study. Infection 13: 1-9.",
+    "linkText": "doi: 10.1007/s15010-022-01881-0",
+    "url": "https://doi.org/10.1007/s15010-022-01881-0"
+  },
+  {
+    "authors": "Geisler M, Ritter A, Herbsleb M, Bär K-J, Weiss T",
     "year": 2021,
     "body": "Neural mechanisms of pain processing differ between endurance athletes and nonathletes: A functional connectivity magnetic resonance imaging study. Human Brain Mapping: 1-16.",
     "linkText": "doi: 10.1002/hbm.25659",
     "url": "https://doi.org/10.1002/hbm.25659"
   },
   {
-    "authors": "Geisler M, Rizzoni C, Makris N, Pasternak O, Rathi Y, Bouix S, Herbsleb M, Bär K-J, Weiss T, Kikinis Z",
+    "authors": "Geisler M, Rizzoni E, Makris N, Pasternak O, Rathi Y, Bouix S, Herbsleb M, Bär K-J, Weiss T, Kikinis Z",
     "year": 2021,
     "body": "Microstructural alterations in medial forebrain bundle are associated with interindividual pain sensitivity. Human Brain Mapping 42: 1130-1137.",
     "linkText": "doi: 10.1002/hbm.25281",
     "url": "https://doi.org/10.1002/hbm.25281"
+  },
+  {
+    "authors": "Puta C, Haunhorst S, Bloch W",
+    "year": 2021,
+    "body": "Post-acute Covid-19 (“Long-covid”): Persistent symptoms, possible causes and symptom-driven post-acute Covid-19 management to regain physical performance (Scoping Review). Sports Orthopaedics and Traumatology 37(3): 214-225.",
+    "linkText": "doi: 10.1016/j.orthtr.2021.08.006",
+    "url": "https://doi.org/10.1016/j.orthtr.2021.08.006"
+  },
+  {
+    "authors": "Steidten T, Baumbach P, May R, Gabriel B, Herbsleb M, Markov A, Granacher U, Kellmann M, Bloch W, Gabriel HHW, Puta C",
+    "year": 2021,
+    "body": "Overnight Immune Regulation and Subjective Measures of Sleep: A Three Night Observational Study in Adolescent Track and Field Athletes. Front Sports Act Living 3: 689805.",
+    "linkText": "doi: 10.3389/fspor.2021.689805",
+    "url": "https://doi.org/10.3389/fspor.2021.689805"
   },
   {
     "authors": "Herbsleb M, Schumann A, Lehmann L, Gabriel HHW, Bär KJ",
@@ -315,6 +399,13 @@ export const publications: Publication[] = [
     "body": "Cardio-Respiratory Fitness and Autonomic Function in Patients with Major Depressive Disorder. Front Psychiatry 10: 980. eCollection 2019.",
     "linkText": "doi: 10.3389/fpsyt.2019.00980",
     "url": "https://doi.org/10.3389/fpsyt.2019.00980"
+  },
+  {
+    "authors": "Lesinski M, Schmelcher A, Herz M, Puta C, Gabriel H, Arampatzis A, Laube G, Büsch D, Granacher U",
+    "year": 2020,
+    "body": "Maturation-, age- and sex-specific anthropometric and physical fitness percentiles of German elite young athletes. PLoS One 15(8): e0237423.",
+    "linkText": "doi: 10.1371/journal.pone.0237423",
+    "url": "https://doi.org/10.1371/journal.pone.0237423"
   },
   {
     "authors": "Scharschmidt R, Derlien S, Siebert T, Herbsleb M, Stutzig N",
@@ -338,6 +429,13 @@ export const publications: Publication[] = [
     "url": "https://doi.org/10.1111/hae.13650"
   },
   {
+    "authors": "Prieske O, Chaabene H, Puta C, Behm DG, Büsch D, Granacher U",
+    "year": 2019,
+    "body": "Effects of Drop Height on Jump Performance in Male and Female Elite Adolescent Handball Players. Int J Sports Physiol Perform 14(5): 674-680.",
+    "linkText": "doi: 10.1123/ijspp.2018-0482",
+    "url": "https://doi.org/10.1123/ijspp.2018-0482"
+  },
+  {
     "authors": "Herbsleb M, Schumann A, Malchow B, Puta C, Schulze PC, Gabriel HW, Bär KJ",
     "year": 2018,
     "body": "Chronotropic incompetence of the heart is associated with exercise intolerance in patients with schizophrenia. Schizophrenia Research 197: 162-169.",
@@ -352,10 +450,59 @@ export const publications: Publication[] = [
     "url": "https://doi.org/10.1515/cdbme-2016-0036"
   },
   {
+    "authors": "Herbsleb M, Mühlhaus T, Bär KJ",
+    "year": 2014,
+    "body": "Differential cardiac effects of aerobic interval training versus moderate continuous training in a patient with schizophrenia: a case report. Front Psychiatry 5: 119.",
+    "linkText": "doi: 10.3389/fpsyt.2014.00119",
+    "url": "https://doi.org/10.3389/fpsyt.2014.00119"
+  },
+  {
+    "authors": "Herbsleb M, Schulz S, Ostermann S, Donath L, Eisenträger D, Puta C, Voss A, Gabriel HW, Bär KJ",
+    "year": 2013,
+    "body": "The relation of autonomic function to physical fitness in patients suffering from alcohol dependence. Drug Alcohol Depend 132(3): 505-512.",
+    "linkText": "doi: 10.1016/j.drugalcdep.2013.03.016",
+    "url": "https://doi.org/10.1016/j.drugalcdep.2013.03.016"
+  },
+  {
+    "authors": "Ostermann S, Herbsleb M, Schulz S, Donath L, Berger S, Eisenträger D, Siebert T, Müller HJ, Puta C, Voss A, Gabriel HW, Koch K, Bär KJ",
+    "year": 2013,
+    "body": "Exercise reveals the interrelation of physical fitness, inflammatory response, psychopathology, and autonomic function in patients with schizophrenia. Schizophr Bull 39(5): 1139-1149.",
+    "linkText": "doi: 10.1093/schbul/sbs085",
+    "url": "https://doi.org/10.1093/schbul/sbs085"
+  },
+  {
     "authors": "Herbsleb M, Abou-Hamdan R, Puta C, Donath L, Kobelt R, Stanek FD, Hilberg T, Gabriel HHW",
     "year": 2012,
     "body": "Schwere und mittelschwere Hämophilie unter prophylaktischer Substitutionstherapie: Maximale Drehmomente der Knieextensoren und Knieflexoren bei Kindern und Jugendlichen. Hamostaseologie 32 Suppl 1: S62-69.",
     "linkText": "PMID: 22961403",
     "url": "https://pubmed.ncbi.nlm.nih.gov/22961403/"
+  },
+  {
+    "authors": "von Mackensen S, Czepa D, Herbsleb M, Hilberg T",
+    "year": 2010,
+    "body": "Development and validation of a new questionnaire for the assessment of subjective physical performance in adult patients with haemophilia — the HEP-Test-Q. Haemophilia 16(1): 170-178.",
+    "linkText": "doi: 10.1111/j.1365-2516.2009.02112.x",
+    "url": "https://doi.org/10.1111/j.1365-2516.2009.02112.x"
+  },
+  {
+    "authors": "Herbsleb M, Hilberg T",
+    "year": 2009,
+    "body": "Maximal and submaximal endurance performance in adults with severe haemophilia. Haemophilia 15(1): 114-121.",
+    "linkText": "doi: 10.1111/j.1365-2516.2008.01860.x",
+    "url": "https://doi.org/10.1111/j.1365-2516.2008.01860.x"
+  },
+  {
+    "authors": "Hilberg T, Herbsleb M, Puta C, Gabriel HH, Schramm W",
+    "year": 2003,
+    "body": "Physical training increases isometric muscular strength and proprioceptive performance in haemophilic subjects. Haemophilia 9(1): 86-93.",
+    "linkText": "doi: 10.1046/j.1365-2516.2003.00679.x",
+    "url": "https://doi.org/10.1046/j.1365-2516.2003.00679.x"
+  },
+  {
+    "authors": "Hilberg T, Herbsleb M, Gabriel HH, Jeschke D, Schramm W",
+    "year": 2001,
+    "body": "Proprioception and isometric muscular strength in haemophilic subjects. Haemophilia 7(6): 582-588.",
+    "linkText": "doi: 10.1046/j.1365-2516.2001.00563.x",
+    "url": "https://doi.org/10.1046/j.1365-2516.2001.00563.x"
   }
 ];

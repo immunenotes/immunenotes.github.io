@@ -1,28 +1,40 @@
 ---
 /**
- * PublicationList — renders the shared publications data as the editorial
- * hairline-separated list used on the /publications page. Each entry is a
- * paragraph "Authors (Year). Title. Source. <DOI link>", styled by the
- * `.publications` rules in global.css (the trailing link gets a ↗).
+ * PublicationList — the searchable, year-grouped publication browser used on
+ * the /publications page.
+ *
+ * Layout: a search field and a status/toggle toolbar on top, then one
+ * <Disclosure variant="panel"> per year (year as the label, entry count in the
+ * pill), each holding the editorial hairline-separated citation list. Styling
+ * lives in the `.publications` block of global.css.
+ *
+ * Everything is rendered server-side and the script below only *hides* things,
+ * so the complete list stays in the document when JS is unavailable (good for
+ * search engines, and the native <details> still expand by hand). For the same
+ * reason the toolbar ships `hidden` and is revealed by the script — a dead
+ * search box would be worse than none.
  *
  * The DOI link carries target/rel explicitly: rehype-external-links (see
  * astro.config.mjs) only rewrites anchors that come from markdown/MDX, and
  * these are emitted by the component, so they bypass that pipeline.
  *
- * Entries are grouped under a year subheading. Groups follow the order in
- * which the years appear in `items`, so the caller's sort decides whether
- * the page runs newest- or oldest-first.
+ * Groups follow the order in which the years appear in `items`, so the
+ * caller's sort decides whether the page runs newest- or oldest-first.
  *
  * Props:
- *   items — publications to render (already ordered by the caller).
+ *   items     — publications to render (already ordered by the caller).
+ *   openYears — how many leading year groups start expanded (default 1), so
+ *               the page opens with content rather than a wall of closed rows.
  */
+import Disclosure from "@components/Disclosure.astro";
 import type { Publication } from "@/data/publications";
 
 interface Props {
   items: Publication[];
+  openYears?: number;
 }
 
-const { items } = Astro.props;
+const { items, openYears = 1 } = Astro.props;
 
 const groups: { year: number; items: Publication[] }[] = [];
 for (const p of items) {
@@ -30,18 +42,317 @@ for (const p of items) {
   if (current?.year === p.year) current.items.push(p);
   else groups.push({ year: p.year, items: [p] });
 }
+
 ---
 
-<div class="publications">
-  {groups.map((group) => (
-    <>
-      <h2 class="publications__year">{group.year}</h2>
-      {group.items.map((p) => (
-        <p>
-          {p.authors} ({p.year}). {p.body}{" "}
-          <strong><a href={p.url} target="_blank" rel="noopener noreferrer">{p.linkText}</a></strong>
-        </p>
-      ))}
-    </>
-  ))}
+<div class="publications" data-publications data-total={items.length}>
+  <div class="pub-toolbar" hidden data-pub-toolbar>
+    <div class="pub-search">
+      <svg class="pub-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+      </svg>
+      <input
+        class="pub-search__input"
+        type="search"
+        placeholder="Search authors, titles, journals, years…"
+        aria-label="Search publications"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-pub-input
+      />
+      <button class="pub-search__clear" type="button" hidden aria-label="Clear search" data-pub-clear>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="pub-toolbar__row">
+      <p class="pub-status" role="status" data-pub-status>{items.length} publications</p>
+      <button class="pub-toggle" type="button" data-pub-toggle>Expand all</button>
+    </div>
+  </div>
+
+  <div class="pub-groups">
+    {groups.map((group, i) => (
+      <div class="pub-group" id={`year-${group.year}`} data-pub-group>
+        <Disclosure
+          label={String(group.year)}
+          count={group.items.length}
+          variant="panel"
+          open={i < openYears}
+          class="pub-group__disclosure"
+        >
+          {group.items.map((p, j) => (
+            <p class:list={["pub-item", j === 0 && "pub-item--first"]} data-pub-item>
+              {p.authors} ({p.year}). {p.body}{" "}
+              <strong><a href={p.url} target="_blank" rel="noopener noreferrer">{p.linkText}</a></strong>
+            </p>
+          ))}
+        </Disclosure>
+      </div>
+    ))}
+  </div>
+
+  <p class="pub-empty" hidden data-pub-empty>No publications match your search.</p>
 </div>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-publications]");
+
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>("[data-pub-input]")!;
+    const clearBtn = root.querySelector<HTMLButtonElement>("[data-pub-clear]")!;
+    const toolbar = root.querySelector<HTMLElement>("[data-pub-toolbar]")!;
+    const statusEl = root.querySelector<HTMLElement>("[data-pub-status]")!;
+    const toggleBtn = root.querySelector<HTMLButtonElement>("[data-pub-toggle]")!;
+    const emptyEl = root.querySelector<HTMLElement>("[data-pub-empty]")!;
+
+    const TOTAL = Number(root.dataset.total ?? 0);
+
+    /* ---- text folding -------------------------------------------------
+       Citations carry diacritics and non-ASCII letters (Nieß, Müller,
+       Fluge Ø). Each entry is indexed twice so both plausible spellings of
+       a name find it: once with the diacritics stripped ("muller") and once
+       with the German expansion ("mueller"). Queries are folded the
+       stripped way, which matches either index.
+
+       fold() also returns a map from folded character index back to source
+       character index. Folding can change length (ß → ss), so highlighting
+       needs that map to place <mark> on the right source characters. */
+
+    const FOLD: Record<string, string> = {
+      "ß": "ss", "ø": "o", "æ": "ae", "œ": "oe", "ł": "l", "đ": "d", "ð": "d", "þ": "th",
+    };
+    const EXPAND: Record<string, string> = {
+      "ß": "ss", "ä": "ae", "ö": "oe", "ü": "ue", "ø": "oe", "æ": "ae", "œ": "oe",
+    };
+
+    const strip = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    function fold(str: string) {
+      let text = "";
+      const map: number[] = [];
+      for (let i = 0; i < str.length; i++) {
+        const lower = str[i].toLowerCase();
+        const folded = FOLD[lower] ?? strip(lower);
+        for (const ch of folded) {
+          text += ch;
+          map.push(i);
+        }
+      }
+      return { text, map };
+    }
+
+    function expand(str: string) {
+      let out = "";
+      for (const ch of str) {
+        const lower = ch.toLowerCase();
+        out += EXPAND[lower] ?? strip(lower);
+      }
+      return out;
+    }
+
+    /* ---- index -------------------------------------------------------- */
+
+    type Item = { el: HTMLElement; html: string; hay: string; marked: boolean };
+    type Group = { el: HTMLElement; details: HTMLDetailsElement; pill: HTMLElement | null; items: Item[] };
+
+    const groups: Group[] = [...root.querySelectorAll<HTMLElement>("[data-pub-group]")].map((el) => {
+      const items = [...el.querySelectorAll<HTMLElement>("[data-pub-item]")].map((itemEl) => {
+        const text = itemEl.textContent ?? "";
+        return {
+          el: itemEl,
+          html: itemEl.innerHTML,
+          hay: `${fold(text).text} ${expand(text)}`,
+          marked: false,
+        };
+      });
+      return {
+        el,
+        details: el.querySelector("details")!,
+        // Rendered by <Disclosure>; we rewrite it to "3 / 11" while filtering.
+        pill: el.querySelector<HTMLElement>(".disclosure__count"),
+        items,
+      };
+    });
+
+    /* ---- highlighting -------------------------------------------------- */
+
+    function mark(el: HTMLElement, tokens: string[]) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const nodes: Text[] = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+
+      for (const node of nodes) {
+        const src = node.nodeValue ?? "";
+        const { text, map } = fold(src);
+
+        const ranges: [number, number][] = [];
+        for (const token of tokens) {
+          let from = 0;
+          let at = text.indexOf(token, from);
+          while (at !== -1) {
+            ranges.push([map[at], map[at + token.length - 1] + 1]);
+            from = at + token.length;
+            at = text.indexOf(token, from);
+          }
+        }
+        if (!ranges.length) continue;
+
+        // Merge overlapping hits so nested <mark>s can't happen.
+        ranges.sort((a, b) => a[0] - b[0]);
+        const merged: [number, number][] = [];
+        for (const r of ranges) {
+          const last = merged.at(-1);
+          if (last && r[0] <= last[1]) last[1] = Math.max(last[1], r[1]);
+          else merged.push([r[0], r[1]]);
+        }
+
+        const frag = document.createDocumentFragment();
+        let pos = 0;
+        for (const [start, end] of merged) {
+          if (start > pos) frag.append(src.slice(pos, start));
+          const m = document.createElement("mark");
+          m.textContent = src.slice(start, end);
+          frag.append(m);
+          pos = end;
+        }
+        if (pos < src.length) frag.append(src.slice(pos));
+        node.replaceWith(frag);
+      }
+    }
+
+    /* ---- filtering ----------------------------------------------------- */
+
+    let filtering = false;
+    let savedOpen: boolean[] | null = null;
+
+    function apply(query: string) {
+      const tokens = fold(query.trim()).text.split(/\s+/).filter(Boolean);
+      const active = tokens.length > 0;
+
+      // Remember how the reader had arranged the accordions, so clearing the
+      // search puts the page back exactly as they left it.
+      if (active && !filtering) savedOpen = groups.map((g) => g.details.open);
+
+      // Opening many panels at once would animate every ::details-content
+      // height on each keystroke; suppress the transition while filtering.
+      root!.classList.toggle("is-bulk", active);
+
+      let matched = 0;
+
+      groups.forEach((group, gi) => {
+        let hits = 0;
+        for (const item of group.items) {
+          const hit = !active || tokens.every((t) => item.hay.includes(t));
+
+          if (item.marked) {
+            item.el.innerHTML = item.html;
+            item.marked = false;
+          }
+          item.el.hidden = !hit;
+          // Only the first *visible* entry drops its top hairline.
+          item.el.classList.toggle("pub-item--first", hit && hits === 0);
+
+          if (hit) {
+            hits++;
+            if (active) {
+              mark(item.el, tokens);
+              item.marked = true;
+            }
+          }
+        }
+
+        matched += hits;
+        group.el.hidden = active && hits === 0;
+        if (group.pill) {
+          group.pill.textContent = active ? `${hits} / ${group.items.length}` : String(group.items.length);
+        }
+
+        if (active) group.details.open = hits > 0;
+        else if (filtering && savedOpen) group.details.open = savedOpen[gi];
+      });
+
+      filtering = active;
+      if (!active) savedOpen = null;
+
+      statusEl.textContent = active
+        ? `${matched} of ${TOTAL} publications`
+        : `${TOTAL} publications`;
+      // With every group hidden the list's closing hairline would float alone
+      // above the empty-state message.
+      root!.classList.toggle("is-empty", active && matched === 0);
+      emptyEl.hidden = !active || matched > 0;
+      clearBtn.hidden = query.length === 0;
+      // While filtering, every matching year is open by definition.
+      toggleBtn.hidden = active;
+    }
+
+    /* ---- wiring -------------------------------------------------------- */
+
+    function syncUrl(query: string) {
+      const url = new URL(location.href);
+      if (query.trim()) url.searchParams.set("q", query);
+      else url.searchParams.delete("q");
+      history.replaceState(null, "", url);
+    }
+
+    input.addEventListener("input", () => {
+      apply(input.value);
+      syncUrl(input.value);
+    });
+
+    // Esc clears rather than leaving a stale filter behind.
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && input.value) {
+        e.preventDefault();
+        input.value = "";
+        apply("");
+        syncUrl("");
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      apply("");
+      syncUrl("");
+      input.focus();
+    });
+
+    let allOpen = false;
+    toggleBtn.addEventListener("click", () => {
+      allOpen = !allOpen;
+      // Same anti-jank guard as filtering, lifted once the panels have settled.
+      root!.classList.add("is-bulk");
+      for (const group of groups) group.details.open = allOpen;
+      toggleBtn.textContent = allOpen ? "Collapse all" : "Expand all";
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!filtering) root!.classList.remove("is-bulk");
+        });
+      });
+    });
+
+    // #year-2023 deep links: the target starts collapsed, so open it and
+    // re-scroll (the browser's own jump landed on the closed row).
+    function openHash() {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (!id) return;
+      const target = groups.find((g) => g.el.id === id);
+      if (!target) return;
+      target.details.open = true;
+      target.el.scrollIntoView({ block: "start" });
+    }
+    window.addEventListener("hashchange", openHash);
+
+    toolbar.hidden = false;
+    const initial = new URL(location.href).searchParams.get("q") ?? "";
+    input.value = initial;
+    apply(initial);
+    openHash();
+  }
+</script>

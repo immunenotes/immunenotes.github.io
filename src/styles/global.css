@@ -1518,10 +1518,12 @@ hr {
 
 /* ----- Publications page ---------------------------------------------- */
 
-/* Citation list rendered as a stack of paragraphs with subtle dividers.
-   Each <p> is one full citation; the trailing __[doi: ...](URL)__ becomes
-   a bold inline link styled with the sans-serif font for a tighter, more
-   technical appearance. */
+/* A searchable, year-grouped browser (see PublicationList.astro): search
+   field + status toolbar on top, then one panel <Disclosure> per year whose
+   label is the numeral and whose count pill shows "n" — or "3 / 11" while a
+   search is filtering. Inside each panel, citations stack as paragraphs with
+   hairline dividers; the trailing __[doi: ...](URL)__ is a bold inline link
+   in the sans-serif family for a tighter, more technical appearance. */
 .publications {
   margin-top: 1.5rem;
   /* Generous breathing room before any following section heading
@@ -1529,41 +1531,221 @@ hr {
   margin-bottom: 4rem;
 }
 
-.publications > p {
+/* --- search field ----------------------------------------------------- */
+
+/* Ships hidden and is revealed by the script, so a JS-less visitor gets the
+   plain (fully rendered) list rather than a search box that does nothing. */
+.pub-toolbar[hidden] {
+  display: none;
+}
+
+.pub-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pub-search__icon {
+  position: absolute;
+  left: 0.9rem;
+  width: 16px;
+  height: 16px;
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+
+.pub-search__input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  /* Right padding clears the ✕ button, left padding the magnifier. */
+  padding: 0.7rem 2.7rem 0.7rem 2.6rem;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease);
+}
+
+.pub-search__input::placeholder {
+  color: var(--fg-muted);
+}
+
+.pub-search__input:hover {
+  background: var(--surface-soft);
+}
+
+.pub-search__input:focus {
+  outline: none;
+  border-color: var(--fg);
+  background: var(--bg);
+}
+
+/* Suppress WebKit's own clear affordance — we render our own, which Firefox
+   gets too. */
+.pub-search__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.pub-search__clear {
+  position: absolute;
+  right: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 150ms var(--ease), background 150ms var(--ease);
+}
+
+.pub-search__clear:hover {
+  color: var(--fg);
+  background: var(--surface-soft);
+}
+
+.pub-search__clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pub-search__clear svg {
+  width: 13px;
+  height: 13px;
+}
+
+.pub-search__clear[hidden] {
+  display: none;
+}
+
+/* --- status line + expand/collapse all -------------------------------- */
+
+.pub-toolbar__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.9rem 0.2rem 1.6rem;
+}
+
+.pub-status {
   margin: 0;
-  padding: 1.25rem 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.pub-toggle {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--accent);
+  cursor: pointer;
+  border-bottom: 1px solid currentColor;
+  transition: color 150ms var(--ease);
+}
+
+.pub-toggle:hover {
+  color: var(--accent-hover);
+}
+
+.pub-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pub-toggle[hidden] {
+  display: none;
+}
+
+/* --- year groups ------------------------------------------------------ */
+
+/* Each group's summary carries its own top hairline (from the panel
+   disclosure), so the list only needs a rule to close the last one. */
+.pub-groups {
   border-bottom: 1px solid var(--border);
+}
+
+/* With every group filtered away that closing rule would float alone above
+   the empty-state message. */
+.publications.is-empty .pub-groups {
+  border-bottom: none;
+}
+
+.pub-group[hidden] {
+  display: none;
+}
+
+/* The year numeral reads as a divider label rather than a section title:
+   sans-serif, letter-spaced, tabular so the digits line up down the column. */
+.pub-group .pub-group__disclosure .disclosure__label {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filtering opens every matching year at once, and "Expand all" opens the
+   lot; animating that many ::details-content heights together stutters, so
+   the transition is suppressed for the duration. */
+.publications.is-bulk .disclosure::details-content,
+.publications.is-bulk .disclosure__chevron {
+  transition: none;
+}
+
+/* --- citations -------------------------------------------------------- */
+
+.pub-item {
+  margin: 0;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--border);
   line-height: 1.6;
   font-size: 0.95rem;
   color: var(--fg);
 }
 
-.publications > p:last-child {
-  border-bottom: none;
+/* Rules sit *between* entries, so the first visible one drops its own. The
+   class is rendered on the first entry of each group and moved by the script
+   as filtering changes which entry leads. */
+.pub-item--first {
+  border-top: none;
 }
 
-/* Year subheadings splitting the list into groups. Sans-serif, letter-spaced
-   and muted so the numeral reads as a divider label rather than a section
-   title, sitting on a solid rule that opens each group. */
-.publications__year {
-  font-family: var(--font-sans);
-  font-size: 1.2rem;
+.pub-item[hidden] {
+  display: none;
+}
+
+/* Search hits. The palette is monochrome, so the highlight is a neutral wash
+   plus a touch of weight rather than the usual yellow. */
+.publications mark {
+  background: color-mix(in srgb, var(--fg) 13%, transparent);
+  color: inherit;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--fg-muted);
+  border-radius: 2px;
+  padding: 0.05em 0.15em;
+  margin: 0 -0.05em;
+}
+
+.pub-empty {
   margin: 2.5rem 0 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--fg);
+  font-size: 0.95rem;
+  color: var(--fg-muted);
+  text-align: center;
 }
 
-.publications__year:first-child {
-  margin-top: 0;
-}
-
-/* The last entry of a group closes on the next year's rule, so drop its own
-   hairline — same treatment the final entry of the list already gets. */
-.publications > p:has(+ .publications__year) {
-  border-bottom: none;
+.pub-empty[hidden] {
+  display: none;
 }
 
 /* Style the bold link (DOI / URL) at the end of each citation a touch

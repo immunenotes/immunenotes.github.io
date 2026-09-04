@@ -18,6 +18,11 @@
  * astro.config.mjs) only rewrites anchors that come from markdown/MDX, and
  * these are emitted by the component, so they bypass that pipeline.
  *
+ * Search syntax: terms are ANDed and match anywhere in a citation, partial
+ * words included ("put" finds Puta). A "quoted" run has to match as one
+ * contiguous phrase instead — an undocumented power-user option, deliberately
+ * not advertised in the UI.
+ *
  * Groups follow the order in which the years appear in `items`, so the
  * caller's sort decides whether the page runs newest- or oldest-first.
  *
@@ -120,9 +125,16 @@ for (const p of items) {
        with the German expansion ("mueller"). Queries are folded the
        stripped way, which matches either index.
 
-       fold() also returns a map from folded character index back to source
-       character index. Folding can change length (ß → ss), so highlighting
-       needs that map to place <mark> on the right source characters. */
+       Hyphens, slashes and runs of whitespace all fold to a single space, so
+       a phrase matches however the citation happens to punctuate it
+       ("post covid" finds "post-COVID").
+
+       Both variants also return a map from variant character index back to
+       source character index, because a variant can change length (ß → ss,
+       ü → ue, collapsed spaces). Highlighting needs that map to place <mark>
+       on the right source characters, and it searches *both* variants so a
+       hit found via one spelling is still marked in the other — typing
+       "Mueller" highlights "Müller". */
 
     const FOLD: Record<string, string> = {
       "ß": "ss", "ø": "o", "æ": "ae", "œ": "oe", "ł": "l", "đ": "d", "ð": "d", "þ": "th",
@@ -130,16 +142,20 @@ for (const p of items) {
     const EXPAND: Record<string, string> = {
       "ß": "ss", "ä": "ae", "ö": "oe", "ü": "ue", "ø": "oe", "æ": "ae", "œ": "oe",
     };
+    const SPACE = /[\s\-\u2013\u2014/]/;
 
     const strip = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    function fold(str: string) {
+    function index(str: string, table: Record<string, string>) {
       let text = "";
       const map: number[] = [];
       for (let i = 0; i < str.length; i++) {
         const lower = str[i].toLowerCase();
-        const folded = FOLD[lower] ?? strip(lower);
-        for (const ch of folded) {
+        const mapped = SPACE.test(lower) ? " " : table[lower] ?? strip(lower);
+        for (const ch of mapped) {
+          // Collapse whitespace runs. The map simply gains no entry for the
+          // dropped character, so highlight ranges stay aligned.
+          if (ch === " " && text.endsWith(" ")) continue;
           text += ch;
           map.push(i);
         }
@@ -147,13 +163,24 @@ for (const p of items) {
       return { text, map };
     }
 
-    function expand(str: string) {
-      let out = "";
-      for (const ch of str) {
-        const lower = ch.toLowerCase();
-        out += EXPAND[lower] ?? strip(lower);
+    const fold = (str: string) => index(str, FOLD);
+    const expand = (str: string) => index(str, EXPAND);
+
+    /* Split a query into terms. A "quoted" run becomes one term and therefore
+       has to match as a contiguous phrase; everything else splits on
+       whitespace. The closing quote is optional so a phrase already behaves
+       while it is still being typed, and the curly quotes phone keyboards
+       produce count as quotes too. */
+    function parseTerms(query: string) {
+      const terms: string[] = [];
+      const re = /"([^"]*)"?|(\S+)/g;
+      let match: RegExpExecArray | null;
+      const normalized = query.replace(/[\u201c\u201d\u201e]/g, '"');
+      while ((match = re.exec(normalized)) !== null) {
+        const term = fold(match[1] ?? match[2]).text.trim();
+        if (term) terms.push(term);
       }
-      return out;
+      return terms;
     }
 
     /* ---- index -------------------------------------------------------- */
@@ -167,7 +194,7 @@ for (const p of items) {
         return {
           el: itemEl,
           html: itemEl.innerHTML,
-          hay: `${fold(text).text} ${expand(text)}`,
+          hay: `${fold(text).text} ${expand(text).text}`,
           marked: false,
         };
       });
@@ -182,23 +209,27 @@ for (const p of items) {
 
     /* ---- highlighting -------------------------------------------------- */
 
-    function mark(el: HTMLElement, tokens: string[]) {
+    function mark(el: HTMLElement, terms: string[]) {
       const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
       const nodes: Text[] = [];
       while (walker.nextNode()) nodes.push(walker.currentNode as Text);
 
       for (const node of nodes) {
         const src = node.nodeValue ?? "";
-        const { text, map } = fold(src);
 
+        // Search both spelling variants: a term typed as "mueller" only ever
+        // turns up in the expanded one, "muller" only in the folded one, and
+        // either has to end up marking the same source characters.
         const ranges: [number, number][] = [];
-        for (const token of tokens) {
-          let from = 0;
-          let at = text.indexOf(token, from);
-          while (at !== -1) {
-            ranges.push([map[at], map[at + token.length - 1] + 1]);
-            from = at + token.length;
-            at = text.indexOf(token, from);
+        for (const { text, map } of [fold(src), expand(src)]) {
+          for (const term of terms) {
+            let from = 0;
+            let at = text.indexOf(term, from);
+            while (at !== -1) {
+              ranges.push([map[at], map[at + term.length - 1] + 1]);
+              from = at + term.length;
+              at = text.indexOf(term, from);
+            }
           }
         }
         if (!ranges.length) continue;
@@ -232,8 +263,8 @@ for (const p of items) {
     let savedOpen: boolean[] | null = null;
 
     function apply(query: string) {
-      const tokens = fold(query.trim()).text.split(/\s+/).filter(Boolean);
-      const active = tokens.length > 0;
+      const terms = parseTerms(query);
+      const active = terms.length > 0;
 
       // Remember how the reader had arranged the accordions, so clearing the
       // search puts the page back exactly as they left it.
@@ -248,7 +279,7 @@ for (const p of items) {
       groups.forEach((group, gi) => {
         let hits = 0;
         for (const item of group.items) {
-          const hit = !active || tokens.every((t) => item.hay.includes(t));
+          const hit = !active || terms.every((t) => item.hay.includes(t));
 
           if (item.marked) {
             item.el.innerHTML = item.html;
@@ -261,7 +292,7 @@ for (const p of items) {
           if (hit) {
             hits++;
             if (active) {
-              mark(item.el, tokens);
+              mark(item.el, terms);
               item.marked = true;
             }
           }

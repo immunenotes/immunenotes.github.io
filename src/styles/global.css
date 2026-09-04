@@ -95,15 +95,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:            #1a1a1a;
-    --surface-soft:  #242424;
+    --bg:            #0a1014;
+    --surface-soft:  #131c23;
 
-    --fg:            #e8e8e8;
-    --fg-muted:      #9a9a9a;
+    --fg:            #eef3f5;
+    --fg-muted:      #7e8992;
 
-    --accent:        #e8e8e8;
-    --accent-hover:  #ffffff;
-    --border:        #4a4a4a;
+    --accent:        #d0d9dd;
+    --accent-hover:  #eef3f5;
+    --border:        #39454d;
   }
 }
 

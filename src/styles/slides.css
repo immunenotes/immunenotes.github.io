@@ -21,12 +21,16 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --slide-bg:     #141414;
-    --slide-fg:     #ececec;
-    --slide-muted:  #a8a8a8;
-    --slide-soft:   #1f1f1f;
-    --slide-border: #3a3a3a;
-    --slide-accent: #ffffff;
+    --slide-bg:       #0a1014;
+    --slide-fg:       #eef3f5;
+    --slide-muted:    #9aa5ad;
+    --slide-soft:     #131c23;
+    --slide-border:   #2c3840;
+    --slide-accent:   #eef3f5;
+
+    --slide-nav-bg:   #0f171d;
+    --slide-nav-fg:   #eef3f5;
+    --slide-nav-edge: #2c3840;
   }
 }
 

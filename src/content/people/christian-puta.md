@@ -22,7 +22,7 @@ teaching:
     href: "/teaching"
 publications:
     items:
-        - text: "<a href=\"/publications\">List of selected publications&nbsp;&rarr;</a> "
+        - text: "<a href=\"/publications\">List of publications&nbsp;&rarr;</a> "
 profiles:
     - name: "Google Scholar"
       href: "https://scholar.google.com/citations?user=49aca7gAAAAJ"

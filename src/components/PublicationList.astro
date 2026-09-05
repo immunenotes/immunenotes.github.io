@@ -93,8 +93,13 @@ for (const p of items) {
         >
           {group.items.map((p, j) => (
             <p class:list={["pub-item", j === 0 && "pub-item--first"]} data-pub-item>
-              {p.authors} ({p.year}). {p.body}{" "}
-              <strong><a href={p.url} target="_blank" rel="noopener noreferrer">{p.linkText}</a></strong>
+              {p.authors} ({p.year}). {p.body}
+              {p.url && (
+                <>
+                  {" "}
+                  <strong><a href={p.url} target="_blank" rel="noopener noreferrer">{p.linkText ?? p.url}</a></strong>
+                </>
+              )}
             </p>
           ))}
         </Disclosure>

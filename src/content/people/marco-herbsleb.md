@@ -3,6 +3,7 @@ name: "Marco Herbsleb"
 role: "PostDoc · Clinical Exercise Physiology"
 mail: "marco.herbsleb@uni-jena.de"
 phone: "03641 945 663"
+image: "/people/marco-herbsleb.jpg"
 bio:
     items:
         - text: "Diploma in Sport Science (Prevention and Rehabilitation), Department of Sports Medicine and Health Promotion, Friedrich Schiller University Jena <br><b>Diploma thesis</b>: <i>Comparison of selected sensorimotor abilities in individuals with and without haemophilia before and after six months of exercise therapy</i> (2003)"
@@ -19,6 +20,7 @@ teaching:
         - text: "Sports Medicine Colloquium – Preparatory Module (Module SPW-VSW2-G/-R, Teacher Education Programme)"
         - text: "Evidence-Based Exercise Practice – Sport Psychology and Sports Medicine (Module SBP, B.Sc.)"
         - text: "Sports Medicine – Exercise and Training Physiology (Module NW-1 L(b), Teacher Education Programme)"
+        - text: "Coordination of the Orientation Internship in Sports Medicine"
 profiles:
     - name: "Google Scholar"
       href: "https://scholar.google.de/citations?user=AWFMHeIAAAAJ"

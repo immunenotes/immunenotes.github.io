@@ -2,7 +2,8 @@
 // page renders this list grouped by year, and each person's Publications
 // section is generated from it by author matching (see src/utils/authorMatch.ts).
 //
-// Sorted newest first, then by author. Conference abstracts, proceedings and
+// Sorted newest first, within a year, most recently added on top (older years are
+// currently sorted by author). Conference abstracts, proceedings and
 // book chapters are included alongside journal articles, so many entries carry
 // no link at all — the source they were migrated from has none for them.
 
@@ -19,6 +20,13 @@ export interface Publication {
 }
 
 export const publications: Publication[] = [
+  {
+    "authors": "Warneke K, Lebelt N, Wallot S, Lohmann LH, Afonso J, Herbsleb M",
+    "year": 2026,
+    "body": "(Mis-)understanding external validity—a narrative literature review with guideline synthesis on how to report reliability in sport and health science. Football Studies 1: 100011.",
+    "linkText": "doi: 10.1016/j.footst.2025.100011",
+    "url": "https://doi.org/10.1016/j.footst.2025.100011"
+  },
   {
     "authors": "Fehrer A, Windzio L, Schoening S, Steiner S, Aschenbrenner AC, Babel N, Behrends U, Bellmann-Strobl J, Cammà G, Cash A, Doehner W, den Dunnen J, Fluge Ø, Franke C, Hoffmann K, Kedor C, Kim L, Löhden W, Mella O, Mihatsch LL, Peluso MJ, Puta C, Putrino D, Ramoji A, Sato W, Sawitzki B, Schlieper G, Schoenfeld Y, Seifert M, Sigurdsson F, Slaghekke A, Sommerfelt K, Sotzny F, Stein E, Steinacker JM, Stingl M, Systrom DM, Tronstad KJ, Wirth K, Wörmann B, Wüst RCI, Yamamura T, Scheibenbogen C",
     "year": 2026,

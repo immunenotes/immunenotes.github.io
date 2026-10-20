@@ -654,6 +654,12 @@ hr {
   object-fit: cover;
   display: block;
 }
+/* imageFit: "contain" — letterbox on white (images like logos are made for light backgrounds) */
+.post-card__image.post-card__image--contain,
+.post-header__image.post-header__image--contain {
+  object-fit: contain;
+  background: #ffffff;
+}
 
 .post-card__title {
   font-family: var(--font-serif);

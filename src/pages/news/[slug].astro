@@ -19,7 +19,7 @@ export async function getStaticPaths() {
 
 const { post, newer, older } = Astro.props;
 const { Content } = await render(post);
-const { title, date, image, sourceType, source, language } = post.data;
+const { title, date, image, imageFit = "cover", sourceType, source, language } = post.data;
 
 const dateStr = date.toLocaleDateString(language === "en" ? "en-GB" : "de-DE", {
   year: "numeric",
@@ -34,7 +34,11 @@ const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?
   <div class="post-header">
     {image && (
       <div class="post-header__img-wrap">
-        <img src={image} alt={title} class="post-header__image" />
+        <img
+          src={image}
+          alt={title}
+          class:list={["post-header__image", imageFit === "contain" && "post-header__image--contain"]}
+        />
         {creditLine && <p class="post-img-credit post-img-credit--desktop">{creditLine}</p>}
       </div>
     )}

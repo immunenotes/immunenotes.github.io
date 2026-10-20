@@ -93,6 +93,9 @@ const people = defineCollection({
  *   title        required — post title, shown on overview and post page.
  *   date         required — publication date (ISO 8601, e.g. "2026-04-23").
  *   image        optional — path to a header image (e.g. "/news/my-post.jpg")
+ *   imageFit     optional — "cover" | "contain" (default "cover"). "contain"
+ *                shows the whole image inside the frame instead of cropping
+ *                it, both on the post page and on the overview card.
  *   description  optional — short teaser shown on the news overview.
  *   sourceType   optional — type label for the image credit (e.g. "Foto").
  *   source       optional — credit/rights holder (e.g. "Unsplash").
@@ -108,6 +111,7 @@ const posts = defineCollection({
     title: z.string(),
     date: z.coerce.date(),
     image: z.string().optional(),
+    imageFit: z.enum(["cover", "contain"]).optional(),
     description: z.string().optional(),
     sourceType: z.string().optional(),
     source: z.string().optional(),

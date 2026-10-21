@@ -144,7 +144,10 @@ const posts = defineCollection({
  *   thumbnailAlt  optional — alt text for the thumbnail.
  *   label         optional — short type label rendered above the title on the
  *                 teaching overview card (e.g. "Python Shiny", "HTML").
- *   draft         optional — if true, the dashboard is omitted from the
+ *   tier          optional — "featured" (default) renders as its own card on
+ *                 the teaching overview; "compact" dashboards are bundled
+ *                 into one collection card placed after the featured ones.
+ *   draft        optional — if true, the dashboard is omitted from the
  *                 teaching overview AND no subpage is generated. Defaults to
  *                 false, so dashboards are included by default.
  *   order         optional — explicit sort index; lower numbers come first.
@@ -166,6 +169,7 @@ const dashboards = defineCollection({
     thumbnail: z.string().optional(),
     thumbnailAlt: z.string().optional(),
     label: z.string().optional(),
+    tier: z.enum(["featured", "compact"]).default("featured"),
     draft: z.boolean().default(false),
     order: z.number().optional(),
   }),

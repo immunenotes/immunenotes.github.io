@@ -1316,6 +1316,108 @@ hr {
   background: var(--surface-soft);
 }
 
+/* -- Dashboard collection -------------------------------------
+   One card bundling the `compact` tier. Same outline as a dashboard
+   card; the thumbnail area is a 2×2 preview mosaic and the body is a
+   list of single-line title links. The card itself is not a link,
+   so it does not lift on hover and its arrows stay put — only the
+   hovered row underlines its title and nudges its own arrow. */
+.link-card--dashboard.dashboard-collection:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+  background: var(--bg);
+}
+/* Overlapping preview stack: sheets share size and aspect with the
+   16:9 thumb area, so % offsets work on both axes. The stack is
+   centred; the deepest sheet sits top-left, the first dashboard
+   bottom-right in front. */
+.link-card--dashboard .dashboard-collection__stack {
+  --sheet: 60%;
+  --step: 8%;
+  position: relative;
+  display: block;
+}
+.dashboard-collection__sheet {
+  --start: calc((100% - var(--sheet) - (var(--n) - 1) * var(--step)) / 2);
+  --offset: calc(var(--start) + (var(--n) - 1 - var(--depth)) * var(--step));
+  position: absolute;
+  left: var(--offset);
+  top: var(--offset);
+  z-index: calc(10 - var(--depth));
+  width: var(--sheet);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px -10px rgba(0, 0, 0, 0.45);
+}
+.dashboard-collection__sheet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top left;
+}
+
+/* Doubled class beats the `.prose ul` / `.prose li` defaults. */
+.dashboard-collection__list.dashboard-collection__list {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+}
+.dashboard-collection__list.dashboard-collection__list li { margin: 0; }
+.dashboard-collection__list li + li { border-top: 1px solid var(--border); }
+.dashboard-collection__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  color: var(--fg);
+  border-bottom: none;
+}
+.dashboard-collection__item:hover {
+  color: var(--accent-hover);
+  border-bottom: none;
+}
+.dashboard-collection__item:hover .dashboard-collection__title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.dashboard-collection__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-weight: var(--weight-heading);
+  line-height: 1.35;
+}
+.dashboard-collection__item .link-card__arrow {
+  font-size: 1rem;
+  color: var(--fg-muted);
+}
+/* Cancel the shared card-hover nudge; only the hovered row's arrow moves. */
+.dashboard-collection:hover .link-card__arrow {
+  transform: none;
+}
+.dashboard-collection .dashboard-collection__item:hover .link-card__arrow {
+  transform: translateX(4px);
+}
+.dashboard-collection__more {
+  border-top: 1px solid var(--border);
+  padding-top: 0.3rem;
+  font-size: 0.85rem;
+}
+.dashboard-collection__more .dashboard-collection__list.dashboard-collection__list {
+  margin-top: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-collection .dashboard-collection__item:hover .link-card__arrow { transform: none; }
+}
+
 /* -- Row-style link card --------------------------------------
    Compact single-row variant — editorial accent-bar treatment.
    Tinted background, thick black left edge bar, rounded right

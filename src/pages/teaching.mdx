@@ -7,6 +7,7 @@ description: "Teaching at the Exercise Immunology and Health Lab."
 import AppCard from "@components/AppCard.astro";
 import DropdownLinks from "@components/DropdownLinks.astro";
 import DashboardCard from "@components/DashboardCard.astro";
+import DashboardCollection from "@components/DashboardCollection.astro";
 import LinkCard from "@components/LinkCard.astro";
 import { getCollection } from "astro:content";
 
@@ -26,6 +27,19 @@ export const compareDashboards = (a, b) =>
 export const dashboards = [...(await getCollection("dashboards"))]
   .filter((d) => !d.data.draft)
   .sort(compareDashboards);
+
+export const featuredDashboards = dashboards.filter((d) => d.data.tier === "featured");
+
+export const compactDashboards = dashboards.filter((d) => d.data.tier === "compact");
+
+export const toCardProps = (d) => ({
+  title: d.data.title,
+  description: d.data.description,
+  href: `/dashboards/${d.id}/`,
+  thumbnail: d.data.thumbnail,
+  thumbnailAlt: d.data.thumbnailAlt ?? d.data.title,
+  label: d.data.label,
+});
 
 # Teaching
 
@@ -72,16 +86,12 @@ Interactive dashboards providing accessible overviews of key immunology topics â
 
 {dashboards.length > 0 ? (
   <div class="dashboard-grid">
-    {dashboards.map((d) => (
-      <DashboardCard
-        title={d.data.title}
-        description={d.data.description}
-        href={`/dashboards/${d.id}/`}
-        thumbnail={d.data.thumbnail}
-        thumbnailAlt={d.data.thumbnailAlt ?? d.data.title}
-        label={d.data.label}
-      />
-    ))}
+    {featuredDashboards.map((d) => <DashboardCard {...toCardProps(d)} />)}
+    {compactDashboards.length > 1 ? (
+      <DashboardCollection label="HTML Dashboards" items={compactDashboards.map(toCardProps)} />
+    ) : (
+      compactDashboards.map((d) => <DashboardCard {...toCardProps(d)} />)
+    )}
   </div>
 ) : (
   <p>No dashboards are published yet â€” they will appear here as they become available.</p>

@@ -1,0 +1,74 @@
+---
+/**
+ * DashboardCollection — one card that bundles several dashboards. Used on
+ * /teaching for the `compact` dashboard tier so the featured dashboards keep
+ * the visual focus.
+ *
+ * Same outline and proportions as a DashboardCard: the thumbnail area shows
+ * up to four previews as an overlapping, diagonally offset stack with the
+ * first dashboard in front (decorative, not clickable); the body lists the
+ * dashboard titles as single-line links. Up to four dashboards are listed directly; beyond
+ * that the first three are shown and the rest fold into a <Disclosure>, so
+ * the closed card always keeps the same height.
+ *
+ * Props:
+ *   label  required — microlabel above the list (e.g. "HTML Dashboards").
+ *   items  required — dashboards to list, in display order.
+ */
+import Disclosure from "@components/Disclosure.astro";
+
+interface Item {
+  title: string;
+  href: string;
+  thumbnail?: string;
+}
+
+interface Props {
+  label: string;
+  items: Item[];
+}
+
+const { label, items } = Astro.props;
+
+const MAX_VISIBLE = 4;
+const visible = items.length > MAX_VISIBLE ? items.slice(0, MAX_VISIBLE - 1) : items;
+const hidden = items.slice(visible.length);
+const tiles = items.slice(0, 4);
+---
+
+<div class="link-card link-card--dashboard dashboard-collection">
+  <div class="link-card__thumb dashboard-collection__stack" aria-hidden="true" style={`--n: ${tiles.length}`}>
+    {tiles.map((item, i) => (
+      <span class="dashboard-collection__sheet" style={`--depth: ${i}`}>
+        {item.thumbnail && <img src={item.thumbnail} alt="" loading="lazy" />}
+      </span>
+    ))}
+  </div>
+  <div class="link-card__body">
+    <span class="link-card__label">{label}</span>
+    <ul class="dashboard-collection__list">
+      {visible.map((item) => (
+        <li>
+          <a class="dashboard-collection__item" href={item.href} title={item.title}>
+            <span class="dashboard-collection__title">{item.title}</span>
+            <span class="link-card__arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    {hidden.length > 0 && (
+      <Disclosure label="More dashboards" count={hidden.length} class="dashboard-collection__more">
+        <ul class="dashboard-collection__list">
+          {hidden.map((item) => (
+            <li>
+              <a class="dashboard-collection__item" href={item.href} title={item.title}>
+                <span class="dashboard-collection__title">{item.title}</span>
+                <span class="link-card__arrow" aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Disclosure>
+    )}
+  </div>
+</div>

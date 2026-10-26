@@ -49,7 +49,7 @@ const creditLine = sourceType && source ? `${sourceType}: ${source}` : (source ?
     {creditLine && image && <p class="post-img-credit post-img-credit--mobile">{creditLine}</p>}
   </div>
 
-  <nav class="post-nav" aria-label="Post navigation">
+  <nav class="post-nav" aria-label="Post navigation" data-pagefind-ignore>
     <div class="post-nav__prev">
       {newer && (
         <a href={`/news/${newer.id}/`} class="post-nav__link">

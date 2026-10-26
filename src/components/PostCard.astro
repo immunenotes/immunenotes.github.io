@@ -38,7 +38,10 @@ const languageLabels: Record<string, string> = {
 const flagLabel = language ? languageLabels[language] : null;
 ---
 
-<article class="post-card">
+{/* Left out of the search index: the post's own page is the result. "all"
+    also keeps the card image from becoming the listing page's search
+    metadata, whose alt text (the post title) would match too. */}
+<article class="post-card" data-pagefind-ignore="all">
   <a
     class:list={["post-card__link", language && "post-card__link--has-flag"]}
     href={`/news/${slug}/`}

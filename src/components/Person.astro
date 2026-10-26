@@ -34,6 +34,7 @@
  * profiles here, since those already live on that page.
  */
 import Disclosure from "@components/Disclosure.astro";
+import { slugify } from "@/utils/slugify";
 
 interface SectionItem {
   text: string;
@@ -91,7 +92,7 @@ const initials = name
     )}
   </div>
   <div class="person__info">
-    <h3 class="person__name">{name}</h3>
+    <h3 class="person__name" id={slugify(name)}>{name}</h3>
     {role && <p class="person__role">{role}</p>}
     {mails.map((m) => (
       <p class="person__mail">
@@ -129,7 +130,9 @@ const initials = name
                   ))}
                 </ul>
               )}
-              <ul class="person-list">
+              {/* Publications are searchable on /publications; indexing them
+                  here as well doubled every author and topic hit. */}
+              <ul class="person-list" data-pagefind-ignore={s.label === "Publications" ? "" : undefined}>
                 {s.data!.items!.map((item) => (
                   <li class="person-list__item">
                     <Fragment set:html={item.text} />

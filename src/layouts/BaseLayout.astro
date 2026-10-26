@@ -1,6 +1,7 @@
 ---
 import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
+import SearchHighlight from "@components/SearchHighlight.astro";
 import "@styles/global.css";
 
 interface Props {
@@ -29,6 +30,21 @@ const resolvedDescription =
   description ?? frontmatter?.description ?? defaultDescription;
 
 const pageTitle = resolvedTitle ? `${resolvedTitle} | ${siteName}` : siteName;
+
+// Small-caps label above each header-search result, derived from the first
+// URL segment ("/news/foo/" → "News").
+const searchLabels: Record<string, string> = {
+  "": "Home",
+  news: "News",
+  people: "People",
+  research: "Research",
+  teaching: "Teaching",
+  publications: "Publications",
+  dashboards: "Dashboard",
+  contact: "Contact",
+  "privacy-policy": "Privacy Policy",
+};
+const searchLabel = searchLabels[Astro.url.pathname.split("/")[1] ?? ""];
 
 const containerClasses = [
   "container",
@@ -62,14 +78,17 @@ const containerClasses = [
       crossorigin
     />
     <title>{pageTitle}</title>
+    {searchLabel && <meta data-pagefind-meta="label[content]" content={searchLabel} />}
   </head>
   <body>
     <Header />
     <main class="page">
-      <article class={containerClasses}>
+      {/* Only this column is indexed by Pagefind; header and footer stay out. */}
+      <article class={containerClasses} data-pagefind-body>
         <slot />
       </article>
     </main>
     <Footer />
+    <SearchHighlight />
   </body>
 </html>

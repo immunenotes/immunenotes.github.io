@@ -1,4 +1,6 @@
 ---
+import Search from "@components/Search.astro";
+
 const navItems = [
   { href: "/",             label: "Home" },
   { href: "/news/",        label: "News" },
@@ -35,15 +37,24 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
         );
       })}
     </nav>
+
+    <Search />
   </div>
 </header>
 
 <script>
-  // Mobile nav toggle
+  // Mobile nav toggle. The menu and the compact search panel open into the
+  // same spot under the header, so each one closes the other.
   const btn = document.querySelector<HTMLButtonElement>(".nav-toggle");
   const nav = document.querySelector<HTMLElement>("#site-nav");
+  const setNav = (open: boolean) => {
+    nav?.classList.toggle("is-open", open);
+    btn?.setAttribute("aria-expanded", String(open));
+  };
   btn?.addEventListener("click", () => {
-    const open = nav?.classList.toggle("is-open") ?? false;
-    btn.setAttribute("aria-expanded", String(open));
+    const open = !nav?.classList.contains("is-open");
+    setNav(open);
+    if (open) document.dispatchEvent(new CustomEvent("nav:open"));
   });
+  document.addEventListener("search:open", () => setNav(false));
 </script>

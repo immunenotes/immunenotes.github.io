@@ -76,6 +76,7 @@
   --accent:        #1f2937;   /* near-black slate for links */
   --accent-hover:  #000000;
   --border:        #c8c5be;   /* neutral hairline */
+  --mark:          #fbeba0;   /* search-term highlight */
 
   /* Typography */
   --font-sans: "Inter", "Helvetica Neue", -apple-system, BlinkMacSystemFont,
@@ -104,6 +105,7 @@
     --accent:        #d0d9dd;
     --accent-hover:  #eef3f5;
     --border:        #39454d;
+    --mark:          #5c4d14;
   }
 }
 
@@ -247,6 +249,7 @@ hr {
 
 /* Nav */
 .nav {
+  margin-left: auto;   /* hug the search field on the right */
   display: flex;
   gap: clamp(0.5rem, 1.5vw, 1.6rem);
   align-items: center;
@@ -325,6 +328,328 @@ hr {
   .nav a:last-child { border-bottom: none; }
   .nav a::after { display: none; }
   .nav-toggle { display: inline-flex; }
+}
+
+/* -------------------------------------------------------------
+   Site search (Search.astro, SearchHighlight.astro)
+   ------------------------------------------------------------- */
+.site-search {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Magnifier that opens the panel — styled like .nav-toggle. */
+.site-search__open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--fg);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: border-color 150ms var(--ease);
+}
+.site-search__open:hover,
+.site-search.is-open .site-search__open {
+  border-color: var(--border);
+}
+.site-search__open svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+/* Panel — a dropdown card under the magnifier holding field and results. */
+.site-search__panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  z-index: 30;
+  width: min(34rem, calc(100vw - 2 * var(--content-pad)));
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+  padding: 0.5rem;
+}
+.site-search.is-open .site-search__panel { display: block; }
+
+/* Field — same pill vocabulary as .pub-search, a size smaller. */
+.site-search__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.site-search__icon {
+  position: absolute;
+  left: 0.75rem;
+  width: 15px;
+  height: 15px;
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+.site-search__input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 2.2rem 0.4rem 2.1rem;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease);
+}
+.site-search__input::placeholder { color: var(--fg-muted); }
+.site-search__input:hover { background: var(--surface-soft); }
+.site-search__input:focus {
+  outline: none;
+  border-color: var(--fg);
+  background: var(--bg);
+}
+.site-search__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.site-search__clear {
+  position: absolute;
+  right: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 150ms var(--ease), background 150ms var(--ease);
+}
+.site-search__clear[hidden] { display: none; }
+.site-search__clear:hover {
+  color: var(--fg);
+  background: var(--surface-soft);
+}
+.site-search__clear svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* Screen-reader-only result count. */
+.site-search__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Result list under the field */
+.site-search__results {
+  max-height: min(65vh, 34rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-top: 0.5rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid var(--border);
+}
+.site-search__results[hidden] { display: none; }
+
+.site-search__note {
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+}
+
+.search-group + .search-group {
+  border-top: 1px solid var(--border);
+}
+
+.search-group__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.search-hit {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  color: var(--fg);
+  transition: background 150ms var(--ease);
+}
+.search-hit:hover,
+.search-hit.is-active {
+  color: var(--fg);
+  background: var(--surface-soft);
+}
+
+/* Mirrors .research-card__label. */
+.search-hit__label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  line-height: 1;
+}
+.search-hit__title {
+  display: block;
+  font-weight: 600;
+  line-height: 1.35;
+}
+/* At most two lines, so every row keeps the same three-part shape. */
+.search-hit__excerpt {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin-top: 0.2rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+.search-hit__excerpt mark {
+  background: var(--mark);
+  color: var(--fg);
+  border-radius: 2px;
+  padding: 0 0.1em;
+}
+
+/* Count pill + chevron — the same trigger vocabulary as <Disclosure>. */
+.search-group__toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 150ms var(--ease), background 150ms var(--ease);
+}
+.search-group__toggle:hover {
+  color: var(--fg);
+  background: var(--surface-soft);
+}
+.search-group__count {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.05em 0.5em;
+  line-height: 1.5;
+}
+.search-group__chevron {
+  display: block;
+  width: 13px;
+  height: 13px;
+  transition: transform 200ms var(--ease);
+}
+.search-group.is-open .search-group__chevron {
+  transform: rotate(180deg);
+}
+
+/* Further matches — accent bar like the panel Disclosure. */
+.search-group__more {
+  margin: 0 0 0.45rem 0.7rem;
+  padding-left: 0.35rem;
+  border-left: 2px solid var(--border);
+}
+.search-group__more[hidden] { display: none; }
+.search-hit--sub {
+  padding: 0.4rem 0.6rem;
+}
+.search-hit--sub .search-hit__title {
+  font-size: 0.88rem;
+  font-weight: 550;
+}
+
+/* "Show 4 more pages" — ends the list and is replaced by those pages. */
+.site-search__more {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 550;
+  color: var(--fg);
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  transition: background 150ms var(--ease);
+}
+.site-search__more:hover,
+.site-search__more.is-active {
+  background: var(--surface-soft);
+}
+
+/* Phones: magnifier beside the menu button, panel full-width under the
+   header like the mobile nav. */
+@media (max-width: 720px) {
+  .site-header__inner { gap: 0.25rem; }
+  .site-search {
+    position: static;
+    order: 1;
+    margin-left: auto;
+  }
+  .nav-toggle { order: 2; }
+  .site-search__panel {
+    top: 100%;
+    left: 0;
+    width: auto;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0.75rem var(--content-pad) 1rem;
+  }
+  .site-search__input {
+    font-size: 1rem;   /* ≥16px keeps iOS from zooming in on focus */
+  }
+  .site-search__results {
+    max-height: calc(100dvh - 10rem);
+  }
+}
+
+/* Landing on a result: the matched words in the page itself. */
+mark.search-mark {
+  background: var(--mark);
+  color: inherit;
+  border-radius: 2px;
+}
+mark.search-mark.is-current {
+  outline: 1.5px solid var(--fg);
+}
+/* Set for a moment while SearchHighlight opens panels around the match. */
+.is-search-jump details::details-content {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search-group__chevron { transition: none; }
 }
 
 /* -------------------------------------------------------------

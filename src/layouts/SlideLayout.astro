@@ -11,6 +11,7 @@
  * The page deliberately does NOT include the regular site Header/Footer
  * — slidedecks are presentation surfaces, not site pages.
  */
+import SearchHighlight from "@components/SearchHighlight.astro";
 import "@styles/global.css";
 import "@styles/slides.css";
 import SlideNav from "@components/slide-kit/SlideNav.astro";
@@ -50,6 +51,11 @@ const {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    {/* Every slide of a deck shares its title, so search results name the
+        slide too. Stored as "display_title", not "title": Pagefind searches
+        the title, and every slide would then match the deck's name. */}
+    <meta data-pagefind-meta="label[content]" content="Tutorial" />
+    <meta data-pagefind-meta="display_title[content]" content={`${title} › Slide ${slideNumber}`} />
     <link rel="icon" type="image/png" href="/immunenotes_icon.png" />
     <link
       rel="preload"
@@ -70,7 +76,7 @@ const {
     <div id="slide-root" class="slide-root">
       <div class="slide-stage">
         <div class="slide-stage__inner">
-          <div class="slide-stage__content">
+          <div class="slide-stage__content" data-pagefind-body>
             <slot />
           </div>
           <SlideNav
@@ -105,5 +111,6 @@ const {
         window.addEventListener("resize", update, { passive: true });
       })();
     </script>
+    <SearchHighlight />
   </body>
 </html>

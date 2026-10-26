@@ -1,0 +1,442 @@
+---
+/**
+ * Search — site-wide search in the header, backed by Pagefind.
+ *
+ * Pagefind indexes the built HTML after `astro build` (see the "build" script
+ * in package.json) and writes the index to dist/pagefind/. Search therefore
+ * works on the built site only (`npm run build && npm run preview`), not
+ * under `astro dev`.
+ *
+ * What gets indexed is decided in the markup: only [data-pagefind-body]
+ * (the page column in BaseLayout, the slide canvas in SlideLayout) is read,
+ * and [data-pagefind-ignore] cuts parts out of it. Sections come from
+ * headings that carry an id.
+ *
+ * Results are grouped per page, best pages first (five, then a "Show more"
+ * button). Each row has three lines: the site area (NEWS, PEOPLE, …), a
+ * title, and an excerpt. The row shows the page's first matching section in
+ * document order; further matching sections sit behind the count pill +
+ * chevron. Every link carries ?highlight=…, which SearchHighlight.astro picks
+ * up on the target page to mark the word and scroll to it.
+ *
+ * All words must occur on a page, in any order; a "quoted run" must occur
+ * as written (Pagefind's own syntax).
+ *
+ * Keyboard: "/" opens the search, ↑/↓ move through the results, → / ←
+ * open and close a page's further matches, Enter follows, Esc closes.
+ *
+ * The header shows only a magnifier; clicking it opens the field in a
+ * dropdown card under the icon, or a full-width panel under the header on
+ * phones (styles in global.css, "Site search").
+ */
+---
+
+<div class="site-search" data-search>
+  <button
+    class="site-search__open"
+    type="button"
+    aria-label="Search"
+    aria-expanded="false"
+    aria-controls="site-search-panel"
+    data-search-open
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+    </svg>
+  </button>
+
+  <div class="site-search__panel" id="site-search-panel">
+    <div class="site-search__field">
+      <svg class="site-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <line x1="16.2" y1="16.2" x2="21" y2="21"></line>
+      </svg>
+      <input
+        class="site-search__input"
+        type="search"
+        placeholder="Search"
+        aria-label="Search the site"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-expanded="false"
+        aria-controls="site-search-results"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        data-search-input
+      />
+      <button class="site-search__clear" type="button" hidden aria-label="Clear search" data-search-clear>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div
+      class="site-search__results"
+      id="site-search-results"
+      role="listbox"
+      aria-label="Search results"
+      hidden
+      data-search-results
+    ></div>
+    <p class="site-search__status" role="status" data-search-status></p>
+  </div>
+</div>
+
+<script>
+  interface PagefindSection {
+    title: string;
+    url: string;
+    excerpt: string;
+    locations: number[];
+  }
+  interface PagefindPage {
+    url: string;
+    excerpt: string;
+    locations: number[];
+    // display_title: set by SlideLayout ("Deck › Slide 3"); label: BaseLayout.
+    meta: { title?: string; display_title?: string; label?: string };
+    sub_results: PagefindSection[];
+  }
+  interface PagefindSearch {
+    results: { data(): Promise<PagefindPage> }[];
+  }
+  interface Pagefind {
+    options(opts: Record<string, unknown>): Promise<void>;
+    init(): Promise<void>;
+    search(term: string): Promise<PagefindSearch>;
+    debouncedSearch(
+      term: string,
+      opts?: Record<string, unknown>,
+      ms?: number
+    ): Promise<PagefindSearch | null>;
+  }
+
+  const MIN_CHARS = 3;
+  const FIRST_PAGES = 5;
+  // Kept in a variable so Vite leaves the import alone: the file only exists
+  // once Pagefind has indexed dist/.
+  const PAGEFIND_URL = "/pagefind/pagefind.js";
+
+  const root = document.querySelector<HTMLElement>("[data-search]")!;
+  const openBtn = root.querySelector<HTMLButtonElement>("[data-search-open]")!;
+  const input = root.querySelector<HTMLInputElement>("[data-search-input]")!;
+  const clearBtn = root.querySelector<HTMLButtonElement>("[data-search-clear]")!;
+  const results = root.querySelector<HTMLElement>("[data-search-results]")!;
+  const status = root.querySelector<HTMLElement>("[data-search-status]")!;
+
+  let pagefind: Promise<Pagefind | null> | undefined;
+  function loadPagefind() {
+    pagefind ??= import(/* @vite-ignore */ PAGEFIND_URL)
+      .then(async (pf: Pagefind) => {
+        await pf.options({ excerptLength: 16, highlightParam: "highlight" });
+        await pf.init();
+        return pf;
+      })
+      .catch(() => null);
+    return pagefind;
+  }
+
+  /* ---- rendering ------------------------------------------------------ */
+
+  function el<K extends keyof HTMLElementTagNameMap>(tag: K, className: string, text?: string) {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  // Matching sections in page order; a page without id'd headings still
+  // yields one entry for the page itself.
+  function sectionsOf(page: PagefindPage): PagefindSection[] {
+    const first = (s: PagefindSection) => (s.locations.length ? Math.min(...s.locations) : Infinity);
+    const sections = [...page.sub_results].sort((a, b) => first(a) - first(b));
+    return sections.length > 0
+      ? sections
+      : [{ title: page.meta.title ?? "", url: page.url, excerpt: page.excerpt, locations: [] }];
+  }
+
+  // Overview pages (home, /people/, /teaching/, …) cover many topics, so a
+  // row there is titled by its matching section ("Marc Gabriel"). Single
+  // pages (a post, a dashboard, a slide) keep their own title.
+  const isOverview = (url: string) =>
+    new URL(url, location.origin).pathname.split("/").filter(Boolean).length <= 1;
+
+  let hitCount = 0;
+  // label is the small-caps site area; only a page's first row carries it.
+  function hitLink(section: PagefindSection, title: string, label?: string) {
+    const a = el("a", `search-hit search-hit--${label === undefined ? "sub" : "main"}`);
+    a.href = section.url;
+    a.id = `search-hit-${hitCount++}`;
+    a.tabIndex = -1;
+    a.setAttribute("role", "option");
+    if (label) a.append(el("span", "search-hit__label", label));
+    a.append(el("span", "search-hit__title", title));
+    // Pagefind's excerpt is escaped page text with <mark> around the hits.
+    const excerpt = el("span", "search-hit__excerpt");
+    excerpt.innerHTML = section.excerpt;
+    a.append(excerpt);
+    return a;
+  }
+
+  function renderGroup(page: PagefindPage) {
+    const pageTitle = page.meta.display_title ?? page.meta.title ?? page.url;
+    const [first, ...rest] = sectionsOf(page);
+    const firstTitle = (isOverview(page.url) && first.title) || pageTitle;
+
+    const group = el("div", "search-group");
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-label", pageTitle);
+    const row = el("div", "search-group__row");
+    row.append(hitLink(first, firstTitle, page.meta.label ?? ""));
+    group.append(row);
+
+    if (rest.length > 0) {
+      const more = el("div", "search-group__more");
+      more.id = `search-more-${hitCount}`;
+      more.hidden = true;
+      for (const section of rest) more.append(hitLink(section, section.title || pageTitle));
+
+      // Keyboard users expand with → instead, so the button stays out of
+      // the tab order and the accessibility tree.
+      const toggle = el("button", "search-group__toggle");
+      toggle.type = "button";
+      toggle.tabIndex = -1;
+      toggle.setAttribute("aria-hidden", "true");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-controls", more.id);
+      toggle.title = `${rest.length} more ${rest.length === 1 ? "match" : "matches"} on this page`;
+      toggle.append(el("span", "search-group__count", String(rest.length + 1)));
+      toggle.insertAdjacentHTML(
+        "beforeend",
+        '<svg class="search-group__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 8 11 13 6"></polyline></svg>'
+      );
+      row.append(toggle);
+      group.append(more);
+    }
+    return group;
+  }
+
+  function renderNote(text: string) {
+    results.replaceChildren(el("p", "site-search__note", text));
+    showResults(true);
+  }
+
+  // Pages beyond the first FIRST_PAGES, rendered on "Show more".
+  let pending: PagefindPage[] = [];
+
+  function moreButton(count: number) {
+    const button = el("button", "site-search__more", `Show ${count} more ${count === 1 ? "page" : "pages"}`);
+    button.type = "button";
+    button.tabIndex = -1;
+    button.id = "search-show-more";
+    button.setAttribute("role", "option");
+    return button;
+  }
+
+  function showMore() {
+    const button = results.querySelector<HTMLElement>(".site-search__more");
+    const groups = pending.map(renderGroup);
+    pending = [];
+    button?.replaceWith(...groups);
+    if (active === button) setActive(groups[0]?.querySelector<HTMLElement>(".search-hit") ?? null);
+  }
+
+  /* ---- searching ------------------------------------------------------ */
+
+  // Pagefind silently drops words that occur nowhere on the site, so
+  // "Gabriel xyzzy" would act like "Gabriel". Check each word (or "quoted
+  // run") on its own and treat an unknown one as no match at all.
+  async function allTermsKnown(pf: Pagefind, term: string) {
+    const parts = term.match(/"[^"]+"|[^\s"]+/g) ?? [];
+    if (parts.length < 2) return true;
+    const counts = await Promise.all(parts.map((p) => pf.search(p).then((s) => s.results.length)));
+    return counts.every((n) => n > 0);
+  }
+
+  async function run() {
+    const term = input.value.trim();
+    clearBtn.hidden = input.value === "";
+    if (term.length < MIN_CHARS) {
+      results.replaceChildren();
+      status.textContent = "";
+      showResults(false);
+      return;
+    }
+
+    const pf = await loadPagefind();
+    if (!pf) {
+      renderNote(
+        import.meta.env.DEV
+          ? "Search only works on the built site: npm run build && npm run preview"
+          : "Search is currently unavailable."
+      );
+      return;
+    }
+
+    const search = await pf.debouncedSearch(term, {}, 150);
+    if (!search) return; // superseded by a newer keystroke
+    // Pagefind also matches metadata (the "Tutorial" label on every slide,
+    // a slide's deck name), which leaves nothing to show or jump to. Keep
+    // only pages whose text contains the match. The site is small enough to
+    // load every result's data for that.
+    const [known, data] = await Promise.all([
+      allTermsKnown(pf, term),
+      Promise.all(search.results.map((r) => r.data())),
+    ]);
+    const pages = known ? data.filter((page) => page.locations.length > 0) : [];
+    if (input.value.trim() !== term) return;
+
+    setActive(null);
+    hitCount = 0;
+    const total = pages.length;
+    if (total === 0) {
+      pending = [];
+      renderNote(`No results for “${term}”`);
+      status.textContent = "No results";
+      return;
+    }
+    results.replaceChildren(...pages.slice(0, FIRST_PAGES).map(renderGroup));
+    pending = pages.slice(FIRST_PAGES);
+    if (pending.length > 0) results.append(moreButton(pending.length));
+    status.textContent = `${total} ${total === 1 ? "page" : "pages"} found`;
+    showResults(true);
+  }
+
+  input.addEventListener("input", run);
+  input.addEventListener("focus", () => {
+    loadPagefind();
+    if (results.childElementCount > 0) showResults(true);
+  });
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    run();
+    input.focus();
+  });
+
+  /* ---- open / close --------------------------------------------------- */
+
+  function showResults(show: boolean) {
+    results.hidden = !show;
+    input.setAttribute("aria-expanded", String(show));
+    if (!show) setActive(null);
+  }
+
+  function setPanel(open: boolean) {
+    root.classList.toggle("is-open", open);
+    openBtn.setAttribute("aria-expanded", String(open));
+    if (open) {
+      // On phones the nav drops into the same spot under the header.
+      document.dispatchEvent(new CustomEvent("search:open"));
+      // Reopening keeps the last query, selected so typing replaces it.
+      input.focus();
+      input.select();
+    } else {
+      showResults(false);
+    }
+  }
+
+  openBtn.addEventListener("click", () => setPanel(!root.classList.contains("is-open")));
+  document.addEventListener("nav:open", () => setPanel(false));
+
+  // composedPath() is fixed when the click starts, so it still includes the
+  // panel when the clicked element ("Show more") has removed itself by now.
+  document.addEventListener("click", (e) => {
+    if (!e.composedPath().includes(root)) setPanel(false);
+  });
+
+  /* ---- keyboard ------------------------------------------------------- */
+
+  // A result link or the "Show more" button.
+  let active: HTMLElement | null = null;
+
+  function setActive(option: HTMLElement | null) {
+    active?.classList.remove("is-active");
+    active = option;
+    if (option) {
+      option.classList.add("is-active");
+      option.scrollIntoView({ block: "nearest" });
+      input.setAttribute("aria-activedescendant", option.id);
+    } else {
+      input.removeAttribute("aria-activedescendant");
+    }
+  }
+
+  function visibleOptions() {
+    return [...results.querySelectorAll<HTMLElement>(".search-hit, .site-search__more")].filter(
+      (option) => !option.closest("[hidden]")
+    );
+  }
+
+  function setGroupOpen(group: HTMLElement, open: boolean) {
+    const more = group.querySelector<HTMLElement>(".search-group__more");
+    const toggle = group.querySelector<HTMLButtonElement>(".search-group__toggle");
+    if (!more || !toggle) return;
+    more.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    group.classList.toggle("is-open", open);
+    if (!open && active && more.contains(active)) {
+      setActive(group.querySelector<HTMLElement>(".search-hit--main"));
+    }
+  }
+
+  // Keep focus (and the caret) in the field while clicking around the list.
+  results.addEventListener("mousedown", (e) => e.preventDefault());
+  results.addEventListener("click", (e) => {
+    if ((e.target as Element).closest(".site-search__more")) return showMore();
+    const toggle = (e.target as Element).closest(".search-group__toggle");
+    if (!toggle) return;
+    const group = toggle.closest<HTMLElement>(".search-group")!;
+    setGroupOpen(group, !group.classList.contains("is-open"));
+  });
+
+  input.addEventListener("keydown", (e) => {
+    const hits = results.hidden ? [] : visibleOptions();
+    const index = active ? hits.indexOf(active) : -1;
+    const group = active?.closest<HTMLElement>(".search-group");
+
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowUp": {
+        if (hits.length === 0) return;
+        e.preventDefault();
+        const step = e.key === "ArrowDown" ? 1 : -1;
+        setActive(hits[(index + step + hits.length) % hits.length] ?? hits[0]);
+        break;
+      }
+      case "ArrowRight":
+      case "ArrowLeft":
+        if (!group?.querySelector(".search-group__more")) return;
+        e.preventDefault();
+        setGroupOpen(group, e.key === "ArrowRight");
+        break;
+      case "Enter": {
+        const target = active ?? hits[0];
+        if (!target) return;
+        e.preventDefault();
+        if (target instanceof HTMLAnchorElement) location.href = target.href;
+        else showMore();
+        break;
+      }
+      case "Escape":
+        // Chrome would also empty a type="search" field on Esc; keep the
+        // query so reopening shows the same results.
+        e.preventDefault();
+        setPanel(false);
+        openBtn.focus();
+        break;
+    }
+  });
+
+  // "/" anywhere on the page opens the search, unless the user is typing.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+    const t = e.target as HTMLElement;
+    if (t.closest("input, textarea, select, [contenteditable]")) return;
+    e.preventDefault();
+    setPanel(true);
+  });
+</script>

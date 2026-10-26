@@ -45,7 +45,7 @@ const formerEntries = await Promise.all(
 
 <BaseLayout title="Research" description="Research projects at the Exercise Immunology and Health Lab.">
   <div class="prose">
-    <h1>Research projects</h1>
+    <h1 id="research-projects">Research projects</h1>
     <p>
       The <strong>Exercise Immunology and Health Lab</strong> conducts research at the
       intersection of exercise science, immunobiology, and health. Below are some of the research projects we are currently involved in:
@@ -71,7 +71,7 @@ const formerEntries = await Promise.all(
 
     {formerEntries.length > 0 && (
       <>
-        <h2>Project history</h2>
+        <h2 id="project-history">Project history</h2>
         {formerEntries.map(({ data, Content }) => (
           <ResearchCard
             label={data.label}

@@ -1,0 +1,119 @@
+---
+/**
+ * SearchHighlight — the landing half of the header search (Search.astro).
+ *
+ * Result links carry ?highlight=<word> (one parameter per matched word).
+ * On arrival this script marks those words inside the indexed content
+ * ([data-pagefind-body]), opens any collapsed <details> around the first
+ * visible match after the section anchor (#…), and scrolls it to the middle
+ * of the viewport. Pagefind's anchor alone would only reach the section
+ * heading, and not at all into a closed Disclosure or research card.
+ *
+ * The parameter is dropped from the address bar afterwards so a copied link
+ * stays clean.
+ */
+---
+
+<script>
+  const url = new URL(location.href);
+  const words = url.searchParams
+    .getAll("highlight")
+    .flatMap((w) => w.split(/\s+/))
+    .filter(Boolean)
+    .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+
+  // Pagefind strips diacritics ("Erkältung" arrives as "erkaltung"), so
+  // matching runs on a folded copy of the text. Each folded character takes
+  // the place of exactly one original (ä → a), so match positions carry
+  // straight over to the original text.
+  const fold = (text: string) =>
+    text.replace(/[^\u0000-\u007f]/g, (ch) => {
+      const base = ch.normalize("NFD")[0];
+      return base < "\u0080" ? base : ch;
+    });
+
+  if (words.length > 0) {
+    // Whole words starting with a searched word — Pagefind matches prefixes
+    // too ("infect" finds "infections").
+    const pattern = new RegExp(
+      `(?<![\\p{L}\\p{N}])(?:${words.map(fold).join("|")})[\\p{L}\\p{N}]*`,
+      "giu"
+    );
+
+    const marks: HTMLElement[] = [];
+    for (const root of document.querySelectorAll("[data-pagefind-body]")) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode: (node) =>
+          node.parentElement?.closest("script, style, svg, textarea, [data-pagefind-ignore]")
+            ? NodeFilter.FILTER_REJECT
+            : NodeFilter.FILTER_ACCEPT,
+      });
+      const nodes: Text[] = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+
+      for (const node of nodes) {
+        const text = node.data;
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        for (const match of fold(text).matchAll(pattern)) {
+          frag.append(text.slice(last, match.index));
+          const mark = document.createElement("mark");
+          mark.className = "search-mark";
+          mark.textContent = text.slice(match.index, match.index + match[0].length);
+          frag.append(mark);
+          marks.push(mark);
+          last = match.index + match[0].length;
+        }
+        if (last === 0) continue;
+        frag.append(text.slice(last));
+        node.replaceWith(frag);
+      }
+    }
+
+    const anchorId = decodeURIComponent(location.hash.slice(1));
+    const anchor = anchorId ? document.getElementById(anchorId) : null;
+    const after = anchor
+      ? marks.filter(
+          (m) =>
+            anchor.compareDocumentPosition(m) &
+            (Node.DOCUMENT_POSITION_FOLLOWING | Node.DOCUMENT_POSITION_CONTAINED_BY)
+        )
+      : marks;
+
+    // Opening panels one by one would animate each; switch that off while
+    // we look for the first match that actually renders (some content
+    // exists twice, e.g. a desktop and a mobile image credit).
+    const html = document.documentElement;
+    html.classList.add("is-search-jump");
+
+    let target: HTMLElement | undefined;
+    for (const mark of [...after, ...marks]) {
+      const closed: HTMLDetailsElement[] = [];
+      for (let el = mark.parentElement; el; el = el.parentElement) {
+        if (el instanceof HTMLDetailsElement && !el.open) closed.push(el);
+      }
+      for (const d of closed) d.open = true;
+      if (mark.getClientRects().length > 0) {
+        target = mark;
+        break;
+      }
+      for (const d of closed) d.open = false;
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => html.classList.remove("is-search-jump"));
+    });
+
+    if (target) {
+      const hit = target;
+      hit.classList.add("is-current");
+      // After load, so late images don't push the match out of view again.
+      const jump = () => hit.scrollIntoView({ block: "center", behavior: "instant" });
+      if (document.readyState === "complete") jump();
+      else window.addEventListener("load", jump, { once: true });
+    }
+
+    url.searchParams.delete("highlight");
+    history.replaceState(history.state, "", url);
+  }
+</script>

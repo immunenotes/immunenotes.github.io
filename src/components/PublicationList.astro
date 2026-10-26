@@ -51,7 +51,7 @@ for (const p of items) {
 ---
 
 <div class="publications" data-publications data-total={items.length}>
-  <div class="pub-toolbar" hidden data-pub-toolbar>
+  <div class="pub-toolbar" hidden data-pub-toolbar data-pagefind-ignore>
     <div class="pub-search">
       <svg class="pub-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <circle cx="11" cy="11" r="7"></circle>
@@ -107,7 +107,7 @@ for (const p of items) {
     ))}
   </div>
 
-  <p class="pub-empty" hidden data-pub-empty>No publications match your search.</p>
+  <p class="pub-empty" hidden data-pub-empty data-pagefind-ignore>No publications match your search.</p>
 </div>
 
 <script>

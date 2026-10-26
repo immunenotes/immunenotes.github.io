@@ -40,7 +40,7 @@ const { label, count, variant = "inline", open = false, class: className } = Ast
   <summary class="disclosure__summary">
     <span class="disclosure__label">{label}</span>
     <span class="disclosure__meta">
-      {typeof count === "number" && <span class="disclosure__count">{count}</span>}
+      {typeof count === "number" && <span class="disclosure__count" data-pagefind-ignore>{count}</span>}
       <svg class="disclosure__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="3 6 8 11 13 6"></polyline>
       </svg>

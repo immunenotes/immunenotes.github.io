@@ -1,6 +1,6 @@
 ---
 name: "Marco Herbsleb"
-role: "PostDoc · Clinical Exercise Physiology"
+role: "PostDoc · Senior Researcher · Clinical Exercise Physiology"
 mail: "marco.herbsleb@uni-jena.de"
 phone: "03641 945 663"
 image: "/people/marco-herbsleb.jpg"

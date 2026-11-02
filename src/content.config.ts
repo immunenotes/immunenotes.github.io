@@ -144,6 +144,9 @@ const posts = defineCollection({
  *   thumbnailAlt  optional — alt text for the thumbnail.
  *   label         optional — short type label rendered above the title on the
  *                 teaching overview card (e.g. "Python Shiny", "HTML").
+ *   language      optional — "de" or "en". When set, a small flag badge is
+ *                 shown to the right of the label on the teaching overview
+ *                 card. Not shown inside the compact collection card.
  *   tier          optional — "featured" (default) renders as its own card on
  *                 the teaching overview; "compact" dashboards are bundled
  *                 into one collection card placed after the featured ones.
@@ -169,6 +172,7 @@ const dashboards = defineCollection({
     thumbnail: z.string().optional(),
     thumbnailAlt: z.string().optional(),
     label: z.string().optional(),
+    language: z.enum(["de", "en"]).optional(),
     tier: z.enum(["featured", "compact"]).default("featured"),
     draft: z.boolean().default(false),
     order: z.number().optional(),

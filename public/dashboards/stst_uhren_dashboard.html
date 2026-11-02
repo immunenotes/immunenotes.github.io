@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Eine Minute, viele Uhren</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: Homepage-Dashboard (immunenotes) – oben Testkreis + Gefäßszene, darunter Erklärung + Uhren, dann Zeitverlauf mit Abspielkopf */
+:root {
+  --bg: #ffffff;
+  --surface: #f7f7f5;
+  --fg: #111111;
+  --ink2: #444444;
+  --ink3: #6b6b6b;
+  --line: rgba(23,23,23,0.15);
+  --dash: rgba(23,23,23,0.28);
+  --strong: #171717;
+  --auto: #9a6200;
+  --meta: #185fa5;
+  --immun: #534ab7;
+  --myelo: #b0457f;
+  --mono: #8a6bb8;
+  --il6: #3b6d11;
+  --signal: #c0262d;
+  --osm: #0f766e;
+  --chem: #c2410c;
+  --vessel: #f8eef0;
+  --vesselwall: #c9a9b0;
+  --muscle: #f6ebe8;
+  --muscleline: #ead3cd;
+  --marrow: #f3f0e6;
+  --ring-track: rgba(23,23,23,0.08);
+  --band1: rgba(83,74,183,0.10);
+  --band2: rgba(83,74,183,0.24);
+  --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', Menlo, Consolas, monospace;
+  --max-w: 1120px;
+  --r: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111314; --surface: #191c1d; --fg: #ecebe6; --ink2: #c9c7c0; --ink3: #9b998f;
+    --line: rgba(236,235,230,0.16); --dash: rgba(236,235,230,0.3); --strong: #ecebe6;
+    --auto: #e0a43a; --meta: #6ea8e6; --immun: #a59ef2; --myelo: #ea8ec1; --mono: #c3a8e6; --il6: #8cc265; --signal: #f0575d; --osm: #5cc8bd; --chem: #f0884f;
+    --vessel: #251a1d; --vesselwall: #6e4c55; --muscle: #1f1a19; --muscleline: #33282a; --marrow: #1d1c17; --ring-track: rgba(236,235,230,0.1); --band1: rgba(165,158,242,0.12); --band2: rgba(165,158,242,0.28);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111314; --surface: #191c1d; --fg: #ecebe6; --ink2: #c9c7c0; --ink3: #9b998f;
+  --line: rgba(236,235,230,0.16); --dash: rgba(236,235,230,0.3); --strong: #ecebe6;
+  --auto: #e0a43a; --meta: #6ea8e6; --immun: #a59ef2; --myelo: #ea8ec1; --mono: #c3a8e6; --il6: #8cc265; --signal: #f0575d; --osm: #5cc8bd; --chem: #f0884f;
+  --vessel: #251a1d; --vesselwall: #6e4c55; --muscle: #1f1a19; --muscleline: #33282a; --marrow: #1d1c17; --ring-track: rgba(236,235,230,0.1); --band1: rgba(165,158,242,0.12); --band2: rgba(165,158,242,0.28);
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 1.5rem 2.5rem;
+}
+.wrap { max-width: var(--max-w); margin: 0 auto; display: flex; flex-direction: column; gap: 1.75rem; }
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: 500; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--immun); outline-offset: 2px; }
+
+/* Header */
+.kicker { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink3); }
+.site-header { display: flex; flex-direction: column; gap: 0.6rem; padding-bottom: 1.25rem; border-bottom: 1px dashed var(--dash); }
+.site-header h1 { font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.1; letter-spacing: -0.01em; }
+.site-header h1 em { font-style: italic; }
+.subtitle { font-style: italic; color: var(--ink2); font-size: 1.15rem; max-width: 46em; }
+.pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-sans); font-size: 0.78rem; font-weight: 500; padding: 4px 12px; border: 1px dashed var(--dash); border-radius: 2px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+/* Controls */
+.controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--bg); padding-block: 0.5rem; border-bottom: 1px solid var(--line); }
+.btn { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 500; padding: 9px 16px; min-height: 44px; border: 1px solid var(--strong); border-radius: 2px; background: transparent; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.btn.primary { background: var(--strong); color: var(--bg); }
+.btn:hover { background: var(--surface); }
+.btn.primary:hover { background: var(--strong); opacity: 0.88; }
+.btn.quiet { border-style: dashed; border-color: var(--dash); }
+.btn[disabled] { opacity: 0.4; cursor: default; }
+.spacer { flex: 1 1 auto; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-sans); font-size: 0.8rem; color: var(--ink2); cursor: pointer; min-height: 44px; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--immun); }
+.select { font-family: var(--font-sans); font-size: 0.8rem; color: var(--ink2); display: inline-flex; align-items: center; gap: 8px; }
+.select select { font: inherit; color: var(--fg); background: var(--bg); border: 1px dashed var(--dash); border-radius: 2px; padding: 6px 8px; min-height: 36px; }
+
+/* Phase strip */
+.phases { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.phase { background: none; border: none; border-bottom: 3px solid transparent; padding: 10px 8px 8px; text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.phase .pt { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink3); }
+.phase .pn { font-family: var(--font-serif); font-size: 0.98rem; color: var(--ink2); line-height: 1.25; }
+.phase:hover .pn { color: var(--fg); }
+.phase.active { border-bottom-color: var(--fg); }
+.phase.active .pn { color: var(--fg); font-weight: 600; }
+.phase.done .pt::after { content: " ✓"; }
+
+/* Grids */
+.row { display: grid; gap: 1.25rem; }
+.row-top { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); }
+.row-mid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.card { border: 1px solid var(--line); border-radius: var(--r); padding: 1.1rem 1.25rem; background: var(--bg); min-width: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+.card-title { font-size: 1.1rem; font-style: italic; }
+
+/* Timer */
+.timer { align-items: center; text-align: center; }
+.ring-wrap { position: relative; width: min(100%, 290px); aspect-ratio: 1; }
+.ring-wrap svg { width: 100%; height: 100%; display: block; }
+.ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.ring-num { font-family: var(--font-serif); font-size: 4.2rem; line-height: 1; font-variant-numeric: tabular-nums; font-weight: 500; }
+.ring-unit { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); }
+.ring-sub { font-style: italic; color: var(--ink2); font-size: 0.95rem; }
+.speed-badge { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; padding: 3px 10px; border: 1px solid var(--immun); color: var(--immun); border-radius: 2px; }
+.ticker { min-height: 3.2em; font-size: 1rem; color: var(--ink2); font-style: italic; }
+.reps { width: 100%; border-top: 1px dashed var(--dash); padding-top: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.reps label { font-size: 0.98rem; }
+.reps-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.reps-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); gap: 0.5rem; }
+.fld { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.fld label { font-family: var(--font-sans); font-size: 0.72rem; color: var(--ink3); }
+.reps input, .reps select { font-family: var(--font-mono); font-size: 1rem; width: 100%; padding: 8px 8px; min-height: 44px; border: 1px solid var(--strong); border-radius: 2px; background: var(--bg); color: var(--fg); }
+.reps .btn { align-self: flex-start; }
+.reps-out { font-size: 0.95rem; color: var(--ink2); }
+.reps-out strong { color: var(--fg); font-weight: 600; }
+
+/* Scene */
+.scene-box { position: relative; width: 100%; aspect-ratio: 800 / 420; border-radius: 2px; overflow: hidden; background: var(--bg); }
+.scene-box canvas { width: 100%; height: 100%; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend canvas { width: 22px; height: 22px; }
+.note { font-family: var(--font-sans); font-size: 0.72rem; color: var(--ink3); }
+
+/* Narrative */
+.story { gap: 0.9rem; }
+.story h2 { font-size: clamp(1.4rem, 2.4vw, 1.85rem); font-style: italic; line-height: 1.2; }
+.story .body { color: var(--ink2); font-size: 1.02rem; line-height: 1.7; max-width: 38em; display: flex; flex-direction: column; gap: 0.7rem; }
+.story .body strong { color: var(--fg); font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.fact { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 9px; border: 1px dashed var(--dash); border-radius: 2px; }
+.warn { font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink2); border-left: 2px solid var(--auto); padding-left: 10px; }
+
+/* Clocks */
+.clocks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.clock { border: 1px solid var(--line); border-radius: var(--r); padding: 0.75rem; display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 0.75rem; align-items: center; }
+.clock.hyp { border-style: dashed; }
+.clock svg { width: 88px; height: 88px; display: block; }
+.clock .ck { font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.clock .cn { font-size: 1.02rem; line-height: 1.25; font-weight: 500; }
+.clock .cv { font-family: var(--font-mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--fg); }
+.clock .cs { font-family: var(--font-sans); font-size: 0.72rem; color: var(--ink3); line-height: 1.4; }
+
+/* Chart */
+.chart-box { width: 100%; overflow-x: auto; }
+.chart-box svg { width: 100%; min-width: 560px; height: auto; display: block; cursor: ew-resize; touch-action: none; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink2); }
+.chart-legend i { display: inline-block; width: 22px; height: 0; border-top-width: 2px; border-top-style: solid; vertical-align: middle; margin-right: 6px; }
+
+/* Perzentilen */
+.sexswitch { display: inline-flex; gap: 0.4rem; }
+.sx[aria-pressed="true"] { border-style: solid; border-color: var(--strong); background: var(--surface); font-weight: 600; }
+.pct-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.pct-grid svg { min-width: 420px; cursor: default; }
+.pct-side { display: flex; flex-direction: column; gap: 0.9rem; min-width: 0; }
+.pct-form { border-top: none; padding-top: 0; }
+#pctCard { scroll-margin-top: 16px; }
+#pctCard.flash { animation: flash 1.6s ease-out; }
+@keyframes flash { 0% { box-shadow: 0 0 0 3px var(--immun); } 100% { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { #pctCard.flash { animation: none; outline: 2px solid var(--immun); } }
+.tolink { color: var(--immun); font-family: var(--font-sans); font-size: 0.85rem; white-space: nowrap; }
+.pct-big { font-family: var(--font-serif); font-size: 3rem; line-height: 1; color: var(--immun); font-variant-numeric: tabular-nums; }
+.pct-big small { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink3); display: block; margin-top: 6px; }
+.pct-result { font-size: 1.05rem; line-height: 1.6; color: var(--ink2); }
+.pct-result strong { color: var(--fg); font-weight: 600; }
+.pct-key { display: flex; flex-direction: column; gap: 0.35rem; font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink2); }
+.pct-key span { display: inline-flex; align-items: center; gap: 8px; }
+.pct-key .sw { width: 22px; height: 12px; display: inline-block; }
+.pct-key .ln { width: 22px; height: 0; border-top: 2px solid var(--fg); display: inline-block; }
+
+/* Take-home & sources */
+.takehome { border-top: 1px dashed var(--dash); padding-top: 1.25rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; }
+.takehome h3 { font-size: 1.25rem; font-style: italic; margin-bottom: 0.4rem; }
+.takehome p, .takehome li { font-size: 0.98rem; color: var(--ink2); }
+.src { font-family: var(--font-sans); font-size: 0.78rem; line-height: 1.55; color: var(--ink2); padding-left: 1.1em; margin: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.src a { color: var(--fg); }
+footer { font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink3); border-top: 1px solid var(--line); padding-top: 0.9rem; }
+footer a { color: var(--ink2); }
+
+@media (max-width: 860px) {
+  .row-top, .row-mid, .takehome, .pct-grid { grid-template-columns: minmax(0, 1fr); }
+  .phases { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 460px) {
+  .clocks { grid-template-columns: minmax(0, 1fr); }
+  .ring-num { font-size: 3.4rem; }
+  body { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app">
+  <header class="site-header">
+    <div class="kicker">Lange Nacht der Wissenschaften · Exercise Immunology and Health Lab · FSU Jena</div>
+    <h1>Eine Minute, <em>viele Uhren</em></h1>
+    <p class="subtitle">Mach den 1-Minuten-Sitz-Steh-Test mit und sieh zu, was dabei in deinem Blut passiert. Eine kurze, intensive Belastung setzt mehrere biologische Uhren in Gang – und sie laufen unterschiedlich schnell ab.</p>
+    <div class="pills">
+      <span class="pill"><span class="dot" style="background:var(--auto)"></span>Nervensystem</span>
+      <span class="pill"><span class="dot" style="background:var(--meta)"></span>Stoffwechsel</span>
+      <span class="pill"><span class="dot" style="background:var(--immun)"></span>Lymphozyten</span>
+      <span class="pill"><span class="dot" style="background:var(--myelo)"></span>Granulozyten</span>
+    </div>
+  </header>
+
+  <div class="controls" role="group" aria-label="Steuerung">
+    <button class="btn primary" id="btnMain" type="button">Test starten</button>
+    <button class="btn" id="btnPrev" type="button" aria-label="Vorherige Phase">← Zurück</button>
+    <button class="btn" id="btnNext" type="button" aria-label="Nächste Phase">Weiter →</button>
+    <button class="btn quiet" id="btnReset" type="button">Neu beginnen</button>
+    <span class="spacer"></span>
+    <label class="select" for="speed">Zeitraffer bis 24 h
+      <select id="speed">
+        <option value="60">in 60 s</option>
+        <option value="90" selected>in 90 s</option>
+        <option value="180">in 3 min</option>
+      </select>
+    </label>
+    <label class="toggle" for="stopAt"><input type="checkbox" id="stopAt">an Phasen anhalten</label>
+    <label class="toggle" for="sound"><input type="checkbox" id="sound" checked>Ton</label>
+    <button class="btn quiet" id="btnTheme" type="button">Beamer: dunkel</button>
+    <button class="btn quiet" id="btnFull" type="button">Vollbild</button>
+  </div>
+
+  <nav class="phases" id="phases" aria-label="Phasen"></nav>
+
+  <section class="row row-top">
+    <div class="card timer" id="timerCard">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="var(--ring-track)" stroke-width="10"></circle>
+          <circle id="ringArc" cx="100" cy="100" r="88" fill="none" stroke="var(--fg)" stroke-width="10" stroke-linecap="butt" transform="rotate(-90 100 100)" stroke-dasharray="552.92" stroke-dashoffset="0"></circle>
+          <g id="ringTicks"></g>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-unit" id="ringUnit">Sekunden</div>
+          <div class="ring-num" id="ringNum">60</div>
+          <div class="ring-sub" id="ringSub">bereit</div>
+        </div>
+      </div>
+      <span class="speed-badge" id="speedBadge" hidden>Zeitraffer · 24 h in 90 s</span>
+      <p class="ticker" id="ticker" aria-live="polite">Stuhl ohne Armlehnen, Arme locker oder an den Hüften. Zähl deine vollständigen Wiederholungen.</p>
+      <form class="reps" id="repsForm" hidden>
+        <label for="repsIn">Wie oft bist du aufgestanden?</label>
+        <div class="reps-grid">
+          <span class="fld"><label for="repsIn">Wiederholungen</label><input id="repsIn" type="number" inputmode="numeric" min="0" max="150" placeholder="z. B. 40"></span>
+          <span class="fld"><label for="ageIn">Alter</label><input id="ageIn" type="number" inputmode="numeric" min="10" max="99" placeholder="Jahre"></span>
+          <span class="fld"><label for="sexIn">Geschlecht</label><select id="sexIn"><option value="w">weiblich</option><option value="m">männlich</option></select></span>
+        </div>
+        <button class="btn" type="submit">Einordnen</button>
+        <p class="reps-out" id="repsOut"></p>
+        <p class="note">Deine Angaben bleiben auf diesem Gerät und werden nicht gespeichert.</p>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Was gerade in Gefäß und Muskel passiert</span>
+        <span class="kicker" id="sceneTime">vor dem Test</span>
+      </div>
+      <div class="scene-box"><canvas id="scene" aria-label="Animierte Szene: Knochenmark, Blutgefäß und Skelettmuskel mit Immunzellen" role="img"></canvas></div>
+      <div class="legend" id="legend"></div>
+      <p class="note">Zellzahlen schematisch; Bewegung folgt den gemessenen Verläufen. Muskel–Makrophagen-Achse (Oncostatin M → CCL2/CCL7/CXCL1) nach Phelps &amp; Meisel 2026, Abb. 2, aus Mausstudien; zeitlich schematisch. Zellsymbole nachgezeichnet nach BioRender-Vorlagen.</p>
+    </div>
+  </section>
+
+  <section class="row row-mid">
+    <div class="card story" id="story" aria-live="polite"></div>
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Die Uhren</span>
+        <span class="kicker">Anteil der maximalen Auslenkung</span>
+      </div>
+      <div class="clocks" id="clocks"></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <span class="card-title">Zeitverlauf nach dem Test – bis 24 Stunden</span>
+      <span class="kicker">Zum Springen in die Grafik tippen oder ziehen</span>
+    </div>
+    <div class="chart-box"><svg id="chart" viewBox="0 0 1000 380" role="img" aria-label="Zeitverlauf von Herzfrequenz, Laktat, Lymphozyten, Granulozyten und Monozyten von 0 Minuten bis 24 Stunden nach dem Test"></svg></div>
+    <div class="chart-legend">
+      <span><i style="border-top-color:var(--auto); border-top-style:dotted"></i>Herzfrequenz · links</span>
+      <span><i style="border-top-color:var(--meta); border-top-style:dashed"></i>Laktat · links</span>
+      <span><i style="border-top-color:var(--immun); border-top-width:3px"></i>Lymphozyten · rechts</span>
+      <span><i style="border-top-color:var(--myelo)"></i>Granulozyten · rechts</span>
+      <span><i style="border-top-color:var(--mono)"></i>Monozyten · rechts</span>
+    </div>
+    <p class="note">Links: jede Größe auf ihr eigenes Maximum skaliert. Rechts: Änderung der Zellzahl gegenüber dem Ausgangswert in 10⁹/l. Punkte = Messzeitpunkte, Mittel- bzw. Medianwerte (n = 26). Gestrichelt im Testfenster und ab 45 min: schematisch – im Test wurde nicht gemessen, nach 45 min folgt der Verlauf der Literatur; die Größe dieser späten Antwort nach einem 1-Minuten-Test ist nicht gemessen.</p>
+  </section>
+
+  <section class="card" id="pctCard">
+    <div class="card-head">
+      <span class="card-title">Wo liegst du? Referenzwerte für den 1-Minuten-Sitz-Steh-Test</span>
+      <span class="sexswitch" role="group" aria-label="Referenz wählen">
+        <button type="button" class="btn quiet sx" id="sxW" aria-pressed="true">Frauen</button>
+        <button type="button" class="btn quiet sx" id="sxM" aria-pressed="false">Männer</button>
+      </span>
+    </div>
+    <div class="pct-grid">
+      <div class="chart-box"><svg id="pct" viewBox="0 0 640 360" role="img" aria-label="Perzentilenkurven der Wiederholungen im 1-Minuten-Sitz-Steh-Test nach Alter"></svg></div>
+      <div class="pct-side">
+        <form class="reps pct-form" id="pctForm">
+          <label for="pRepsIn">Werte eingeben – auch ohne den Test</label>
+          <div class="reps-grid">
+            <span class="fld"><label for="pRepsIn">Wiederholungen</label><input id="pRepsIn" type="number" inputmode="numeric" min="0" max="150" placeholder="z. B. 40"></span>
+            <span class="fld"><label for="pAgeIn">Alter</label><input id="pAgeIn" type="number" inputmode="numeric" min="10" max="99" placeholder="Jahre"></span>
+            <span class="fld"><label for="pSexIn">Geschlecht</label><select id="pSexIn"><option value="w">weiblich</option><option value="m">männlich</option></select></span>
+          </div>
+          <button class="btn" type="submit">Einordnen</button>
+        </form>
+        <p class="pct-big" id="pctBig" hidden></p>
+        <p class="pct-result" id="pctResult">Trag deine Wiederholungen, dein Alter und dein Geschlecht ein – nach dem Test oder direkt hier. Dann erscheint dein Punkt in der Kurve.</p>
+        <div class="pct-key">
+          <span><i class="sw" style="background:var(--band2)"></i>25.–75. Perzentile: mittlere Hälfte</span>
+          <span><i class="sw" style="background:var(--band1)"></i>2,5.–97,5. Perzentile</span>
+          <span><i class="ln"></i>Median (50. Perzentile)</span>
+        </div>
+        <p class="note">Strassmann et al. 2013: 6.926 Erwachsene (20–79 Jahre) aus der Schweiz, Stuhlhöhe 46 cm ohne Armlehnen, Arme hängend oder an den Hüften, ohne Abstützen; nur vollständige Zyklen gezählt. Die Einordnung ist eine Orientierung, kein Befund.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="takehome">
+    <div>
+      <h3>Zum Mitnehmen</h3>
+      <p>Eine Minute Aufstehen und Hinsetzen reicht, um die anaerobe Schwelle zu überschreiten und das Immunsystem umzuverteilen. Das Nervensystem ist nach wenigen Minuten wieder ruhig, das Laktat nach einer Dreiviertelstunde fast abgebaut – die Immunzellen sind dann noch unterwegs. Wer nur eine Uhr abliest, verpasst die anderen.</p>
+    </div>
+    <div>
+      <h3>Quellen</h3>
+      <ol class="src">
+        <li>Röhr W, Simon R, Kirschke S, von Loga I, Putrino D, Bloch W, Reuken PA, Dudziak D, Kipp AP, Stallmach A, Puta C (2026). Acute effects of the 1-minute sit-to-stand test (STST) on immune-metabolic stress indices. <em>Scientific Reports</em> 16:25484. <a href="https://doi.org/10.1038/s41598-026-66330-6" target="_blank" rel="noopener">doi.org/10.1038/s41598-026-66330-6</a></li>
+        <li>Puta C. Two clocks, not one – metabolic–immune coupling after a 1-min sit-to-stand test. Manuskript, Exercise Immunology and Health Lab, FSU Jena.</li>
+        <li>Phelps CM, Meisel M (2026). The immunology of exercise: Mechanisms, mediators, and therapeutic opportunities. <em>Immunity</em>. <a href="https://doi.org/10.1016/j.immuni.2026.04.016" target="_blank" rel="noopener">doi.org/10.1016/j.immuni.2026.04.016</a></li>
+        <li>Strassmann A, Steurer-Stey C, Dalla Lana K, Zoller M, Turk AJ, Suter P, Puhan MA (2013). Population-based reference values for the 1-min sit-to-stand test. <em>International Journal of Public Health</em> 58:949–953. <a href="https://doi.org/10.1007/s00038-013-0504-z" target="_blank" rel="noopener">doi.org/10.1007/s00038-013-0504-z</a></li>
+        <li>Zellsymbole schematisch nachgezeichnet nach BioRender-Vorlagen.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>© 2026 <a href="https://chrisputa.github.io/" target="_blank" rel="noopener">Christian Puta</a> · Sportmedizin und Gesundheitsförderung · FSU Jena · <a href="https://immunenotes.github.io" target="_blank" rel="noopener">immunenotes.github.io</a></footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Daten ---------- */
+  // Abb. 2a/b des Manuskripts "Two clocks, not one" (n = 26); HR 1–4 min aus Röhr et al. 2026, Tab. 2, gleich skaliert
+  var T6 = [0, 5, 10, 15, 30, 45];
+  var SERIES = {
+    hr:  { t: [0, 1, 2, 3, 4, 5, 10, 15, 30, 45], v: [1.00, 0.615, 0.320, 0.205, 0.185, 0.189, 0.147, 0.101, 0.080, 0.009], axis: 'L' },
+    la:  { t: T6, v: [0.720, 1.00, 0.805, 0.540, 0.248, 0.112], axis: 'L' },
+    lym: { t: T6, v: [1.423, 0.479, -0.025, -0.230, -0.434, -0.365], axis: 'R' },
+    gra: { t: T6, v: [0.368, 0.467, 0.267, 0.195, 0.113, 0.259], axis: 'R' },
+    mon: { t: T6, v: [0.163, 0.070, 0.052, 0.030, -0.009, 0.082], axis: 'R' }
+  };
+  // Schematischer Verlauf nach 45 min (Literatur: Lymphopenie über Stunden, Neutrophilie mit Rückkehr binnen ≈ 24 h); Amplituden nach 1-min-STST nicht gemessen
+  var TAIL = {
+    hr:  [[90, 0], [1440, 0]],
+    la:  [[90, 0.03], [180, 0], [1440, 0]],
+    lym: [[120, -0.30], [360, -0.10], [1440, 0]],
+    gra: [[150, 0.50], [360, 0.35], [1440, 0]],
+    mon: [[120, 0.05], [360, 0], [1440, 0]]
+  };
+  var TMAX = 1440;
+  function val(key, t) {
+    var s = SERIES[key];
+    if (t <= -1) return 0;
+    if (t > 45) {
+      var pts = [[45, s.v[s.v.length - 1]]].concat(TAIL[key]);
+      t = Math.min(t, TMAX);
+      for (var j = 0; j < pts.length - 1; j++) {
+        if (t >= pts[j][0] && t <= pts[j + 1][0]) {
+          var g = Math.log(t / pts[j][0]) / Math.log(pts[j + 1][0] / pts[j][0]);
+          return pts[j][1] + g * (pts[j + 1][1] - pts[j][1]);
+        }
+      }
+      return 0;
+    }
+    if (t < 0) { var u = t + 1; return s.v[0] * (key === 'la' ? u * u : u); }
+    if (t >= s.t[s.t.length - 1]) return s.v[s.v.length - 1];
+    for (var i = 0; i < s.t.length - 1; i++) {
+      if (t >= s.t[i] && t <= s.t[i + 1]) {
+        var f = (t - s.t[i]) / (s.t[i + 1] - s.t[i]);
+        return s.v[i] + f * (s.v[i + 1] - s.v[i]);
+      }
+    }
+    return 0;
+  }
+
+  /* ---------- Phasen ---------- */
+  var PHASES = [
+    { id: 'prep', t0: -1, t1: -1, time: 'vorher', name: 'Vorbereitung' },
+    { id: 'test', t0: -1, t1: 0, time: '60 s · echt', name: 'Der Test' },
+    { id: 'p1', t0: 0, t1: 5, time: '0–5 min', name: 'Uhr 1 läuft ab' },
+    { id: 'p2', t0: 5, t1: 30, time: '5–30 min', name: 'Uhr 2 und die Lymphozyten' },
+    { id: 'p3', t0: 30, t1: 45, time: '30–45 min', name: 'Eine dritte Uhr?' },
+    { id: 'p4', t0: 45, t1: 1440, time: '45 min–24 h', name: 'Bis 24 Stunden' }
+  ];
+  var STORY = {
+    prep: {
+      kick: 'Vorbereitung',
+      title: 'So geht der Test',
+      body: [
+        'Setz dich auf einen Stuhl ohne Armlehnen (Sitzhöhe etwa 46 cm), Füße hüftbreit parallel, Arme locker hängend oder an den Hüften – nicht abstützen. Steh in <strong>60 Sekunden</strong> so oft wie möglich ganz auf (Knie gestreckt) und setz dich wieder, bis das Gesäß den Stuhl berührt.',
+        'Zähl nur vollständige Wiederholungen – am Ende trägst du die Zahl mit Alter und Geschlecht ein und siehst, wo du im Vergleich zu Gleichaltrigen liegst.',
+        'Im Ruhezustand haftet ein großer Teil der Lymphozyten locker an den Gefäßwänden, etwa in Milz und Lunge („marginierter Pool“).'
+      ],
+      facts: ['1-Minuten-Sitz-Steh-Test', 'kein Gerät nötig'],
+      warn: 'Mach nur mit, wenn du dich gesund fühlst. Bei Schwindel, Schmerzen oder Atemnot sofort aufhören.'
+    },
+    test: {
+      kick: 'Phase 1 · Sekunden bis 60 s · Echtzeit',
+      title: 'Das Nervensystem schlägt Alarm',
+      body: [
+        'Das sympathische Nervensystem schüttet <strong>Adrenalin und Noradrenalin</strong> aus. Herzfrequenz und Blutdruck steigen, das Blut fließt schneller, die Scherkräfte an der Gefäßwand nehmen zu.',
+        'Lymphozyten mit vielen <strong>β₂-Adrenozeptoren</strong> lösen sich von der Wand (Demargination) – zuerst NK-Zellen und CD8⁺-T-Zellen. Der arbeitende Muskel setzt das Myokin IL-6 frei, das dendritische Zellen mobilisiert.',
+        'Der Muskel bildet außerdem <strong>Oncostatin M</strong>. In Mausstudien bringt es die ortsständigen Makrophagen im Muskel dazu, die Lockstoffe <strong>CCL2, CCL7 und CXCL1</strong> auszuschütten – sie holen in den folgenden Minuten Monozyten und Neutrophile aus dem Blut ins Gewebe.',
+        'Die Muskulatur arbeitet anaerob: <strong>Laktat</strong> entsteht.'
+      ],
+      facts: ['Katecholamine', 'β₂-Adrenozeptoren', 'Demargination', 'IL-6', 'Oncostatin M'],
+      warn: ''
+    },
+    p1: {
+      kick: 'Phase 2 · 0–5 min nach dem Test · Zeitraffer',
+      title: 'Die erste Uhr ist schon fast abgelaufen',
+      body: [
+        'Direkt nach dem Test liegt die Herzfrequenz im Mittel <strong>60 Schläge pro Minute</strong> über dem Ausgangswert, nach 5 Minuten nur noch 11 darüber. Der autonome Arm ist verbraucht, bevor die zweite Blutprobe genommen wird.',
+        'Im Blut sind jetzt deutlich mehr Lymphozyten: <strong>+1,42 × 10⁹ pro Liter</strong>, rund 70 % mehr als vorher.',
+        'Laktat steigt weiter und erreicht nach 5 Minuten sein Maximum – im Mittel 5,8 mmol/l, über der anaeroben Schwelle von etwa 4 mmol/l.'
+      ],
+      facts: ['HF +60 → +11 bpm', 'Lymphozyten +1,42 × 10⁹/l', 'Laktat-Maximum nach 5 min'],
+      warn: ''
+    },
+    p2: {
+      kick: 'Phase 3 · 5–30 min · Zeitraffer',
+      title: 'Zwei Uhren mit entgegengesetztem Vorzeichen',
+      body: [
+        'Das Laktat wird abgebaut, mit einer Halbwertszeit von <strong>13 Minuten</strong>. Die Stoffwechsel-Uhr läuft ab.',
+        'Die Lymphozyten verlassen das Blut ins Gewebe, mit einer Zeitkonstante von <strong>18 Minuten</strong>. Nach etwa 10 Minuten fallen sie unter den Ausgangswert – nur die Lymphozyten kreuzen die Nulllinie.',
+        'Im Muskel locken die Chemokine der Makrophagen Neutrophile und Monozyten aus dem Blut an – sie sammeln sich um die Makrophagen (Mausdaten, schematisch).',
+        'Der schnelle Arm (Nervensystem) und der langsame Arm (Stoffwechsel) wirken gegenläufig und kreuzen sich bei etwa 10 Minuten. Darum fallen Entzündungsindizes wie die Granulozyten-Lymphozyten-Ratio erst und steigen dann.'
+      ],
+      facts: ['Laktat t½ 13 min', 'Lymphozyten τ 18 min', 'Kreuzung ≈ 10 min', 'CCL2 · CCL7 · CXCL1'],
+      warn: ''
+    },
+    p3: {
+      kick: 'Phase 4 · 30–45 min · Zeitraffer',
+      title: 'Stoffwechsel fast ruhig, Immunsystem nicht',
+      body: [
+        'Nach 45 Minuten ist das Laktat auf <strong>11 %</strong> seines Maximums gefallen. Die Entzündungsindizes stehen dagegen noch bei <strong>57–97 %</strong>.',
+        'Der Abfall der Lymphozyten flacht ab, Granulozyten und Monozyten steigen wieder an. Das könnte der Beginn einer dritten, myeloischen Uhr sein – bisher eine Hypothese, gestützt auf einen einzigen Messzeitpunkt.'
+      ],
+      facts: ['Laktat 11 %', 'Indizes 57–97 %', 'Uhr 3: Hypothese'],
+      warn: ''
+    },
+    p4: {
+      kick: 'Phase 5 · 45 min bis 24 h · Zeitraffer · schematisch nach Literatur',
+      title: 'Die langsamste Uhr',
+      body: [
+        'Hier endet unser Messfenster; der weitere Verlauf ist aus anderen Studien bekannt. Über die <strong>HPA-Achse</strong> steigt Cortisol, Neutrophile werden aus dem Knochenmark freigesetzt. Diese Neutrophilie hält Stunden an und klingt innerhalb von etwa <strong>24 Stunden</strong> ab; die Lymphozyten kehren in dieser Zeit zum Ausgangswert zurück. Wie stark diese späte Antwort nach nur einer Minute ausfällt, ist nicht gemessen.',
+        'Die Umverteilung der Lymphozyten bringt Abwehrzellen kurzzeitig in die Gewebe – ein Grund, warum regelmäßige Bewegung die Immunüberwachung stärkt.',
+        'Für die Forschung heißt das: Eine einzelne Laktatmessung sagt nicht, wo das Immunsystem eine Stunde später steht. Beide brauchen eigene Messungen.'
+      ],
+      facts: ['Cortisol', 'Neutrophilie ≤ 24 h', 'schematisch', 'Phelps & Meisel 2026'],
+      warn: ''
+    }
+  };
+  var TICKS = [
+    { s: 3, text: 'Los geht’s! Adrenalin und Noradrenalin steigen.' },
+    { s: 15, text: 'Die Herzfrequenz steigt, das Blut fließt schneller.' },
+    { s: 30, text: 'Noch 30 Sekunden! NK-Zellen lösen sich von der Gefäßwand.' },
+    { s: 45, text: 'Noch 15 Sekunden! Der Muskel arbeitet anaerob – Laktat steigt.' },
+    { s: 50, text: 'Noch 10 Sekunden – durchhalten!' }
+  ];
+
+  /* ---------- Zustand ---------- */
+  var st = {
+    phase: 'prep',
+    t: -1,          // Minuten relativ zum Testende
+    running: false,
+    countdown: 0,   // Sekunden bis Teststart
+    reps: null,
+    tickIdx: 0
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function phaseOf(t) {
+    if (st.phase === 'prep') return 'prep';
+    if (t < 0) return 'test';
+    if (t < 5) return 'p1';
+    if (t < 30) return 'p2';
+    if (t < 45) return 'p3';
+    return st.phase === 'p4' ? 'p4' : 'p3';
+  }
+  function phaseIndex(id) { for (var i = 0; i < PHASES.length; i++) if (PHASES[i].id === id) return i; return 0; }
+
+  /* ---------- Farben ---------- */
+  var C = {};
+  function readColors() {
+    var cs = getComputedStyle(document.documentElement);
+    ['bg','surface','fg','ink2','ink3','line','dash','auto','meta','immun','myelo','mono','il6','signal','osm','chem','vessel','vesselwall','muscle','muscleline','marrow'].forEach(function (k) {
+      C[k] = cs.getPropertyValue('--' + k).trim();
+    });
+  }
+
+  /* ---------- Ton ---------- */
+  var actx = null;
+  function beep(freq, dur) {
+    if (!$('sound').checked) return;
+    try {
+      if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = 'sine'; o.frequency.value = freq || 880;
+      g.gain.setValueAtTime(0.0001, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.25, actx.currentTime + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + (dur || 0.15));
+      o.connect(g); g.connect(actx.destination);
+      o.start(); o.stop(actx.currentTime + (dur || 0.15) + 0.05);
+    } catch (e) { /* Ton nicht verfügbar */ }
+  }
+  var wakeLock = null;
+  function requestWake() {
+    try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { wakeLock = w; }).catch(function () {}); } catch (e) {}
+  }
+
+  /* ---------- Zellsymbole (Canvas) ---------- */
+  var CELL = {
+    lym:  { fill: '#b3bfe1', stroke: '#7b7cc4', nuc: '#9a9ad3' },
+    nk:   { fill: '#b3aee0', stroke: '#7f6bb5', nuc: '#a28fc8', gran: '#9b85c3' },
+    dc:   { fill: '#b7b8e6', stroke: '#8384c4', nuc: '#9697c8' },
+    neu:  { fill: '#efb2d2', stroke: '#a8678a', nuc: '#cd7fae' },
+    mono: { fill: '#cbb8e4', stroke: '#9a7fc0', nuc: '#b096c6' },
+    mac:  { fill: '#d4c0e6', stroke: '#8a6bb8', nuc: '#a98cc7', vac: '#ece2f5' }
+  };
+  function drawCell(ctx, type, x, y, r, signal) {
+    var c = CELL[type];
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.lineWidth = Math.max(1, r * 0.14);
+    if (type === 'lym') {
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fillStyle = c.fill; ctx.fill(); ctx.strokeStyle = c.stroke; ctx.stroke();
+      ctx.beginPath(); ctx.arc(r * 0.08, -r * 0.08, r * 0.64, 0, Math.PI * 2); ctx.fillStyle = c.nuc; ctx.fill();
+    } else if (type === 'nk') {
+      if (signal) { ctx.beginPath(); ctx.arc(0, 0, r * 1.28, 0, Math.PI * 2); ctx.strokeStyle = signal; ctx.lineWidth = Math.max(1.2, r * 0.16); ctx.stroke(); ctx.lineWidth = Math.max(1, r * 0.14); }
+      ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fillStyle = c.fill; ctx.fill(); ctx.strokeStyle = c.stroke; ctx.stroke();
+      ctx.save(); ctx.rotate(-0.5); ctx.beginPath(); ctx.ellipse(r * 0.15, r * 0.18, r * 0.62, r * 0.46, 0, 0, Math.PI * 2); ctx.fillStyle = c.nuc; ctx.fill(); ctx.restore();
+      ctx.fillStyle = c.gran;
+      [[-0.45, -0.6], [0.05, -0.55], [0.45, -0.5], [-0.7, -0.15], [0.7, 0.05], [-0.55, 0.55]].forEach(function (p) { ctx.beginPath(); ctx.arc(p[0] * r, p[1] * r, r * 0.08, 0, Math.PI * 2); ctx.fill(); });
+    } else if (type === 'dc') {
+      var arms = [[0.1, -1], [0.85, -0.7], [1.05, 0.15], [0.45, 0.95], [-0.5, 0.9], [-1.05, 0.25], [-0.8, -0.65]];
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = c.stroke; ctx.lineWidth = r * 0.42;
+      arms.forEach(function (a) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(a[0] * r * 1.1 + a[1] * r * 0.2, a[1] * r * 1.1, a[0] * r * 1.75, a[1] * r * 1.75); ctx.stroke(); });
+      ctx.beginPath(); ctx.arc(0, 0, r * 0.82, 0, Math.PI * 2); ctx.fillStyle = c.stroke; ctx.fill();
+      ctx.strokeStyle = c.fill; ctx.lineWidth = r * 0.24;
+      arms.forEach(function (a) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(a[0] * r * 1.1 + a[1] * r * 0.2, a[1] * r * 1.1, a[0] * r * 1.75, a[1] * r * 1.75); ctx.stroke(); });
+      ctx.beginPath(); ctx.arc(0, 0, r * 0.74, 0, Math.PI * 2); ctx.fillStyle = c.fill; ctx.fill();
+      ctx.beginPath(); ctx.ellipse(r * 0.05, r * 0.05, r * 0.42, r * 0.33, -0.3, 0, Math.PI * 2); ctx.fillStyle = c.nuc; ctx.fill();
+    } else if (type === 'neu') {
+      ctx.beginPath(); ctx.ellipse(0, 0, r, r * 1.03, 0, 0, Math.PI * 2); ctx.fillStyle = c.fill; ctx.fill(); ctx.strokeStyle = c.stroke; ctx.stroke();
+      ctx.fillStyle = c.nuc;
+      [[-0.38, -0.3, 0.3], [0.05, 0.12, 0.3], [0.42, -0.18, 0.26]].forEach(function (p) { ctx.beginPath(); ctx.arc(p[0] * r, p[1] * r, p[2] * r, 0, Math.PI * 2); ctx.fill(); });
+      ctx.strokeStyle = c.nuc; ctx.lineWidth = r * 0.22;
+      ctx.beginPath(); ctx.moveTo(-0.38 * r, -0.3 * r); ctx.lineTo(0.05 * r, 0.12 * r); ctx.lineTo(0.42 * r, -0.18 * r); ctx.stroke();
+    } else if (type === 'mac') {
+      ctx.beginPath();
+      for (var b = 0; b <= 64; b++) { var tb = b / 64 * Math.PI * 2, rb = r * (1 + 0.2 * Math.sin(3 * tb + 0.5) + 0.1 * Math.sin(5 * tb + 1.3)); if (b === 0) ctx.moveTo(rb * Math.cos(tb), rb * Math.sin(tb) * 0.8); else ctx.lineTo(rb * Math.cos(tb), rb * Math.sin(tb) * 0.8); }
+      ctx.closePath(); ctx.fillStyle = c.fill; ctx.fill(); ctx.strokeStyle = c.stroke; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(r * 0.1, r * 0.05, r * 0.42, r * 0.28, -0.4, 0, Math.PI * 2); ctx.fillStyle = c.nuc; ctx.fill();
+      ctx.fillStyle = c.vac;
+      [[-0.55, -0.15, 0.13], [-0.35, 0.3, 0.1], [0.6, -0.25, 0.11], [0.55, 0.3, 0.09]].forEach(function (p) { ctx.beginPath(); ctx.arc(p[0] * r, p[1] * r, p[2] * r, 0, Math.PI * 2); ctx.fill(); });
+    } else if (type === 'mono') {
+      ctx.beginPath();
+      for (var a = 0; a <= 48; a++) { var th = a / 48 * Math.PI * 2, rr = r * (1 + 0.06 * Math.sin(th * 11)); if (a === 0) ctx.moveTo(rr * Math.cos(th), rr * Math.sin(th)); else ctx.lineTo(rr * Math.cos(th), rr * Math.sin(th)); }
+      ctx.closePath(); ctx.fillStyle = c.fill; ctx.fill(); ctx.strokeStyle = c.stroke; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(r * 0.05, r * 0.12, r * 0.55, r * 0.38, -0.35, 0, Math.PI * 2); ctx.fillStyle = c.nuc; ctx.fill();
+      ctx.beginPath(); ctx.arc(r * 0.12, -r * 0.18, r * 0.18, 0, Math.PI * 2); ctx.fillStyle = c.fill; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  /* ---------- Szene ---------- */
+  var W = 800, H = 420;
+  var canvas = $('scene'), ctx = canvas.getContext('2d');
+  var BM_BOTTOM = 70, MUSCLE_TOP = 316, BAND_HALF = 62;
+  function bandC(x) { return 192 + 14 * Math.sin(x / W * Math.PI * 1.6 + 0.4); }
+  var rnd = (function () { var s = 20261101; return function () { s |= 0; s = s + 0x6D2B79F5 | 0; var q = Math.imul(s ^ s >>> 15, 1 | s); q = q + Math.imul(q ^ q >>> 7, 61 | q) ^ q; return ((q ^ q >>> 14) >>> 0) / 4294967296; }; })();
+
+  var MACS = [{ x: 440, y: 374 }, { x: 600, y: 388 }];
+  var cells = [];
+  function makeCells(type, n, pool) {
+    for (var i = 0; i < n; i++) {
+      var c = { type: type, pool: pool, x: rnd() * W, y: 0, fx: rnd() * W, lane: rnd() * 2 - 1, slot: rnd(), sx: 40 + rnd() * (W - 80), sy: rnd(), side: rnd() < 0.55 ? 1 : -1, wob: rnd() * 6.28 };
+      cells.push(c);
+    }
+  }
+  // Bestände (schematisch)
+  var POP = {
+    lym:  { total: 30, base: 16, wall: 14 },
+    nk:   { total: 6, base: 1, wall: 5 },
+    mono: { total: 9, base: 5, wall: 4 },
+    neu:  { total: 22, base: 12, wall: 4, bm: 6 },
+    dc:   { total: 3 }
+  };
+  function initCells() {
+    cells = [];
+    makeCells('lym', POP.lym.base, 'blood'); makeCells('lym', POP.lym.wall, 'wall');
+    makeCells('nk', POP.nk.base, 'blood'); makeCells('nk', POP.nk.wall, 'wall');
+    makeCells('mono', POP.mono.base, 'blood'); makeCells('mono', POP.mono.wall, 'wall');
+    makeCells('neu', POP.neu.base, 'blood'); makeCells('neu', POP.neu.wall, 'wall'); makeCells('neu', POP.neu.bm, 'bm');
+    makeCells('dc', 3, 'tissue');
+    cells.forEach(function (c) { var p = target(c); c.x = p.x; c.y = p.y; });
+  }
+
+  function desired(type, t) {
+    var tt = st.phase === 'prep' ? -1 : t;
+    var r = {};
+    if (type === 'lym' || type === 'nk' || type === 'mono') {
+      var P = POP[type], key = type === 'mono' ? 'mon' : 'lym';
+      var scale = type === 'lym' ? 1 / 2.23 : type === 'mono' ? 1 / 0.40 : 0;
+      var B;
+      if (type === 'nk') {
+        var ln = val('lym', tt) / 1.423;
+        B = Math.round(P.base + P.wall * Math.max(0, ln));
+        var lnPeak = val('lym', Math.min(tt, 0)) / 1.423;
+        var ex = Math.round(P.wall * Math.max(0, lnPeak));
+        r.blood = Math.max(0, Math.min(P.total, B));
+        r.wall = P.wall - ex;
+        r.tissue = P.total - r.blood - r.wall;
+      } else {
+        B = Math.round(P.base * (1 + val(key, tt) * scale));
+        var Bpk = Math.round(P.base * (1 + val(key, Math.min(tt, 0)) * scale));
+        var maxEx = Math.max(0, Bpk - P.base);
+        r.blood = Math.max(0, Math.min(P.total, B));
+        r.wall = Math.max(0, P.wall - maxEx);
+        r.tissue = Math.max(0, P.total - r.blood - r.wall);
+      }
+      r.bm = 0;
+    } else if (type === 'neu') {
+      var Pn = POP.neu;
+      var Bn = function (x) { return Math.round(Pn.base * (1 + 2 * val('gra', x) / 2.92)); };
+      var b = Bn(tt);
+      var early = Math.max(0, Math.min(Pn.wall, Bn(Math.min(tt, 5)) - Pn.base));
+      var late = tt > 150 ? Math.max(0, Bn(150) - Bn(30)) : tt > 30 ? Math.max(0, b - Bn(30)) : 0;
+      late = Math.min(Pn.bm, late);
+      r.blood = b; r.wall = Pn.wall - early; r.bm = Pn.bm - late; r.tissue = Pn.total - r.blood - r.wall - r.bm;
+    } else if (type === 'dc') {
+      var inBlood = (tt > -0.7 && tt < 10) ? 2 : 0;
+      r.blood = inBlood; r.tissue = 3 - inBlood; r.wall = 0; r.bm = 0;
+    }
+    return r;
+  }
+  var SOURCE = { blood: ['wall', 'bm', 'tissue'], tissue: ['blood', 'wall', 'bm'], wall: ['blood', 'tissue'], bm: ['blood', 'tissue'] };
+  function reconcile(t) {
+    ['lym', 'nk', 'mono', 'neu', 'dc'].forEach(function (type) {
+      var want = desired(type, t);
+      var group = cells.filter(function (c) { return c.type === type; });
+      var have = { blood: 0, wall: 0, tissue: 0, bm: 0 };
+      group.forEach(function (c) { have[c.pool]++; });
+      ['blood', 'tissue', 'wall', 'bm'].forEach(function (dest) {
+        var need = (want[dest] || 0) - have[dest];
+        while (need > 0) {
+          var moved = false;
+          for (var s = 0; s < SOURCE[dest].length && !moved; s++) {
+            var src = SOURCE[dest][s];
+            if (have[src] > (want[src] || 0)) {
+              for (var k = 0; k < group.length; k++) {
+                if (group[k].pool === src) {
+                  group[k].pool = dest; group[k].fx = group[k].x; have[src]--; have[dest]++; need--; moved = true; break;
+                }
+              }
+            }
+          }
+          if (!moved) break;
+        }
+      });
+    });
+  }
+  function target(c) {
+    if (c.pool === 'blood') return { x: c.fx, y: bandC(c.fx) + c.lane * (BAND_HALF - 14) };
+    if (c.pool === 'wall') { var x = c.sx; return { x: x, y: bandC(x) + c.side * (BAND_HALF - 8) }; }
+    if (c.pool === 'tissue') {
+      if (c.type === 'neu' || c.type === 'mono') { var mac = MACS[c.slot < 0.5 ? 0 : 1], ang = c.wob; return { x: mac.x + Math.cos(ang) * 34, y: mac.y + Math.sin(ang) * 20 }; }
+      return { x: c.sx, y: MUSCLE_TOP + 22 + c.sy * (H - MUSCLE_TOP - 40) };
+    }
+    return { x: 236 + c.slot * 300, y: 30 + c.sy * (BM_BOTTOM - 40) };
+  }
+
+  var mol = [];
+  for (var m = 0; m < 70; m++) mol.push({ x: rnd() * W, lane: rnd() * 2 - 1, kind: m < 40 ? 'cat' : 'il6', v: 0.6 + rnd() * 0.8, y0: rnd() });
+
+  function sizeCanvas() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = canvas.clientWidth || 800;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(w * (H / W) * dpr);
+    ctx.setTransform(canvas.width / W, 0, 0, canvas.height / H, 0, 0);
+  }
+
+  function drawScene(dt) {
+    var t = st.phase === 'prep' ? -1 : st.t;
+    var hr = val('hr', t), la = val('la', t);
+    var il6 = t < -1 ? 0 : t < 0 ? (t + 1) : Math.exp(-t / 12);
+    var osm = t < -1 ? 0 : t < 0 ? (t + 1) : Math.exp(-t / 20);
+    var chem = t <= 0 ? 0 : Math.min(1, t / 8) * Math.exp(-Math.max(0, t - 10) / 40);
+    if (st.phase === 'prep') { hr = 0; la = 0; il6 = 0; osm = 0; chem = 0; }
+    var nowS = performance.now() / 1000;
+    ctx.clearRect(0, 0, W, H);
+    // Knochenmark
+    ctx.fillStyle = C.marrow; ctx.fillRect(0, 0, W, BM_BOTTOM);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    for (var i = 0; i < W; i += 18) { ctx.beginPath(); ctx.moveTo(i, BM_BOTTOM); ctx.lineTo(i + 30, 0); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(0, BM_BOTTOM); ctx.lineTo(W, BM_BOTTOM); ctx.strokeStyle = C.dash; ctx.stroke();
+    // Muskel
+    ctx.fillStyle = C.muscle; ctx.fillRect(0, MUSCLE_TOP, W, H - MUSCLE_TOP);
+    ctx.strokeStyle = C.muscleline; ctx.lineWidth = 7;
+    for (var j = MUSCLE_TOP + 14; j < H; j += 16) { ctx.beginPath(); ctx.moveTo(0, j); ctx.bezierCurveTo(W * 0.3, j - 6, W * 0.7, j + 6, W, j); ctx.stroke(); }
+    if (la > 0) { ctx.globalAlpha = 0.13 * la; ctx.fillStyle = C.meta; ctx.fillRect(0, MUSCLE_TOP, W, H - MUSCLE_TOP); ctx.globalAlpha = 1; }
+    ctx.beginPath(); ctx.moveTo(0, MUSCLE_TOP); ctx.lineTo(W, MUSCLE_TOP); ctx.strokeStyle = C.dash; ctx.lineWidth = 1; ctx.stroke();
+    // Gefäß
+    ctx.beginPath();
+    for (var x = 0; x <= W; x += 10) { var y = bandC(x) - BAND_HALF; if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+    for (var x2 = W; x2 >= 0; x2 -= 10) ctx.lineTo(x2, bandC(x2) + BAND_HALF);
+    ctx.closePath(); ctx.fillStyle = C.vessel; ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = C.vesselwall;
+    [-1, 1].forEach(function (sd) { ctx.beginPath(); for (var x = 0; x <= W; x += 10) { var y = bandC(x) + sd * BAND_HALF; if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); });
+    // Strömung
+    var speed = (reduceMotion ? 20 : 34) + (reduceMotion ? 50 : 150) * hr;
+    // Moleküle
+    mol.forEach(function (p) {
+      if (p.kind === 'cat') {
+        if (p.y0 > hr) return;
+        p.x = (p.x + speed * 1.3 * p.v * dt) % W;
+        var y = bandC(p.x) + p.lane * (BAND_HALF - 6);
+        ctx.fillStyle = C.auto; ctx.beginPath(); ctx.arc(p.x, y, 2.2, 0, Math.PI * 2); ctx.fill();
+      } else {
+        if (p.y0 > il6) return;
+        var k = (p.x / W + (performance.now() / 9000) * p.v) % 1;
+        var yy = MUSCLE_TOP + 30 - k * (MUSCLE_TOP + 30 - (bandC(p.x) + BAND_HALF * 0.5));
+        ctx.fillStyle = C.il6; ctx.globalAlpha = 0.9 * (1 - k * 0.6);
+        ctx.beginPath(); ctx.arc(p.x, yy, 2, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+      }
+    });
+    // IL-6 im Muskel (Myokin)
+    if (il6 > 0.02) {
+      ctx.fillStyle = C.il6;
+      for (var q6 = 0; q6 < 26; q6++) {
+        if (q6 / 26 > il6) break;
+        var ix = 120 + ((q6 * 97) % 250), iy = MUSCLE_TOP + 24 + ((q6 * 53) % (H - MUSCLE_TOP - 34)) + 2 * Math.sin(nowS * 2 + q6);
+        ctx.beginPath(); ctx.arc(ix, iy, 2.2, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+    // Oncostatin M: aus der Muskelfaser zu den ortsständigen Makrophagen
+    if (osm > 0.02) {
+      ctx.strokeStyle = C.osm; ctx.lineWidth = 1.4;
+      for (var qo = 0; qo < 24; qo++) {
+        if (qo / 24 > osm) break;
+        var mm = MACS[qo % 2], sx0 = mm.x + ((qo * 61) % 160) - 80, sy0 = H - 10 - ((qo * 37) % 30);
+        var kk = (nowS * 0.35 + qo / 24) % 1;
+        var ox = sx0 + (mm.x - sx0) * kk, oy = sy0 + (mm.y - sy0) * kk;
+        ctx.beginPath(); ctx.rect(ox - 2.5, oy - 2.5, 5, 5); ctx.stroke();
+      }
+    }
+    // Makrophagen + Chemokine (CCL2, CCL7, CXCL1)
+    MACS.forEach(function (mm, mi) {
+      if (chem > 0.02) {
+        for (var ring = 0; ring < 2; ring++) {
+          var ph = (nowS * 0.5 + ring * 0.5 + mi * 0.25) % 1;
+          ctx.beginPath(); ctx.ellipse(mm.x, mm.y, 18 + ph * 46, (18 + ph * 46) * 0.62, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = C.chem; ctx.globalAlpha = chem * (1 - ph) * 0.8; ctx.lineWidth = 1.5; ctx.stroke(); ctx.globalAlpha = 1;
+        }
+        ctx.fillStyle = C.chem;
+        for (var qc = 0; qc < 8; qc++) {
+          if (qc / 8 > chem) break;
+          var kc = (nowS * 0.25 + qc / 8) % 1;
+          var cxp = mm.x + (qc - 3.5) * 9, cyp = mm.y - 10 - kc * (mm.y - 10 - (bandC(mm.x) + BAND_HALF));
+          ctx.globalAlpha = 1 - kc * 0.7; ctx.beginPath(); ctx.arc(cxp, cyp, 1.8, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+        }
+      }
+      drawCell(ctx, 'mac', mm.x, mm.y, 17, null);
+    });
+    // Zellen
+    var follow = Math.min(1, dt * 3.2);
+    cells.forEach(function (c) {
+      if (c.pool === 'blood') c.fx = (c.fx + speed * dt * (0.8 + 0.4 * ((c.lane + 1) / 2))) % W;
+      var p = target(c);
+      var dx = p.x - c.x;
+      if (c.pool === 'blood' && Math.abs(dx) > W / 2) { c.x = p.x; c.y = p.y; }
+      else { c.x += dx * follow; c.y += (p.y - c.y) * follow; }
+    });
+    var order = ['neu', 'mono', 'lym', 'dc', 'nk'];
+    order.forEach(function (type) {
+      cells.forEach(function (c) {
+        if (c.type !== type) return;
+        var r = type === 'mono' ? 9 : type === 'neu' ? 8 : type === 'dc' ? 7 : type === 'nk' ? 8 : 7;
+        var inBm = c.pool === 'bm' && c.y < BM_BOTTOM;
+        if (inBm) ctx.globalAlpha = 0.5;
+        drawCell(ctx, type, c.x, c.y, r, type === 'nk' ? C.signal : null);
+        if (inBm) ctx.globalAlpha = 1;
+      });
+    });
+    // Beschriftung
+    ctx.font = '500 12px "IBM Plex Sans", Arial, sans-serif';
+    ctx.fillStyle = C.ink3; ctx.textBaseline = 'top';
+    ctx.fillText('KNOCHENMARK', 12, 8);
+    ctx.fillStyle = C.myelo;
+    ctx.fillText('Reserve: reife Neutrophile', 226, 8);
+    ctx.fillStyle = C.ink3;
+    ctx.fillText('BLUTGEFÄSS', 12, bandC(12) - BAND_HALF - 18 < BM_BOTTOM + 4 ? BM_BOTTOM + 6 : bandC(12) - BAND_HALF - 18);
+    ctx.fillText('SKELETTMUSKEL / GEWEBE', 12, MUSCLE_TOP + 6);
+    if (il6 > 0.05) { ctx.fillStyle = C.il6; ctx.fillText('IL-6 (Myokin)', 12, MUSCLE_TOP + 22); }
+    ctx.fillStyle = C.ink3;
+    ctx.textAlign = 'right'; ctx.fillText('Makrophagen', MACS[0].x - 44, MACS[0].y - 6); ctx.textAlign = 'left';
+    if (osm > 0.05) { ctx.fillStyle = C.osm; ctx.fillText('Oncostatin M', MACS[1].x + 44, MACS[1].y + 4); }
+    if (chem > 0.05) { ctx.fillStyle = C.chem; ctx.fillText('CCL2 · CCL7 · CXCL1', MACS[1].x + 44, MACS[1].y - 14); }
+    ctx.fillStyle = C.ink3;
+    ctx.textAlign = 'right';
+    if (hr > 0.05) { ctx.fillStyle = C.auto; ctx.fillText('Adrenalin · Fluss ×' + (1 + 4.4 * hr).toFixed(1), W - 12, BM_BOTTOM + 6); }
+    if (la > 0.05) { ctx.fillStyle = C.meta; ctx.fillText('Laktat ' + (0.74 + 5.2 * la).toFixed(1).replace('.', ',') + ' mmol/l', W - 12, MUSCLE_TOP + 6); }
+    if (st.phase === 'p3' || st.phase === 'p4') { ctx.fillStyle = C.myelo; ctx.fillText(st.t > 45 ? 'Neutrophile aus dem Knochenmark (schematisch)' : 'Neutrophile aus dem Knochenmark?', W - 12, 8); }
+    ctx.textAlign = 'left';
+  }
+
+  function buildLegend() {
+    var items = [['nk', 'NK-Zelle'], ['lym', 'Lymphozyt (CD8⁺/γδ-T)'], ['dc', 'Dendritische Zelle'], ['mono', 'Monozyt'], ['neu', 'Neutrophiler'], ['mac', 'Makrophage (ortsständig)']];
+    var lg = $('legend'); lg.innerHTML = '';
+    items.forEach(function (it) {
+      var s = document.createElement('span');
+      var cv = document.createElement('canvas'); cv.width = 44; cv.height = 44;
+      var c2 = cv.getContext('2d'); c2.scale(2, 2);
+      drawCell(c2, it[0], 11, 11, it[0] === 'dc' ? 5 : it[0] === 'mac' ? 8 : 7, it[0] === 'nk' ? C.signal : null);
+      s.appendChild(cv); s.appendChild(document.createTextNode(it[1])); lg.appendChild(s);
+    });
+    var m1 = document.createElement('span'); m1.innerHTML = '<span class="dot" style="background:var(--auto);width:6px;height:6px"></span>Adrenalin';
+    var m2 = document.createElement('span'); m2.innerHTML = '<span class="dot" style="background:var(--il6);width:6px;height:6px"></span>IL-6 aus dem Muskel';
+    var m3 = document.createElement('span'); m3.innerHTML = '<span style="display:inline-block;width:8px;height:8px;border:1.5px solid var(--osm);background:transparent"></span>Oncostatin M';
+    var m4 = document.createElement('span'); m4.innerHTML = '<span class="dot" style="background:transparent;border:1.5px solid var(--chem);width:9px;height:9px"></span>Chemokine CCL2 · CCL7 · CXCL1';
+    lg.appendChild(m1); lg.appendChild(m2); lg.appendChild(m3); lg.appendChild(m4);
+  }
+
+  /* ---------- Uhren ---------- */
+  var CLOCKS = [
+    { key: 'hr', k: 'Uhr 1 · Nervensystem', n: 'Herzfrequenz', color: 'auto', fmt: function (v) { return '+' + Math.round(v * 63.6) + ' bpm'; }, s: 'nach ≈ 5 min weitgehend abgelaufen' },
+    { key: 'la', k: 'Uhr 2 · Stoffwechsel', n: 'Laktat', color: 'meta', fmt: function (v) { return '+' + (v * 5.2).toFixed(1).replace('.', ',') + ' mmol/l'; }, s: 'Halbwertszeit 13 min' },
+    { key: 'lym', k: 'Immunsystem', n: 'Lymphozyten', color: 'immun', norm: 1.423, fmt: function (v) { return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2).replace('.', ',') + ' × 10⁹/l'; }, s: 'Zeitkonstante τ 18 min · fällt unter null' },
+    { key: 'gra', k: 'Uhr 3? · myeloisch', n: 'Granulozyten', color: 'myelo', norm: 0.5, fmt: function (v) { return (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(2).replace('.', ',') + ' × 10⁹/l'; }, s: 'ab 30 min steigend · später schematisch', hyp: true }
+  ];
+  var CIRC = 2 * Math.PI * 36;
+  function buildClocks() {
+    var box = $('clocks'); box.innerHTML = '';
+    CLOCKS.forEach(function (c, i) {
+      var d = document.createElement('div'); d.className = 'clock' + (c.hyp ? ' hyp' : '');
+      d.innerHTML = '<svg viewBox="0 0 88 88" aria-hidden="true"><circle cx="44" cy="44" r="36" fill="none" stroke="var(--ring-track)" stroke-width="9"></circle>' +
+        '<circle id="ca' + i + '" cx="44" cy="44" r="36" fill="none" stroke="var(--' + c.color + ')" stroke-width="9" transform="rotate(-90 44 44)" stroke-dasharray="0 ' + CIRC.toFixed(2) + '"></circle>' +
+        '<line x1="44" y1="44" x2="44" y2="14" id="ch' + i + '" stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round"></line><circle cx="44" cy="44" r="2.5" fill="var(--fg)"></circle></svg>' +
+        '<div><div class="ck" style="color:var(--' + c.color + ')">' + c.k + '</div><div class="cn">' + c.n + '</div><div class="cv" id="cv' + i + '">–</div><div class="cs">' + c.s + '</div></div>';
+      box.appendChild(d);
+    });
+  }
+  function updateClocks() {
+    var t = st.phase === 'prep' ? -1 : st.t;
+    CLOCKS.forEach(function (c, i) {
+      var raw = val(c.key, t);
+      var f = c.norm ? raw / c.norm : raw;
+      var a = $('ca' + i), h = $('ch' + i);
+      var len = Math.min(1, Math.abs(f)) * CIRC;
+      a.setAttribute('stroke-dasharray', len.toFixed(2) + ' ' + CIRC.toFixed(2));
+      a.setAttribute('transform', f < 0 ? 'rotate(-90 44 44) scale(1 1)' : 'rotate(-90 44 44)');
+      if (f < 0) { a.setAttribute('transform', 'translate(88 0) scale(-1 1) rotate(-90 44 44)'); a.style.opacity = '0.55'; } else { a.style.opacity = '1'; }
+      var ang = Math.max(-1, Math.min(1, f)) * 2 * Math.PI;
+      h.setAttribute('x2', (44 + 30 * Math.sin(ang)).toFixed(2));
+      h.setAttribute('y2', (44 - 30 * Math.cos(ang)).toFixed(2));
+      setText($('cv' + i), st.phase === 'prep' ? 'Ausgangswert' : c.fmt(c.key === 'lym' || c.key === 'gra' ? raw : f));
+    });
+  }
+
+  /* ---------- Grafik ---------- */
+  var CH = { x0: 80, xT: 170, x45: 700, x1: 920, yZ: 262, yL: 200, yR: 133.33 };
+  function cx(t) {
+    if (t < 0) return CH.x0 + (t + 1) * (CH.xT - CH.x0);
+    if (t <= 45) return CH.xT + (CH.x45 - CH.xT) * Math.sqrt(t / 45);
+    return CH.x45 + (CH.x1 - CH.x45) * Math.log(Math.min(t, TMAX) / 45) / Math.log(TMAX / 45);
+  }
+  function cy(key, v) { return CH.yZ - (SERIES[key].axis === 'L' ? CH.yL : CH.yR) * v; }
+  var SER_STYLE = {
+    hr: { color: 'auto', w: 2, dash: '2 4' },
+    la: { color: 'meta', w: 2.2, dash: '8 5' },
+    mon: { color: 'mono', w: 1.8, dash: '' },
+    gra: { color: 'myelo', w: 2.2, dash: '' },
+    lym: { color: 'immun', w: 3.2, dash: '' }
+  };
+  function pathFor(key, from, to) {
+    var pts = [];
+    var s = SERIES[key];
+    if (from < 0) { pts.push([cx(-1), cy(key, 0)]); for (var u = -0.9; u <= 0.001; u += 0.1) pts.push([cx(u), cy(key, val(key, u))]); }
+    else if (from >= 45) {
+      for (var g = 0; g <= 60; g++) { var tl = 45 * Math.pow(TMAX / 45, g / 60); pts.push([cx(tl), cy(key, val(key, tl))]); }
+    } else {
+      for (var tq = from; tq <= to + 1e-9; tq += 0.25) pts.push([cx(tq), cy(key, val(key, tq))]);
+    }
+    return 'M ' + pts.map(function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' L ');
+  }
+  function buildChart() {
+    var svg = $('chart');
+    var h = '';
+    h += '<defs><clipPath id="clipDone"><rect id="clipRect" x="0" y="0" width="0" height="380"></rect></clipPath></defs>';
+    h += '<rect x="' + CH.x0 + '" y="40" width="' + (CH.xT - CH.x0) + '" height="290" fill="var(--surface)"></rect>';
+    h += '<text x="' + ((CH.x0 + CH.xT) / 2) + '" y="56" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">TEST</text>';
+    h += '<rect x="' + CH.x45 + '" y="40" width="' + (CH.x1 - CH.x45) + '" height="290" fill="var(--surface)"></rect>';
+    h += '<text x="' + ((CH.x45 + CH.x1) / 2) + '" y="56" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink3)">LITERATUR · SCHEMATISCH</text>';
+    [5, 30, 45].forEach(function (t) { h += '<line x1="' + cx(t) + '" y1="40" x2="' + cx(t) + '" y2="330" stroke="var(--dash)" stroke-dasharray="3 5"></line>'; });
+    h += '<line x1="' + cx(10) + '" y1="160" x2="' + cx(10) + '" y2="330" stroke="var(--dash)" stroke-dasharray="1 4"></line>';
+    h += '<text x="' + (cx(10) + 6) + '" y="318" font-family="EB Garamond, serif" font-style="italic" font-size="15" fill="var(--ink3)">Arme kreuzen ≈ 10 min</text>';
+    h += '<line x1="' + CH.x0 + '" y1="' + CH.yZ + '" x2="' + CH.x1 + '" y2="' + CH.yZ + '" stroke="var(--ink3)" stroke-width="1"></line>';
+    h += '<line x1="' + CH.x0 + '" y1="330" x2="' + CH.x1 + '" y2="330" stroke="var(--line)"></line>';
+    h += '<line x1="' + CH.x0 + '" y1="40" x2="' + CH.x0 + '" y2="330" stroke="var(--line)"></line>';
+    h += '<line x1="' + CH.x1 + '" y1="40" x2="' + CH.x1 + '" y2="330" stroke="var(--line)"></line>';
+    [[0, '0'], [0.5, '0,5'], [1, '1,0']].forEach(function (k) { var y = CH.yZ - CH.yL * k[0]; h += '<text x="' + (CH.x0 - 8) + '" y="' + (y + 4) + '" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">' + k[1] + '</text>'; });
+    [[-0.5, '−0,5'], [0, '0'], [0.5, '0,5'], [1, '1,0'], [1.5, '1,5']].forEach(function (k) { var y = CH.yZ - CH.yR * k[0]; h += '<text x="' + (CH.x1 + 8) + '" y="' + (y + 4) + '" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">' + k[1] + '</text>'; });
+    h += '<text x="' + CH.x0 + '" y="28" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--ink2)">skaliert auf eigenes Maximum</text>';
+    h += '<text x="' + CH.x1 + '" y="28" text-anchor="end" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--ink2)">Δ Zellen [10⁹/l]</text>';
+    [[0, '0'], [1, '1'], [5, '5'], [10, '10'], [15, '15'], [30, '30'], [45, '45 min'], [120, '2 h'], [360, '6 h'], [1440, '24 h']].forEach(function (k) { var t = k[0]; h += '<line x1="' + cx(t) + '" y1="330" x2="' + cx(t) + '" y2="336" stroke="var(--ink3)"></line><text x="' + cx(t) + '" y="352" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">' + k[1] + '</text>'; });
+    h += '<text x="' + ((CH.xT + CH.x45) / 2) + '" y="374" text-anchor="middle" font-family="EB Garamond, serif" font-style="italic" font-size="15" fill="var(--ink3)">Zeit nach dem Test (bis 45 min Wurzelskala, danach logarithmisch)</text>';
+    var order = ['hr', 'la', 'mon', 'gra', 'lym'];
+    order.forEach(function (k) {
+      var s = SER_STYLE[k];
+      h += '<path d="' + pathFor(k, -1, 0) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" stroke-dasharray="3 4" opacity="0.18"></path>';
+      h += '<path d="' + pathFor(k, 0, 45) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" ' + (s.dash ? 'stroke-dasharray="' + s.dash + '"' : '') + ' opacity="0.18" stroke-linejoin="round"></path>';
+      h += '<path d="' + pathFor(k, 45, TMAX) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" stroke-dasharray="3 4" opacity="0.18"></path>';
+    });
+    h += '<g clip-path="url(#clipDone)">';
+    order.forEach(function (k) {
+      var s = SER_STYLE[k];
+      h += '<path d="' + pathFor(k, -1, 0) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" stroke-dasharray="3 4"></path>';
+      h += '<path d="' + pathFor(k, 0, 45) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" ' + (s.dash ? 'stroke-dasharray="' + s.dash + '"' : '') + ' stroke-linejoin="round"></path>';
+      h += '<path d="' + pathFor(k, 45, TMAX) + '" fill="none" stroke="var(--' + s.color + ')" stroke-width="' + s.w + '" stroke-dasharray="3 4" opacity="0.7"></path>';
+      SERIES[k].t.forEach(function (t, i) { h += '<circle cx="' + cx(t).toFixed(1) + '" cy="' + cy(k, SERIES[k].v[i]).toFixed(1) + '" r="' + (k === 'lym' ? 4.5 : 3.5) + '" fill="var(--' + s.color + ')"></circle>'; });
+    });
+    h += '</g>';
+    h += '<line id="playhead" x1="0" y1="40" x2="0" y2="330" stroke="var(--fg)" stroke-width="1.5"></line>';
+    h += '<circle id="phDot" cx="0" cy="0" r="6" fill="var(--bg)" stroke="var(--immun)" stroke-width="2.5"></circle>';
+    svg.innerHTML = h;
+  }
+  function updateChart() {
+    var t = st.phase === 'prep' ? -1 : st.t;
+    var x = cx(t);
+    $('clipRect').setAttribute('width', Math.max(0, x + 2).toFixed(1));
+    $('playhead').setAttribute('x1', x.toFixed(1)); $('playhead').setAttribute('x2', x.toFixed(1));
+    $('playhead').style.opacity = st.phase === 'prep' ? '0' : '1';
+    var d = $('phDot'); d.setAttribute('cx', x.toFixed(1)); d.setAttribute('cy', cy('lym', val('lym', t)).toFixed(1));
+    d.style.opacity = st.phase === 'prep' ? '0' : '1';
+  }
+  function chartToT(evt) {
+    var svg = $('chart'), r = svg.getBoundingClientRect();
+    var x = (evt.clientX - r.left) / r.width * 1000;
+    if (x <= CH.xT) return Math.max(-1, -1 + (x - CH.x0) / (CH.xT - CH.x0));
+    if (x <= CH.x45) { var f = Math.max(0, (x - CH.xT) / (CH.x45 - CH.xT)); return 45 * f * f; }
+    var g = Math.min(1, (x - CH.x45) / (CH.x1 - CH.x45));
+    return 45 * Math.pow(TMAX / 45, g);
+  }
+
+  /* ---------- UI ---------- */
+  function buildPhases() {
+    var nav = $('phases'); nav.innerHTML = '';
+    PHASES.forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'phase'; b.id = 'ph-' + p.id;
+      b.innerHTML = '<span class="pt">' + p.time + '</span><span class="pn">' + p.name + '</span>';
+      b.addEventListener('click', function () { jumpTo(p.id); });
+      nav.appendChild(b);
+    });
+  }
+  var lastStory = null;
+  function renderStory(id) {
+    if (lastStory === id) return; lastStory = id;
+    var s = STORY[id];
+    var h = '<div class="kicker">' + s.kick + '</div><h2>' + s.title + '</h2><div class="body">' + s.body.map(function (p) { return '<p>' + p + '</p>'; }).join('') + '</div>';
+    h += '<div class="facts">' + s.facts.map(function (f) { return '<span class="fact">' + f + '</span>'; }).join('') + '</div>';
+    if (s.warn) h += '<p class="warn">' + s.warn + '</p>';
+    $('story').innerHTML = h;
+    var idx = phaseIndex(id);
+    PHASES.forEach(function (p, i) {
+      var el = $('ph-' + p.id);
+      el.classList.toggle('active', p.id === id);
+      el.classList.toggle('done', i < idx && i > 0);
+      el.setAttribute('aria-current', p.id === id ? 'step' : 'false');
+    });
+  }
+  // Zeitraffer: 0–45 min in 2/3, 45 min–24 h in 1/3 der Dauer (gleichmäßig entlang der Grafik)
+  function qFromT(t) { return t <= 45 ? (2 / 3) * Math.sqrt(Math.max(0, t) / 45) : 2 / 3 + (1 / 3) * Math.log(t / 45) / Math.log(TMAX / 45); }
+  function tFromQ(q) { return q <= 2 / 3 ? 45 * Math.pow(q * 1.5, 2) : 45 * Math.pow(TMAX / 45, (q - 2 / 3) * 3); }
+  function fmtPost(t) { return t < 60 ? fmtMin(t) + ' min' : (t / 60).toFixed(t < 600 ? 1 : 0).replace('.', ',') + ' h'; }
+  function fmtMin(t) {
+    if (t < 0) return Math.ceil((-t) * 60) + ' s';
+    var m = Math.floor(t), s = Math.round((t - m) * 60);
+    if (s === 60) { m++; s = 0; }
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function setText(el, v) { v = String(v); if (el.textContent !== v) el.textContent = v; }
+  function updateTimer() {
+    var arc = $('ringArc'), L = 552.92;
+    var num = $('ringNum'), unit = $('ringUnit'), sub = $('ringSub');
+    var badge = $('speedBadge');
+    if (st.phase === 'prep') {
+      if (st.countdown > 0) {
+        setText(num, Math.ceil(st.countdown)); setText(unit, 'Start in'); setText(sub, 'Sekunden – bereit machen');
+        arc.setAttribute('stroke-dashoffset', (L * (1 - st.countdown / 3)).toFixed(2)); arc.setAttribute('stroke', 'var(--auto)');
+      } else {
+        setText(num, '60'); setText(unit, 'Sekunden'); setText(sub, 'bereit');
+        arc.setAttribute('stroke-dashoffset', '0'); arc.setAttribute('stroke', 'var(--fg)');
+      }
+      badge.hidden = true;
+      setText($('sceneTime'), 'vor dem Test');
+    } else if (st.phase === 'test') {
+      var left = Math.max(0, -st.t * 60);
+      setText(num, Math.ceil(left));
+      setText(unit, 'Sekunden');
+      setText(sub, st.running ? 'auf und ab!' : 'pausiert');
+      arc.setAttribute('stroke-dashoffset', (L * (1 - left / 60)).toFixed(2));
+      arc.setAttribute('stroke', 'var(--signal)');
+      badge.hidden = true;
+      setText($('sceneTime'), 'während des Tests · Echtzeit');
+    } else {
+      var tt = Math.min(TMAX, st.t);
+      if (tt < 60) { setText(num, fmtMin(tt)); setText(unit, 'min nach dem Test'); }
+      else { setText(num, (tt / 60).toFixed(tt < 600 ? 1 : 0).replace('.', ',')); setText(unit, 'Stunden nach dem Test'); }
+      setText(sub, tt >= TMAX ? 'Ende · 24 h' : (st.running ? (tt > 45 ? 'Zeitraffer · schematisch' : 'Zeitraffer läuft') : 'angehalten'));
+      arc.setAttribute('stroke-dashoffset', (L * (1 - Math.min(1, qFromT(tt)))).toFixed(2));
+      arc.setAttribute('stroke', 'var(--immun)');
+      badge.hidden = false;
+      setText(badge, 'Zeitraffer · 24 h in ' + $('speed').value + ' s');
+      setText($('sceneTime'), (tt > 45 ? 'schematisch · ' : '') + fmtPost(tt) + ' nach dem Test');
+    }
+    var main = $('btnMain');
+    if (st.phase === 'prep') setText(main, st.countdown > 0 ? 'Sofort starten' : 'Test starten');
+    else if (st.t >= TMAX) setText(main, 'Noch einmal');
+    else setText(main, st.running ? 'Pause' : 'Weiterlaufen');
+    $('btnPrev').disabled = st.phase === 'prep';
+    $('btnNext').disabled = st.phase === 'p4';
+    $('btnPrev').disabled = st.phase === 'prep';
+  }
+
+  function setPhase(id) { st.phase = id; renderStory(id); }
+
+  function startCountdown() {
+    st.countdown = 3; lastTick = Date.now();
+    try { beep(660, 0.12); } catch (e) {}
+    try { requestWake(); } catch (e) {}
+    $('ticker').textContent = 'Start in 3 Sekunden – setz dich hin, Füße hüftbreit, Arme locker oder an den Hüften.';
+  }
+  function startTest() {
+    st.countdown = 0; st.t = -1; st.tickIdx = 0; st.running = true;
+    setPhase('test'); beep(990, 0.35);
+  }
+  function jumpTo(id) {
+    st.countdown = 0;
+    if (id === 'prep') { reset(); return; }
+    if (id === 'test') { st.t = -1; st.running = false; st.tickIdx = 0; setPhase('test'); $('ticker').textContent = 'Test bereit. „Weiterlaufen“ startet die 60 Sekunden.'; return; }
+    var p = PHASES[phaseIndex(id)];
+    st.t = p.t0; st.running = false; setPhase(id);
+    $('repsForm').hidden = false;
+    $('ticker').textContent = id === 'p4' ? 'Ab hier schematisch nach Literatur. „Weiterlaufen“ zeigt den Verlauf bis 24 h.' : 'Angehalten. „Weiterlaufen“ setzt den Zeitraffer fort.';
+  }
+  function reset() {
+    st.phase = 'prep'; st.t = -1; st.running = false; st.countdown = 0; st.tickIdx = 0;
+    $('repsForm').hidden = true; $('repsOut').textContent = ''; $('repsIn').value = ''; $('ageIn').value = '';
+    me = null; $('pRepsIn').value = ''; $('pAgeIn').value = ''; drawPct(); $('pctResult').textContent = 'Trag deine Wiederholungen, dein Alter und dein Geschlecht ein – nach dem Test oder direkt hier. Dann erscheint dein Punkt in der Kurve.';
+    $('ticker').textContent = 'Stuhl ohne Armlehnen, Arme locker oder an den Hüften. Zähl deine vollständigen Wiederholungen.';
+    renderStory('prep');
+  }
+  function mainAction() {
+    try { if (actx && actx.state === 'suspended') actx.resume(); } catch (e) {}
+    if (st.phase === 'prep') {
+      if (st.countdown > 0) startTest(); else startCountdown();
+      uiTick();
+      return;
+    }
+    if (st.t >= TMAX) { reset(); return; }
+    st.running = !st.running;
+    if (st.running && st.phase !== 'test') $('ticker').textContent = 'Zeitraffer läuft.';
+  }
+  function step(dir) {
+    var i = phaseIndex(st.phase) + dir;
+    if (i < 0 || i >= PHASES.length) return;
+    jumpTo(PHASES[i].id);
+  }
+
+  $('btnMain').addEventListener('click', mainAction);
+  $('btnNext').addEventListener('click', function () { step(1); });
+  $('btnPrev').addEventListener('click', function () { step(-1); });
+  $('btnReset').addEventListener('click', reset);
+  $('speed').addEventListener('change', updateTimer);
+  $('btnTheme').addEventListener('click', function () {
+    var root = document.documentElement;
+    var dark = root.getAttribute('data-theme') === 'dark' || (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+    $('btnTheme').textContent = dark ? 'Beamer: dunkel' : 'Beamer: hell';
+    readColors(); buildLegend();
+  });
+  var inFrame = false; try { inFrame = window.self !== window.top; } catch (e) { inFrame = true; }
+  $('btnFull').addEventListener('click', function () {
+    var canFs = document.fullscreenEnabled && document.documentElement.requestFullscreen;
+    if (inFrame && !canFs) { try { window.open(location.href, '_blank', 'noopener'); } catch (e) {} return; }
+    try {
+      if (document.fullscreenElement) document.exitFullscreen().catch(function () {});
+      else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {});
+    } catch (e) {}
+  });
+  /* ---------- Referenzwerte Strassmann et al. 2013, Tab. 2 ---------- */
+  var REF_AGES = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75];
+  var REF_P = [2.5, 25, 50, 75, 97.5];
+  var REF = {
+    m: [[27, 41, 50, 57, 72], [29, 40, 48, 56, 74], [28, 40, 47, 56, 72], [27, 38, 47, 58, 72], [25, 37, 45, 53, 69], [25, 35, 44, 52, 70], [24, 35, 42, 53, 67], [22, 33, 41, 48, 63], [20, 31, 37, 46, 63], [20, 29, 35, 44, 60], [19, 27, 32, 40, 59], [16, 25, 30, 37, 56]],
+    w: [[31, 39, 47, 55, 70], [30, 40, 47, 54, 68], [27, 37, 45, 51, 68], [25, 37, 42, 50, 63], [26, 35, 41, 48, 65], [25, 35, 41, 50, 63], [23, 33, 39, 47, 60], [21, 30, 36, 43, 61], [20, 28, 34, 40, 55], [19, 27, 33, 40, 53], [17, 25, 30, 36, 51], [13, 22, 27, 30, 43]]
+  };
+  var pctSex = 'w', me = null;
+  function refRow(sex, age) { var i = Math.floor((age - 20) / 5); return { row: REF[sex][i], lo: REF_AGES[i] }; }
+  function percentile(q, n) {
+    if (n < q[0]) return { p: null, band: 'below' };
+    if (n > q[4]) return { p: null, band: 'above' };
+    for (var i = 0; i < 4; i++) {
+      if (n >= q[i] && n <= q[i + 1]) {
+        if (q[i + 1] === q[i]) return { p: REF_P[i + 1], band: 'in' };
+        return { p: REF_P[i] + (n - q[i]) / (q[i + 1] - q[i]) * (REF_P[i + 1] - REF_P[i]), band: 'in' };
+      }
+    }
+    return { p: null, band: 'in' };
+  }
+  var PX = { x0: 64, x1: 610, y0: 300, y1: 24, a0: 20, a1: 80, r0: 10, r1: 80 };
+  function px(a) { return PX.x0 + (a - PX.a0) / (PX.a1 - PX.a0) * (PX.x1 - PX.x0); }
+  function py(r) { return PX.y0 - (r - PX.r0) / (PX.r1 - PX.r0) * (PX.y0 - PX.y1); }
+  function drawPct() {
+    var R2 = REF[pctSex], h = '';
+    var mid = REF_AGES.map(function (a) { return a + 2.5; });
+    function band(i, j, fill) {
+      var top = mid.map(function (a, k) { return px(a).toFixed(1) + ' ' + py(R2[k][j]).toFixed(1); });
+      var bot = mid.map(function (a, k) { return px(a).toFixed(1) + ' ' + py(R2[k][i]).toFixed(1); }).reverse();
+      return '<path d="M ' + top.join(' L ') + ' L ' + bot.join(' L ') + ' Z" fill="' + fill + '"></path>';
+    }
+    for (var r = 10; r <= 80; r += 10) { h += '<line x1="' + PX.x0 + '" y1="' + py(r) + '" x2="' + PX.x1 + '" y2="' + py(r) + '" stroke="var(--line)"></line><text x="' + (PX.x0 - 8) + '" y="' + (py(r) + 4) + '" text-anchor="end" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">' + r + '</text>'; }
+    h += band(0, 4, 'var(--band1)') + band(1, 3, 'var(--band2)');
+    var med = mid.map(function (a, k) { return px(a).toFixed(1) + ' ' + py(R2[k][2]).toFixed(1); });
+    h += '<path d="M ' + med.join(' L ') + '" fill="none" stroke="var(--fg)" stroke-width="2"></path>';
+    var lab = [[0, '2,5.'], [1, '25.'], [2, '50.'], [3, '75.'], [4, '97,5.']];
+    lab.forEach(function (l) { h += '<text x="' + (px(mid[11]) + 6) + '" y="' + (py(R2[11][l[0]]) + 4) + '" font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--ink3)">' + l[1] + '</text>'; });
+    [20, 30, 40, 50, 60, 70, 80].forEach(function (a) { h += '<line x1="' + px(a) + '" y1="' + PX.y0 + '" x2="' + px(a) + '" y2="' + (PX.y0 + 6) + '" stroke="var(--ink3)"></line><text x="' + px(a) + '" y="' + (PX.y0 + 22) + '" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--ink3)">' + a + '</text>'; });
+    h += '<text x="' + ((PX.x0 + PX.x1) / 2) + '" y="' + (PX.y0 + 44) + '" text-anchor="middle" font-family="EB Garamond, serif" font-style="italic" font-size="15" fill="var(--ink3)">Alter (Jahre)</text>';
+    h += '<text x="' + PX.x0 + '" y="14" font-family="IBM Plex Sans, sans-serif" font-size="12" fill="var(--ink2)">Wiederholungen in 60 s · ' + (pctSex === 'w' ? 'Frauen' : 'Männer') + '</text>';
+    if (me) {
+      var yn = py(Math.max(PX.r0, Math.min(PX.r1, me.n)));
+      h += '<line x1="' + PX.x0 + '" y1="' + yn.toFixed(1) + '" x2="' + PX.x1 + '" y2="' + yn.toFixed(1) + '" stroke="var(--immun)" stroke-width="1.5" stroke-dasharray="6 4"></line>';
+      var rightSide = me.age && me.age < 50;
+      h += '<text x="' + (rightSide ? px(74) : PX.x0 + 6) + '" y="' + (yn - 7).toFixed(1) + '"' + (rightSide ? ' text-anchor="end"' : '') + ' font-family="IBM Plex Sans, sans-serif" font-size="13" font-weight="600" fill="var(--immun)" stroke="var(--bg)" stroke-width="4" paint-order="stroke">Deine Sitz-Steh-Zyklen: ' + me.n + '</text>';
+      h += '<rect x="' + (PX.x0 - 44) + '" y="' + (yn - 10).toFixed(1) + '" width="38" height="20" rx="2" fill="var(--immun)"></rect><text x="' + (PX.x0 - 25) + '" y="' + (yn + 4.5).toFixed(1) + '" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="500" fill="var(--bg)">' + me.n + '</text>';
+    }
+    if (me && me.age && me.sex === pctSex && me.age >= 20 && me.age <= 79) {
+      var x = px(me.age), y = py(Math.max(PX.r0, Math.min(PX.r1, me.n)));
+      var gi = Math.floor((me.age - 20) / 5), gx0 = px(REF_AGES[gi]), gx1 = px(REF_AGES[gi] + 5);
+      h += '<rect x="' + gx0.toFixed(1) + '" y="' + PX.y1 + '" width="' + (gx1 - gx0).toFixed(1) + '" height="' + (PX.y0 - PX.y1) + '" fill="var(--immun)" opacity="0.06"></rect>';
+      R2[gi].forEach(function (v, k) { h += '<line x1="' + gx0.toFixed(1) + '" y1="' + py(v).toFixed(1) + '" x2="' + gx1.toFixed(1) + '" y2="' + py(v).toFixed(1) + '" stroke="var(--ink3)" stroke-width="1"></line>'; });
+      h += '<line x1="' + x.toFixed(1) + '" y1="' + PX.y0 + '" x2="' + x.toFixed(1) + '" y2="' + y.toFixed(1) + '" stroke="var(--immun)" stroke-dasharray="2 4"></line>';
+      h += '<circle cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="8" fill="var(--immun)" stroke="var(--bg)" stroke-width="2"></circle>';
+      h += '<text x="' + (x + 12).toFixed(1) + '" y="' + (y - 12).toFixed(1) + '" font-family="EB Garamond, serif" font-size="17" font-weight="600" fill="var(--immun)" stroke="var(--bg)" stroke-width="5" paint-order="stroke" stroke-linejoin="round">Du: ' + me.n + '</text>';
+    }
+    $('pct').innerHTML = h;
+    var big = $('pctBig');
+    if (me) { big.hidden = false; big.innerHTML = me.n + '<small>Sitz-Steh-Zyklen in 60 s</small>'; } else { big.hidden = true; }
+    $('sxW').setAttribute('aria-pressed', pctSex === 'w' ? 'true' : 'false');
+    $('sxM').setAttribute('aria-pressed', pctSex === 'm' ? 'true' : 'false');
+  }
+  $('sxW').addEventListener('click', function () { pctSex = 'w'; $('pSexIn').value = 'w'; drawPct(); });
+  $('sxM').addEventListener('click', function () { pctSex = 'm'; $('pSexIn').value = 'm'; drawPct(); });
+  function fmtP(p) { return (Math.round(p * 10) / 10).toString().replace('.', ','); }
+  function syncForms(n, age, sex) {
+    $('repsIn').value = isFinite(n) ? n : ''; $('ageIn').value = isFinite(age) ? age : ''; $('sexIn').value = sex;
+    $('pRepsIn').value = isFinite(n) ? n : ''; $('pAgeIn').value = isFinite(age) ? age : ''; $('pSexIn').value = sex;
+  }
+  $('repsForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    classify(parseInt($('repsIn').value, 10), parseInt($('ageIn').value, 10), $('sexIn').value);
+    showPct();
+  });
+  function showPct() {
+    var card = $('pctCard');
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+    var r = card.getBoundingClientRect();
+    if (r.top > window.innerHeight * 0.6 || r.bottom < 0) {
+      try { card.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' }); } catch (e) { card.scrollIntoView(); }
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.tolink');
+    if (a) { e.preventDefault(); showPct(); var c = $('pctCard'); try { c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (er) { c.scrollIntoView(); } }
+  });
+  $('pctForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    classify(parseInt($('pRepsIn').value, 10), parseInt($('pAgeIn').value, 10), $('pSexIn').value);
+  });
+  function classify(n, age, sex) {
+    syncForms(n, age, sex);
+    if (!isFinite(n) || n < 0 || n > 150) { var msg = 'Bitte die Wiederholungen als Zahl zwischen 0 und 150 eintragen.'; $('repsOut').textContent = msg; $('pctResult').textContent = msg; return; }
+    st.reps = n;
+    var pace = n > 0 ? (60 / n).toFixed(1).replace('.', ',') : '–';
+    var base = '<strong>' + n + ' Wiederholungen</strong> – eine alle ' + pace + ' s. ';
+    if (!isFinite(age)) { me = { n: n, age: null, sex: sex }; pctSex = sex; drawPct(); $('repsOut').innerHTML = base + 'Trag noch dein Alter ein, um dich einzuordnen.'; $('pctResult').innerHTML = base + 'Mit deinem Alter erscheint dein Punkt in der Kurve.'; return; }
+    pctSex = sex; me = { n: n, age: age, sex: sex };
+    var sexWord = sex === 'w' ? 'Frauen' : 'Männern';
+    var txt;
+    if (age < 20 || age > 79) {
+      txt = 'Die Referenzwerte von Strassmann et al. gelten für 20 bis 79 Jahre – für dein Alter gibt es dort keinen Vergleich.';
+    } else {
+      var rr = refRow(sex, age), q = rr.row, res = percentile(q, n);
+      var grp = rr.lo + '–' + (rr.lo + 4) + ' Jahre';
+      if (res.band === 'below') txt = 'Bei ' + sexWord + ' von ' + grp + ' liegt dein Ergebnis <strong>unter der 2,5. Perzentile</strong> (' + q[0] + '). Ein einzelner Test ist kein Befund – wenn dir Aufstehen und Treppensteigen schwerfallen, sprich mit deiner Ärztin oder deinem Arzt.';
+      else if (res.band === 'above') txt = 'Bei ' + sexWord + ' von ' + grp + ' liegst du <strong>über der 97,5. Perzentile</strong> (' + q[4] + ') – mehr als fast alle Gleichaltrigen.';
+      else {
+        var cat = res.p < 25 ? 'unter dem mittleren Bereich' : res.p <= 75 ? 'im mittleren Bereich' : 'über dem mittleren Bereich';
+        txt = 'Bei ' + sexWord + ' von ' + grp + ' entspricht das etwa der <strong>' + fmtP(res.p) + '. Perzentile</strong> – ' + cat + ' (Median ' + q[2] + ', mittlere Hälfte ' + q[1] + '–' + q[3] + ').';
+      }
+    }
+    $('repsOut').innerHTML = base + txt + ' <a href="#pctCard" class="tolink">Dein Punkt in der Kurve ↓</a>';
+    $('pctResult').innerHTML = base + txt + ' <span class="note">In unserer Studie mit 26 jungen Erwachsenen (≈ 24 Jahre) waren es im Mittel 56 (44–87).</span>';
+    drawPct();
+   }
+  $('chart').addEventListener('pointerdown', function (e) {
+    if (st.phase === 'prep') { st.phase = 'test'; }
+    var svg = $('chart');
+    try { svg.setPointerCapture(e.pointerId); } catch (er) {}
+    var move = function (ev) {
+      st.t = chartToT(ev); st.running = false;
+      var ph = st.t < 0 ? 'test' : st.t < 5 ? 'p1' : st.t < 30 ? 'p2' : st.t < 45 ? 'p3' : 'p4';
+      setPhase(ph);
+      if (st.t >= 0) $('repsForm').hidden = false;
+    };
+    move(e);
+    var up = function () { svg.removeEventListener('pointermove', move); svg.removeEventListener('pointerup', up); svg.removeEventListener('pointercancel', up); };
+    svg.addEventListener('pointermove', move); svg.addEventListener('pointerup', up); svg.addEventListener('pointercancel', up);
+  });
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
+    if (e.code === 'Space') { e.preventDefault(); mainAction(); }
+    else if (e.key === 'ArrowRight') step(1);
+    else if (e.key === 'ArrowLeft') step(-1);
+  });
+
+  /* ---------- Schleife ---------- */
+  // Logik (Uhr) läuft per Intervall unabhängig vom Zeichnen, damit Countdown und Test auch dann weiterlaufen,
+  // wenn ein Browser das Zeichnen drosselt oder ein Zeichenschritt fehlschlägt.
+  function report(e) { try { if (window.console) console.error(e); } catch (x) {} }
+  var lastTick = Date.now();
+  function tick() {
+    var nowMs = Date.now();
+    var dt = Math.min(0.25, Math.max(0, (nowMs - lastTick) / 1000)); lastTick = nowMs;
+    try { logic(dt); } catch (e) { report(e); }
+  }
+  function logic(dt) {
+    if (st.countdown > 0) {
+      var before = Math.ceil(st.countdown);
+      st.countdown -= dt;
+      if (Math.ceil(st.countdown) !== before && st.countdown > 0) beep(660, 0.12);
+      if (st.countdown <= 0) startTest();
+    }
+    if (st.running) {
+      if (st.phase === 'test') {
+        st.t += dt / 60;
+        var sec = (st.t + 1) * 60;
+        if (st.tickIdx < TICKS.length && sec >= TICKS[st.tickIdx].s) { $('ticker').textContent = TICKS[st.tickIdx].text; if (TICKS[st.tickIdx].s === 50) beep(880, 0.1); st.tickIdx++; }
+        if (sec >= 55 && sec - dt * 1 < 55) beep(880, 0.08);
+        if (st.t >= 0) {
+          st.t = 0; beep(523, 0.6); setPhase('p1');
+          $('repsForm').hidden = false;
+          $('ticker').textContent = 'Geschafft! Setz dich und atme durch. Trag deine Wiederholungen ein – der Zeitraffer läuft bis 24 h weiter.';
+          try { $('repsIn').focus({ preventScroll: true }); } catch (e) {}
+        }
+      } else {
+        var dur = parseFloat($('speed').value) || 90;
+        var nq = qFromT(st.t) + dt / dur;
+        var nt = nq >= 1 ? TMAX : tFromQ(nq);
+        var cur = PHASES[phaseIndex(st.phase)];
+        if (nt >= cur.t1) {
+          nt = cur.t1;
+          if (st.phase === 'p4') {
+            st.running = false; beep(523, 0.5);
+            $('ticker').textContent = '24 Stunden später: Alle Uhren stehen wieder auf dem Ausgangswert.';
+          } else {
+            var next = PHASES[phaseIndex(st.phase) + 1];
+            setPhase(next.id);
+            if (next.id === 'p4') $('ticker').textContent = 'Ende des Messfensters (45 min) – ab hier schematisch nach Literatur.';
+            if ($('stopAt').checked) {
+              st.running = false; beep(740, 0.15);
+              $('ticker').textContent = 'Neue Phase: ' + next.name + '. „Weiterlaufen“ setzt fort.';
+            }
+          }
+        }
+        st.t = nt;
+      }
+    }
+  }
+  var lastDraw = 0;
+  function frame(now) {
+    var dt = lastDraw ? Math.min(0.1, (now - lastDraw) / 1000) : 0.016; lastDraw = now;
+    try { reconcile(st.t); } catch (e) { report(e); }
+    try { drawScene(dt); } catch (e) { report(e); }
+    try { updateClocks(); } catch (e) { report(e); }
+    try { updateChart(); } catch (e) { report(e); }
+    requestAnimationFrame(frame);
+  }
+  function uiTick() { try { updateTimer(); } catch (e) { report(e); } }
+
+  /* ---------- Höhe an Homepage-Iframe melden ---------- */
+  function postHeight() {
+    try { if (window.parent !== window) window.parent.postMessage({ type: 'iframeResize', height: document.documentElement.scrollHeight }, '*'); } catch (e) {}
+  }
+
+  readColors();
+  if (window.matchMedia) {
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var onScheme = function () { readColors(); buildLegend(); };
+    if (mq.addEventListener) mq.addEventListener('change', onScheme); else if (mq.addListener) mq.addListener(onScheme);
+  }
+  buildPhases(); buildClocks(); buildChart(); buildLegend(); initCells(); sizeCanvas(); renderStory('prep'); drawPct();
+  window.addEventListener('resize', function () { sizeCanvas(); postHeight(); });
+  if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+  postHeight();
+  setInterval(function () { tick(); uiTick(); }, 50);
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

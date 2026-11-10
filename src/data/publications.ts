@@ -20,6 +20,13 @@ export interface Publication {
 
 export const publications: Publication[] = [
   {
+    "authors": "Koczulla AR, Gogoll C, Ankermann T, Behrends U, Berlit P, Decker M, Deckert J, Drexler H, Gehring K, Gloeckl R, Grande B, Hachenberg J, Häuser W, Hohberger B, Huber G, Hummel T, Köhler S, Kohmäscher A, Köllner V, Kupferschmitt A, Mooren F, Ott S, Peters EMJ, Pfeifer M, Platz T, Pletz MW, Pohle S, Pongratz G, Powitz F, Puta C, Rabe KF, Salzmann S, Scheibenbogen C, Schieffer B, Schieffer E, Schilling C, Schneider D, Schomerus G, Stallmach A, Stengel S, Stegbauer M, Töpfner N, Vilser D, von Versen F, Waller C, Walter M, Widmann C, Wirtz H, Witthöft M, Zwick RH",
+    "year": 2026,
+    "body": "S2k-Leitlinie Long-/Post-COVID – Symptomorientierte Diagnostik und Therapie. In: Deutsche Gesellschaft für Pneumologie und Beatmungsmedizin e.V. (DGP) (Hrsg.), AWMF-Register Nr. 020-027. Auflage/Version Datum: Auflage September 2026 / Version 1.0.",
+    "linkText": "register.awmf.org/de/leitlinien/detail/020-027",
+    "url": "https://register.awmf.org/de/leitlinien/detail/020-027"
+  },
+  {
     "authors": "Röhr W, Simon R, Kirschke S, von Loga I, Putrino D, Bloch W, Reuken PA, Dudziak D, Kipp AP, Stallmach A, Puta C",
     "year": 2026,
     "body": "Acute effects of the 1-minute sit-to-stand test (STST) on immune-metabolic stress indices. Sci Rep 16(1): 25484.",
